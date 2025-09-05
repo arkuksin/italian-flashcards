@@ -1,16 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight, Type } from 'lucide-react';
+import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight } from 'lucide-react';
 import { LearningDirection } from '../types';
 
 interface HeaderProps {
   darkMode: boolean;
   shuffleMode: boolean;
-  ignoreAccents: boolean;
   learningDirection: LearningDirection;
   onToggleDarkMode: () => void;
   onToggleShuffle: () => void;
-  onToggleIgnoreAccents: () => void;
   onToggleDirection: () => void;
   onRestart: () => void;
 }
@@ -18,11 +16,9 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   darkMode,
   shuffleMode,
-  ignoreAccents,
   learningDirection,
   onToggleDarkMode,
   onToggleShuffle,
-  onToggleIgnoreAccents,
   onToggleDirection,
   onRestart,
 }) => {
@@ -74,20 +70,6 @@ export const Header: React.FC<HeaderProps> = ({
           title="Toggle shuffle mode (Ctrl+S)"
         >
           <Shuffle className="w-5 h-5" />
-        </motion.button>
-
-        <motion.button
-          onClick={onToggleIgnoreAccents}
-          className={`p-2 rounded-lg transition-colors ${
-            ignoreAccents
-              ? 'bg-green-500 text-white hover:bg-green-600'
-              : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-          }`}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          title="Toggle accent ignore mode (Ctrl+A)"
-        >
-          <Type className="w-5 h-5" />
         </motion.button>
 
         <motion.button
