@@ -5,7 +5,6 @@ interface UseKeyboardProps {
   onPrevious: () => void;
   onSubmit: () => void;
   onToggleMode: () => void;
-  onToggleIgnoreAccents: () => void;
   onRestart: () => void;
   onShuffle: () => void;
 }
@@ -15,7 +14,6 @@ export const useKeyboard = ({
   onPrevious,
   onSubmit,
   onToggleMode,
-  onToggleIgnoreAccents,
   onRestart,
   onShuffle,
 }: UseKeyboardProps) => {
@@ -43,13 +41,6 @@ export const useKeyboard = ({
             onToggleMode();
           }
           break;
-        case 'a':
-        case 'A':
-          if (event.ctrlKey || event.metaKey) {
-            event.preventDefault();
-            onToggleIgnoreAccents();
-          }
-          break;
         case 'r':
         case 'R':
           if (event.ctrlKey || event.metaKey) {
@@ -69,5 +60,5 @@ export const useKeyboard = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onNext, onPrevious, onSubmit, onToggleMode, onToggleIgnoreAccents, onRestart, onShuffle]);
+  }, [onNext, onPrevious, onSubmit, onToggleMode, onRestart, onShuffle]);
 };
