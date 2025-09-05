@@ -7,6 +7,7 @@ import { ProgressBar } from './components/ProgressBar';
 import { useKeyboard } from './hooks/useKeyboard';
 import { WORDS, getShuffledWords } from './data/words';
 import { AppState, LearningDirection, Word } from './types';
+import { compareStrings } from './utils/textUtils';
 
 function App() {
   const [hasSelectedMode, setHasSelectedMode] = useState(false);
@@ -24,6 +25,7 @@ function App() {
     learningDirection: 'ru-it',
     darkMode: false,
     shuffleMode: false,
+    ignoreAccents: false,
   });
 
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -75,8 +77,7 @@ function App() {
       ? currentWord.italian.toLowerCase() 
       : currentWord.russian.toLowerCase();
     
-    const userAnswer = state.userInput.toLowerCase().trim();
-    const correct = userAnswer === targetWord;
+    const correct = compareStrings(state.userInput, targetWord, state.ignoreAccents);
     
     setIsCorrect(correct);
 
@@ -107,6 +108,10 @@ function App() {
       showAnswer: false,
     }));
     setIsCorrect(null);
+  };
+
+  const handleToggleIgnoreAccents = () => {
+    setState(prev => ({ ...prev, ignoreAccents: !prev.ignoreAccents }));
   };
 
   const handleToggleShuffle = () => {
@@ -157,6 +162,7 @@ function App() {
     onPrevious: handlePrevious,
     onSubmit: handleSubmit,
     onToggleMode: handleToggleDirection,
+    onToggleIgnoreAccents: handleToggleIgnoreAccents,
     onRestart: handleRestart,
     onShuffle: handleToggleShuffle,
   });
@@ -173,9 +179,11 @@ function App() {
         <Header
           darkMode={state.darkMode}
           shuffleMode={state.shuffleMode}
+          ignoreAccents={state.ignoreAccents}
           learningDirection={state.learningDirection}
           onToggleDarkMode={handleToggleDarkMode}
           onToggleShuffle={handleToggleShuffle}
+          onToggleIgnoreAccents={handleToggleIgnoreAccents}
           onToggleDirection={handleToggleDirection}
           onRestart={handleRestart}
         />
@@ -206,6 +214,7 @@ function App() {
                     learningDirection={state.learningDirection}
                     userInput={state.userInput}
                     showAnswer={state.showAnswer}
+                    ignoreAccents={state.ignoreAccents}
                     onInputChange={handleInputChange}
                     onSubmit={handleSubmit}
                     onNext={handleNext}

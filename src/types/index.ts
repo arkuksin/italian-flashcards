@@ -22,4 +22,5 @@ export interface AppState {
   learningDirection: LearningDirection;
   darkMode: boolean;
   shuffleMode: boolean;
+  ignoreAccents: boolean;
 }
