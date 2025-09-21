@@ -48,7 +48,11 @@ test.describe('Italian Flashcards App', () => {
     await page.locator('form button[type="submit"]').click();
 
     // Should show result (correct/incorrect)
-    await expect(page.getByText(/Correct|Not quite right/i)).toBeVisible();
+    // Use more specific selector to avoid strict mode violations
+    const resultMessage = page.locator('span.text-lg.font-semibold, p.text-xs').first();
+    await expect(resultMessage).toBeVisible();
+    const resultText = await resultMessage.textContent();
+    expect(resultText).toMatch(/Correct|Not quite right/i);
 
     // Should show the correct answer
     await expect(page.getByText('Correct answer:')).toBeVisible();
