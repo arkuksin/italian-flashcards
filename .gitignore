@@ -25,5 +25,6 @@ dist-ssr
 .env
 playwright-report
 test-results
+playwright-state.json
 /.codex/*.local.json
 /mcp-vercel-tools/.env

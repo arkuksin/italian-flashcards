@@ -29,7 +29,12 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     /* Record video on failure */
     video: 'retain-on-failure',
+    /* Use saved storage state when running against Vercel deployments */
+    storageState: process.env.VERCEL_BYPASS_TOKEN ? 'playwright-state.json' : undefined,
   },
+
+  /* Global setup to handle Vercel bypass authentication */
+  globalSetup: process.env.VERCEL_BYPASS_TOKEN ? require.resolve('./e2e/global-setup.ts') : undefined,
 
   /* Configure projects for major browsers */
   projects: [
