@@ -1,0 +1,249 @@
+name: E2E Tests with Vercel Preview
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview Environment
+    runs-on: ubuntu-latest
+    outputs:
+      preview-url: ${{ steps.deploy.outputs.preview-url }}
+      deployment-id: ${{ steps.deploy.outputs.deployment-id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Preview
+        id: deploy
+        run: |
+          # Deploy to Vercel and capture the deployment URL
+          DEPLOYMENT_URL=$(vercel deploy --token="${{ secrets.VERCEL_TOKEN }}" --yes | tail -1)
+
+          # Wait for deployment to be ready
+          echo "Waiting for deployment to be ready..."
+          vercel inspect "$DEPLOYMENT_URL" --token="${{ secrets.VERCEL_TOKEN }}" --wait
+
+          # Get deployment ID for cleanup later
+          DEPLOYMENT_ID=$(vercel ls --token="${{ secrets.VERCEL_TOKEN }}" --meta githubCommitSha="${{ github.sha }}" | grep "${{ github.sha }}" | awk '{print $1}' | head -1)
+
+          echo "preview-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          echo "Deployment URL: $DEPLOYMENT_URL"
+
+      - name: Health check deployment
+        run: |
+          echo "Performing health check on ${{ steps.deploy.outputs.preview-url }}"
+          if [ -z "${VERCEL_BYPASS_TOKEN}" ]; then
+            echo "Vercel bypass token is not configured. Please set the VERCEL_BYPASS_TOKEN secret."
+            exit 1
+          fi
+
+          BYPASS_URL="${{ steps.deploy.outputs.preview-url }}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
+          COOKIE_JAR=$(mktemp)
+          trap 'rm -f "$COOKIE_JAR"' EXIT
+
+          curl -sS -L -o /dev/null -c "$COOKIE_JAR" "$BYPASS_URL"
+
+          # Wait up to 2 minutes for deployment to be healthy
+          timeout=120
+          interval=5
+          elapsed=0
+
+          while [ $elapsed -lt $timeout ]; do
+            if curl -f -s -L -b "$COOKIE_JAR" "${{ steps.deploy.outputs.preview-url }}" > /dev/null; then
+              echo "✅ Deployment is healthy"
+              exit 0
+            fi
+            echo "⏳ Waiting for deployment to be healthy... (${elapsed}s/${timeout}s)"
+            sleep $interval
+            elapsed=$((elapsed + interval))
+          done
+
+          echo "❌ Deployment health check failed after ${timeout}s"
+          exit 1
+
+  e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+    needs: deploy-preview
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          # Install the matrix browser
+          npx playwright install ${{ matrix.browser }} --with-deps
+          # Also install chromium for global-setup if not already installed
+          if [ "${{ matrix.browser }}" != "chromium" ]; then
+            npx playwright install chromium --with-deps
+          fi
+
+      - name: Run E2E tests
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.deploy-preview.outputs.preview-url }}
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+        run: npx playwright test --project=${{ matrix.browser }} --reporter=github
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-results-${{ matrix.browser }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  test-results:
+    name: Process Test Results
+    runs-on: ubuntu-latest
+    needs: [deploy-preview, e2e-tests]
+    if: always()
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: test-results
+
+      - name: Process test results
+        run: |
+          echo "## 🧪 E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** ${{ needs.deploy-preview.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check if tests passed
+          if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
+            echo "✅ All E2E tests passed!" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Some E2E tests failed" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🧪 E2E Test Results')
+            );
+
+            const status = '${{ needs.e2e-tests.result }}' === 'success' ? '✅' : '❌';
+            const previewUrl = '${{ needs.deploy-preview.outputs.preview-url }}';
+
+            const body = `## 🧪 E2E Test Results ${status}
+
+            **Preview Environment:** [${previewUrl}](${previewUrl})
+            **Tests Status:** ${{ needs.e2e-tests.result }}
+            **Commit:** ${{ github.sha }}
+
+            ${status === '✅' ? 'All E2E tests passed! 🎉' : 'Some tests failed. Check the details in the workflow run.'}
+
+            <details>
+            <summary>View test artifacts</summary>
+
+            - Test results and reports are available in the workflow artifacts
+            - Screenshots and videos (if any) are included for failed tests
+            </details>
+
+            ---
+            *This comment is automatically updated for each push.*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  cleanup:
+    name: Cleanup Preview Environment
+    runs-on: ubuntu-latest
+    needs: [deploy-preview, e2e-tests]
+    if: always() && needs.deploy-preview.outputs.deployment-id
+    steps:
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Remove preview deployment
+        run: |
+          echo "Cleaning up preview deployment: ${{ needs.deploy-preview.outputs.deployment-id }}"
+          vercel rm "${{ needs.deploy-preview.outputs.deployment-id }}" --token="${{ secrets.VERCEL_TOKEN }}" --yes || echo "Deployment already cleaned up"
+
+  status-check:
+    name: E2E Status Check
+    runs-on: ubuntu-latest
+    needs: [e2e-tests]
+    if: always()
+    steps:
+      - name: Set status
+        run: |
+          if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
+            echo "✅ E2E tests passed"
+            exit 0
+          else
+            echo "❌ E2E tests failed"
+            exit 1
+          fi
