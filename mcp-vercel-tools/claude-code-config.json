@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "node",
+      "args": ["C:\\dev\\projects\\italian-flashcards\\mcp-vercel-tools\\dist\\index.js"],
+      "env": {
+        "VERCEL_API_TOKEN": "your_vercel_api_token_here",
+        "VERCEL_TEAM_ID": "optional_team_id"
+      }
+    }
+  }
+}
