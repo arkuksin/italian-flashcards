@@ -34,7 +34,7 @@ export default defineConfig({
   },
 
   /* Global setup to handle Vercel bypass authentication */
-  globalSetup: process.env.VERCEL_BYPASS_TOKEN ? require.resolve('./e2e/global-setup.ts') : undefined,
+  globalSetup: process.env.VERCEL_BYPASS_TOKEN ? './e2e/global-setup.ts' : undefined,
 
   /* Configure projects for major browsers */
   projects: [
