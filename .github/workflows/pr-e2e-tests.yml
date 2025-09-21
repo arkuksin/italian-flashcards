@@ -12,6 +12,7 @@ concurrency:
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
 
 jobs:
   deploy-preview:
@@ -59,13 +60,24 @@ jobs:
       - name: Health check deployment
         run: |
           echo "Performing health check on ${{ steps.deploy.outputs.preview-url }}"
+          if [ -z "${VERCEL_BYPASS_TOKEN}" ]; then
+            echo "Vercel bypass token is not configured. Please set the VERCEL_BYPASS_TOKEN secret."
+            exit 1
+          fi
+
+          BYPASS_URL="${{ steps.deploy.outputs.preview-url }}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
+          COOKIE_JAR=$(mktemp)
+          trap 'rm -f "$COOKIE_JAR"' EXIT
+
+          curl -sS -L -o /dev/null -c "$COOKIE_JAR" "$BYPASS_URL"
+
           # Wait up to 2 minutes for deployment to be healthy
           timeout=120
           interval=5
           elapsed=0
 
           while [ $elapsed -lt $timeout ]; do
-            if curl -f -s "${{ steps.deploy.outputs.preview-url }}" > /dev/null; then
+            if curl -f -s -L -b "$COOKIE_JAR" "${{ steps.deploy.outputs.preview-url }}" > /dev/null; then
               echo "✅ Deployment is healthy"
               exit 0
             fi
