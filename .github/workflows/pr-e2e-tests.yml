@@ -116,6 +116,7 @@ jobs:
       - name: Run E2E tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.deploy-preview.outputs.preview-url }}
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
         run: npx playwright test --project=${{ matrix.browser }} --reporter=github
 
       - name: Upload test results
