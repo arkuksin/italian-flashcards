@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "node",
+      "args": ["C:\\path\\to\\mcp-vercel-tools\\dist\\index.js"],
+      "env": {
+        "VERCEL_API_TOKEN": "your_vercel_api_token_here",
+        "VERCEL_TEAM_ID": "optional_team_id_if_using_team_account"
+      }
+    }
+  }
+}
+
+// Instructions:
+// 1. Copy this configuration to your Claude Code settings
+// 2. Update the path in "args" to match your installation location
+// 3. Replace "your_vercel_api_token_here" with your actual Vercel API token
+// 4. Optionally add your team ID if working with a Vercel team
+// 5. Save and restart Claude Code
