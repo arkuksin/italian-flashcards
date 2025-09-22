@@ -94,6 +94,7 @@ This is a React-based Italian flashcards application that helps users learn Russ
 - **Playwright Config**: Located in `playwright.config.ts`
 - **Test Directory**: `e2e/` contains end-to-end tests
 - **Test Server**: Automatically starts dev server on port 5173
+- **Create new test, if new code is added**: Add a new test file to `e2e/`, if you think it is necessary.
 
 ### Code Style
 - **ESLint**: Configured with React and TypeScript rules
