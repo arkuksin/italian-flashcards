@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(set VERCEL_API_TOKEN=test_token)",
+      "Bash(node:*)",
+      "Bash(mcp list-tools:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(npm run lint)",
+      "Bash(git checkout -b feature/e2e-testing-pipeline-with-vercel-previews)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh api:*)",
+      "Bash(gh run download:*)",
+      "Bash(curl:*)",
+      "Bash(PLAYWRIGHT_TEST_BASE_URL=http://localhost:5174/italian-flashcards npx playwright test --project=chromium --headed=false)",
+      "Bash(set PLAYWRIGHT_TEST_BASE_URL=http://localhost:5174/italian-flashcards)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(npx @supabase/mcp-server-supabase:*)",
+      "Bash(set SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co)",
+      "Bash(set SUPABASE_ACCESS_TOKEN=sbp_e4e16205e4db13cad9d121cd2d97e0a9b1d99fe2)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git checkout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
