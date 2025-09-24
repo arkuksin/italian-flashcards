@@ -33,7 +33,7 @@ dist-ssr
 # MCP and tooling configs
 /mcp-vercel-tools/.env
 /.codex/*.local.json
-/.claude/settings.local.json
+/.claude
 
 # Security sensitive files
 *.pem
