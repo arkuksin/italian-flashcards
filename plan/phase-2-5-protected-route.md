@@ -136,7 +136,7 @@ Please help me with the following:
 
      if (!user) {
        // Save the attempted location for post-login redirect
-       return <Navigate to="/login" state={{ from: location }} replace />
+       return <Navigate to="/login" state={%raw%}{{ from: location }}{%endraw%} replace />
      }
 
      return <>{children}</>

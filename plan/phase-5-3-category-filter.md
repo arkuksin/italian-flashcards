@@ -496,13 +496,13 @@ Please help me with the following:
                  <div
                    key={rec.category.id}
                    className="bg-blue-50 dark:bg-blue-900 rounded-lg p-4 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
-                   onClick={() => {
+                   onClick={%raw%}={() => {
                      const newSelected = [...filterOptions.selectedCategories]
                      if (!newSelected.includes(rec.category.id)) {
                        newSelected.push(rec.category.id)
                        updateFilter({ selectedCategories: newSelected })
                      }
-                   }}
+                   }}{%endraw%}
                  >
                    <div className="flex items-center space-x-3">
                      <span className="text-2xl">{rec.category.icon}</span>
@@ -542,12 +542,12 @@ Please help me with the following:
                        ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500'
                        : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                    }`}
-                   onClick={() => {
+                   onClick={%raw%}={() => {
                      const newSelected = isSelected
                        ? filterOptions.selectedCategories.filter(id => id !== category.id)
                        : [...filterOptions.selectedCategories, category.id]
                      updateFilter({ selectedCategories: newSelected })
-                   }}
+                   }}{%endraw%}
                  >
                    <div className="text-center">
                      <div className="text-2xl mb-2">{category.icon}</div>
@@ -559,7 +559,7 @@ Please help me with the following:
                          <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
                            <div
                              className="bg-blue-600 h-1.5 rounded-full transition-all"
-                             style={{ width: `${progress.completionPercentage}%` }}
+                             style={%raw%}{{ width: `${progress.completionPercentage}%` }}{%endraw%}
                            />
                          </div>
                          <div className="text-xs text-gray-600 dark:text-gray-300 mt-1">
