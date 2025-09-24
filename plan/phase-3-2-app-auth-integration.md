@@ -265,7 +265,7 @@ Please help me with the following:
                    learningDirection={appState.learningDirection}
                    onInputChange={(input) => setAppState(prev => ({ ...prev, userInput: input }))}
                    onSubmit={handleAnswerSubmission}
-                   onNext={() => {
+                   onNext={%raw%}={() => {
                      const nextIndex = (appState.currentWordIndex + 1) % filteredWords.length
                      setAppState(prev => ({
                        ...prev,
@@ -273,7 +273,7 @@ Please help me with the following:
                        userInput: '',
                        showAnswer: false
                      }))
-                   }}
+                   }}{%endraw%}
                    progress={progress.get(filteredWords[appState.currentWordIndex]?.id)}
                  />
                ) : (

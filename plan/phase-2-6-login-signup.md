@@ -53,7 +53,7 @@ Please help me with the following:
            <Auth
              supabaseClient={supabase}
              view={authMode}
-             appearance={{
+             appearance={%raw%}{{
                theme: ThemeSupa,
                variables: {
                  default: {
@@ -68,7 +68,7 @@ Please help me with the following:
                  button: 'auth-button',
                  input: 'auth-input',
                }
-             }}
+             }}{%endraw%}
              providers={['google', 'github']}
              redirectTo={window.location.origin}
              showLinks={false}

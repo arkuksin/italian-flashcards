@@ -240,7 +240,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signOut }}>
+    <AuthContext.Provider value={%raw%}{{ user, session, loading, signOut }}{%endraw%}>
       {children}
     </AuthContext.Provider>
   )
@@ -577,12 +577,12 @@ export const CategoryFilter: React.FC<{
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
-          onClick={() => {
+          onClick={%raw%}={() => {
             const newCategories = selectedCategories.includes(category)
               ? selectedCategories.filter(c => c !== category)
               : [...selectedCategories, category]
             onCategoryChange(newCategories)
-          }}
+          }}{%endraw%}
         >
           {category}
         </button>
