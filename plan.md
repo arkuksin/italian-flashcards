@@ -300,7 +300,7 @@ export const LoginForm: React.FC = () => {
         
         <Auth
           supabaseClient={supabase}
-          appearance={{
+          appearance={%raw%}{{
             theme: ThemeSupa,
             variables: {
               default: {
@@ -310,7 +310,7 @@ export const LoginForm: React.FC = () => {
                 }
               }
             }
-          }}
+          }}{%endraw%}
           providers={['google', 'github']}
           redirectTo={window.location.origin}
         />
