@@ -63,6 +63,9 @@ test.describe('Authentication Context Integration', () => {
     // Use various app features
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByRole('button', { name: 'Restart' }).click();
+
+    // Wait for the mode selection screen to appear after restart
+    await expect(page.getByText('Learn Russian from Italian')).toBeVisible();
     await page.getByText('Learn Russian from Italian').click();
 
     // No critical auth context errors should occur
