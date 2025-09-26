@@ -60,10 +60,18 @@ test.describe('Authentication Context Integration', () => {
     await page.getByText('Learn Italian from Russian').click();
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible();
 
-    // Use various app features
+    // Use various app features to test auth context stability
     await page.getByRole('button', { name: 'Next' }).click();
-    await page.getByRole('button', { name: 'Restart' }).click();
-    await page.getByText('Learn Russian from Italian').click();
+    await expect(page.getByText('2 of 300')).toBeVisible();
+
+    // Test restart functionality (stays in same learning mode, resets progress)
+    await page.locator('button[title="Restart session (Ctrl+R)"]').click();
+    await expect(page.getByText('1 of 300')).toBeVisible();
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible();
+
+    // Test direction toggle (button with ArrowLeftRight icon)
+    await page.locator('button[title="Toggle learning direction (Ctrl+T)"]').click();
+    await expect(page.getByText(/Translate to Russian:/i)).toBeVisible();
 
     // No critical auth context errors should occur
     expect(criticalErrors).toHaveLength(0);
