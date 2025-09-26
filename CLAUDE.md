@@ -18,6 +18,11 @@ This is a React-based Italian flashcards application that helps users learn Russ
 - `npm run test:e2e` - Run Playwright end-to-end tests
 - The e2e tests are configured to run against `http://localhost:5173`
 
+### Branch Protection & Security
+- `npm run setup:branch-protection` - Configure GitHub branch protection for main branch
+- `npm run verify:branch-protection` - Verify branch protection configuration
+- See `docs/branch-protection.md` for detailed setup and security guidelines
+
 ### Platform-specific Development Servers
 - `./start-linux.sh` - Start development server on Linux
 - `./start-windows.ps1` - Start development server on Windows (PowerShell)

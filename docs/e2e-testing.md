@@ -189,12 +189,26 @@ This ensures only one E2E workflow runs per PR, canceling previous runs when new
 
 ## Branch Protection Rules
 
-To require E2E tests to pass before merging:
+To protect your main branch and require E2E tests to pass before merging:
+
+### Automated Setup (Recommended)
+
+```bash
+# Setup branch protection automatically
+npm run setup:branch-protection
+
+# Verify configuration
+npm run verify:branch-protection
+```
+
+### Manual Setup
 
 1. Go to repository **Settings > Branches**
 2. Add a branch protection rule for `main`
 3. Enable "Require status checks to pass before merging"
 4. Select "E2E Status Check" from the available status checks
+
+For detailed setup instructions, troubleshooting, and security best practices, see: **[Branch Protection Setup Guide](branch-protection.md)**
 
 ## Troubleshooting
 
