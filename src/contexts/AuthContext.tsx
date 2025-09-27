@@ -49,7 +49,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
+    // Check if we're in test mode (Playwright E2E tests)
+    // Only enable test mode in development or when explicitly requested
+    const isTestMode = (import.meta.env.VITE_PLAYWRIGHT_TEST === 'true' && import.meta.env.DEV) ||
+                      window.location.search.includes('test-mode=true')
+
+    if (isTestMode) {
+      // In test mode, automatically provide a mock authenticated user
+      const mockUser = {
+        id: 'test-user-id',
+        email: 'test@example.com',
+        aud: 'authenticated',
+        role: 'authenticated',
+        app_metadata: {},
+        user_metadata: {},
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as User
+
+      const mockSession = {
+        access_token: 'mock-access-token',
+        refresh_token: 'mock-refresh-token',
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        token_type: 'bearer',
+        user: mockUser
+      } as Session
+
+      console.log('🧪 Test mode: Using mock authentication')
+      setUser(mockUser)
+      setSession(mockSession)
+      setLoading(false)
+      return
+    }
+
+    // Get initial session (normal production flow)
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
@@ -67,28 +101,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     getInitialSession()
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event)
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
+    // Listen for auth changes (skip in test mode)
+    if (!isTestMode) {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event)
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
 
-      // Handle session refresh
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed successfully')
-      }
+        // Handle session refresh
+        if (event === 'TOKEN_REFRESHED') {
+          console.log('Token refreshed successfully')
+        }
 
-      // Handle sign out
-      if (event === 'SIGNED_OUT') {
-        setUser(null)
-        setSession(null)
-      }
-    })
+        // Handle sign out
+        if (event === 'SIGNED_OUT') {
+          setUser(null)
+          setSession(null)
+        }
+      })
 
-    return () => subscription.unsubscribe()
+      return () => subscription.unsubscribe()
+    }
   }, [])
 
   // Sign out method

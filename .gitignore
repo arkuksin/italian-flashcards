@@ -29,6 +29,8 @@ dist-ssr
 .env.production
 .env.staging
 .env.test
+.env.test.local
+.env.test.production
 
 # MCP and tooling configs
 /mcp-vercel-tools/.env
