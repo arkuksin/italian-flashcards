@@ -1,0 +1,89 @@
+name: Production Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Production
+        id: deploy
+        run: |
+          # Deploy to production
+          DEPLOYMENT_URL=$(vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" --yes | tail -1)
+
+          # Wait for deployment to be ready
+          echo "Waiting for production deployment to be ready..."
+          vercel inspect "$DEPLOYMENT_URL" --token="${{ secrets.VERCEL_TOKEN }}" --wait
+
+          echo "deployment-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Production deployment URL: $DEPLOYMENT_URL"
+
+      - name: Health check production deployment
+        run: |
+          echo "Performing health check on ${{ steps.deploy.outputs.deployment-url }}"
+
+          # Wait up to 2 minutes for deployment to be healthy
+          timeout=120
+          interval=10
+          elapsed=0
+
+          while [ $elapsed -lt $timeout ]; do
+            if curl -f -s -L "${{ steps.deploy.outputs.deployment-url }}" > /dev/null; then
+              echo "✅ Production deployment is healthy"
+              exit 0
+            fi
+            echo "⏳ Waiting for production deployment to be healthy... (${elapsed}s/${timeout}s)"
+            sleep $interval
+            elapsed=$((elapsed + interval))
+          done
+
+          echo "❌ Production deployment health check failed after ${timeout}s"
+          exit 1
+
+      - name: Update deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Production deployment completed successfully"
+            echo "🚀 Live at: ${{ steps.deploy.outputs.deployment-url }}"
+          else
+            echo "❌ Production deployment failed"
+          fi
