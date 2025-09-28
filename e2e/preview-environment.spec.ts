@@ -19,16 +19,14 @@ test.describe('Preview Environment Integration', () => {
     // Wait for page to load
     await page.waitForLoadState('networkidle');
 
-    // Should show authentication loading first
-    const authLoading = page.locator('[data-testid="auth-loading"]');
-    const loginForm = page.locator('[data-testid="auth-form-subtitle"]');
-    const emailInput = page.locator('[data-testid="email-input"]');
-
-    // Wait for either auth loading or login form to appear
-    await Promise.race([
-      authLoading.waitFor({ timeout: 5000 }).catch(() => {}),
-      loginForm.waitFor({ timeout: 5000 }).catch(() => {})
+    // Wait for either auth loading or login form to appear with increased timeout for Vercel
+    const authStateDetected = await Promise.race([
+      page.locator('[data-testid="auth-loading"]').waitFor({ timeout: 8000 }).then(() => 'loading').catch(() => null),
+      page.locator('[data-testid="auth-form-subtitle"]').waitFor({ timeout: 8000 }).then(() => 'form').catch(() => null),
+      page.locator('[data-testid="protected-content"]').waitFor({ timeout: 8000 }).then(() => 'protected').catch(() => null)
     ]);
+
+    console.log('Auth state detected:', authStateDetected);
 
     // Check if we're in test mode by looking for test mode indicators
     const isTestMode = await page.evaluate(() => {
@@ -41,13 +39,20 @@ test.describe('Preview Environment Integration', () => {
 
     if (isTestMode) {
       // In test mode, should automatically authenticate and show flashcard app
-      await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
       console.log('✅ Test mode: Auto-authentication successful');
     } else {
-      // In normal mode, should show login form
-      await expect(loginForm).toContainText('Sign in to continue', { timeout: 10000 });
-      await expect(emailInput).toBeVisible();
-      console.log('✅ Normal mode: Login form displayed');
+      // In normal mode, should show login form - be flexible about timing
+      try {
+        await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue', { timeout: 15000 });
+        await expect(page.locator('[data-testid="email-input"]')).toBeVisible();
+        console.log('✅ Normal mode: Login form displayed');
+      } catch (error) {
+        // If we can't find the expected elements, log what we do see for debugging
+        const pageContent = await page.evaluate(() => document.body.innerText.substring(0, 500));
+        console.log('Page content preview:', pageContent);
+        throw error;
+      }
     }
   });
 
@@ -80,6 +85,13 @@ test.describe('Preview Environment Integration', () => {
     // Wait for initial load
     await page.waitForLoadState('networkidle');
 
+    // Wait for any auth state to appear
+    await Promise.race([
+      page.locator('[data-testid="auth-loading"]').waitFor({ timeout: 5000 }).catch(() => {}),
+      page.locator('[data-testid="auth-form-subtitle"]').waitFor({ timeout: 5000 }).catch(() => {}),
+      page.locator('[data-testid="protected-content"]').waitFor({ timeout: 5000 }).catch(() => {})
+    ]);
+
     // Check if in test mode
     const isTestMode = await page.evaluate(() => {
       return window.location.search.includes('test-mode=true') ||
@@ -89,15 +101,15 @@ test.describe('Preview Environment Integration', () => {
 
     if (isTestMode) {
       // Test mode: Should automatically authenticate
-      await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
 
       // Should be able to access mode selection
-      await expect(page.locator('text=Mode Selection')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Mode Selection')).toBeVisible({ timeout: 10000 });
 
       console.log('✅ Test mode: Successfully accessed protected content');
     } else {
       // Normal mode: Test login form functionality
-      await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
+      await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue', { timeout: 15000 });
 
       // Test form elements
       await expect(page.locator('[data-testid="email-input"]')).toBeVisible();
