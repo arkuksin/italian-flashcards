@@ -279,15 +279,20 @@ test.describe('Environment Detection', () => {
     consoleLogs.forEach(log => console.log(log));
     console.log('=== END CONSOLE LOGS ===');
 
-    // Check what's actually visible on the page
+    // Check what's actually visible on the page using proper selectors
     const pageState = await page.evaluate(() => {
       return {
-        hasLoginForm: !!document.querySelector('text=Sign in to continue'),
+        hasLoginFormText: document.body.innerText.includes('Sign in to continue'),
+        hasCreateAccountText: document.body.innerText.includes('Create your account'),
         hasAuthLoading: !!document.querySelector('[data-testid="auth-loading"]'),
         hasProtectedContent: !!document.querySelector('[data-testid="protected-content"]'),
         hasFlashcardApp: !!document.querySelector('[data-testid="flashcard-app"]'),
-        hasModeSelection: !!document.querySelector('text=Mode Selection'),
+        hasModeSelectionText: document.body.innerText.includes('Mode Selection'),
+        hasEmailInput: !!document.querySelector('[data-testid="email-input"]'),
+        hasPasswordInput: !!document.querySelector('[data-testid="password-input"]'),
         bodyContent: document.body.innerText.substring(0, 500), // First 500 chars
+        currentUrl: window.location.href,
+        documentTitle: document.title,
       };
     });
 
