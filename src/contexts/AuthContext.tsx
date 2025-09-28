@@ -49,9 +49,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if we're in test mode (Playwright E2E tests)
-    // Only enable test mode in development or when explicitly requested
-    const isTestMode = (import.meta.env.VITE_PLAYWRIGHT_TEST === 'true' && import.meta.env.DEV) ||
+    // Check if we're in test mode (E2E tests or preview environment)
+    // Enable test mode when VITE_TEST_MODE is set or Playwright is detected
+    const isTestMode = import.meta.env.VITE_TEST_MODE === 'true' ||
+                      (import.meta.env.VITE_PLAYWRIGHT_TEST === 'true' && import.meta.env.DEV) ||
                       window.location.search.includes('test-mode=true')
 
     if (isTestMode) {
