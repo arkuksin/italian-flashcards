@@ -51,9 +51,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if we're in test mode (unit tests only, not E2E tests)
     // Only enable auto-auth for Jest/Vitest unit tests, not Playwright E2E tests
-    const isUnitTestMode = import.meta.env.VITEST === 'true' ||
-                          import.meta.env.JEST === 'true' ||
-                          window.location.search.includes('test-mode=true')
+
+    // Debug logging for E2E test investigation
+    console.log('🔍 AuthContext Debug Info:', {
+      'import.meta.env.VITEST': import.meta.env.VITEST,
+      'import.meta.env.JEST': import.meta.env.JEST,
+      'import.meta.env.VITE_TEST_MODE': import.meta.env.VITE_TEST_MODE,
+      'import.meta.env.VITE_PLAYWRIGHT_TEST': import.meta.env.VITE_PLAYWRIGHT_TEST,
+      'import.meta.env.DEV': import.meta.env.DEV,
+      'import.meta.env.PROD': import.meta.env.PROD,
+      'import.meta.env.NODE_ENV': import.meta.env.NODE_ENV,
+      'window.location.search': window.location.search,
+      'window.location.href': window.location.href,
+      'navigator.userAgent': navigator.userAgent.includes('Playwright') ? 'Playwright detected' : 'No Playwright',
+    })
+
+    // Explicit conditions for when to use mock authentication
+    const isVitestTest = import.meta.env.VITEST === 'true'
+    const isJestTest = import.meta.env.JEST === 'true'
+    const hasTestModeParam = window.location.search.includes('test-mode=true')
+    const isPlaywrightE2E = navigator.userAgent.includes('Playwright')
+    const isProductionBuild = import.meta.env.PROD === true
+    const isVercelPreview = window.location.hostname.includes('vercel.app')
+
+    // Only use mock auth for unit tests, NOT for E2E tests or production
+    const isUnitTestMode = (isVitestTest || isJestTest || hasTestModeParam) &&
+                          !isPlaywrightE2E &&
+                          !isProductionBuild &&
+                          !isVercelPreview
+
+    console.log('🔍 Test mode evaluation:', {
+      isUnitTestMode,
+      isVitestTest,
+      isJestTest,
+      hasTestModeParam,
+      isPlaywrightE2E,
+      isProductionBuild,
+      isVercelPreview
+    })
 
     if (isUnitTestMode) {
       // In test mode, automatically provide a mock authenticated user
@@ -86,13 +121,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session (normal production flow)
     const getInitialSession = async () => {
+      console.log('🔍 Starting normal authentication flow')
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
+        console.log('🔍 Supabase session response:', { session: !!session, error, hasUser: !!session?.user })
         if (error) {
           console.error('Error getting session:', error)
         }
         setSession(session)
         setUser(session?.user ?? null)
+        console.log('🔍 Auth state set:', { hasUser: !!session?.user, loading: false })
       } catch (error) {
         console.error('Error getting initial session:', error)
       } finally {
