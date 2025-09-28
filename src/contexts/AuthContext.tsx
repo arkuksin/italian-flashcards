@@ -49,13 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if we're in test mode (E2E tests or preview environment)
-    // Enable test mode when VITE_TEST_MODE is set or Playwright is detected
-    const isTestMode = import.meta.env.VITE_TEST_MODE === 'true' ||
-                      (import.meta.env.VITE_PLAYWRIGHT_TEST === 'true' && import.meta.env.DEV) ||
-                      window.location.search.includes('test-mode=true')
+    // Check if we're in test mode (unit tests only, not E2E tests)
+    // Only enable auto-auth for Jest/Vitest unit tests, not Playwright E2E tests
+    const isUnitTestMode = import.meta.env.VITEST === 'true' ||
+                          import.meta.env.JEST === 'true' ||
+                          window.location.search.includes('test-mode=true')
 
-    if (isTestMode) {
+    if (isUnitTestMode) {
       // In test mode, automatically provide a mock authenticated user
       const mockUser = {
         id: 'test-user-id',
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user: mockUser
       } as Session
 
-      console.log('🧪 Test mode: Using mock authentication')
+      console.log('🧪 Unit test mode: Using mock authentication')
       setUser(mockUser)
       setSession(mockSession)
       setLoading(false)
@@ -102,8 +102,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     getInitialSession()
 
-    // Listen for auth changes (skip in test mode)
-    if (!isTestMode) {
+    // Listen for auth changes (skip in unit test mode)
+    if (!isUnitTestMode) {
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange(async (event, session) => {
