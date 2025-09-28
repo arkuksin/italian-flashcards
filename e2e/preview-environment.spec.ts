@@ -21,7 +21,7 @@ test.describe('Preview Environment Integration', () => {
 
     // Should show authentication loading first
     const authLoading = page.locator('[data-testid="auth-loading"]');
-    const loginForm = page.locator('text=Sign in to continue');
+    const loginForm = page.locator('[data-testid="auth-form-subtitle"]');
     const emailInput = page.locator('[data-testid="email-input"]');
 
     // Wait for either auth loading or login form to appear
@@ -45,7 +45,7 @@ test.describe('Preview Environment Integration', () => {
       console.log('✅ Test mode: Auto-authentication successful');
     } else {
       // In normal mode, should show login form
-      await expect(loginForm).toBeVisible({ timeout: 10000 });
+      await expect(loginForm).toContainText('Sign in to continue', { timeout: 10000 });
       await expect(emailInput).toBeVisible();
       console.log('✅ Normal mode: Login form displayed');
     }
@@ -97,7 +97,7 @@ test.describe('Preview Environment Integration', () => {
       console.log('✅ Test mode: Successfully accessed protected content');
     } else {
       // Normal mode: Test login form functionality
-      await expect(page.locator('text=Sign in to continue')).toBeVisible();
+      await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
 
       // Test form elements
       await expect(page.locator('[data-testid="email-input"]')).toBeVisible();
@@ -106,7 +106,7 @@ test.describe('Preview Environment Integration', () => {
 
       // Test toggle functionality
       await page.click('[data-testid="toggle-auth-mode"]');
-      await expect(page.locator('text=Create your account')).toBeVisible();
+      await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Create your account');
 
       console.log('✅ Normal mode: Login form functionality verified');
     }
@@ -159,7 +159,7 @@ test.describe('Preview Environment Integration', () => {
     // Should still show some form of UI (not crash)
     const hasUI = await Promise.race([
       page.locator('[data-testid="auth-loading"]').isVisible(),
-      page.locator('text=Sign in to continue').isVisible(),
+      page.locator('[data-testid="auth-form-subtitle"]').isVisible(),
       page.locator('[data-testid="protected-content"]').isVisible()
     ]);
 

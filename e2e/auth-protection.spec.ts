@@ -32,8 +32,8 @@ test.describe('Authentication Protection', () => {
     await page.goto('/');
 
     // Should see login form, not flashcards
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
-    await expect(page.locator('text=Italian Flashcards')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
+    await expect(page.locator('h1')).toContainText('Italian Flashcards');
     await expect(page.locator('[data-testid="flashcard-app"]')).not.toBeVisible();
 
     // Should see login form elements
@@ -54,28 +54,28 @@ test.describe('Authentication Protection', () => {
     // Should show loading spinner initially
     await expect(page.locator('[data-testid="auth-loading"]')).toBeVisible();
     await expect(page.locator('[data-testid="loading-spinner"]')).toBeVisible();
-    await expect(page.locator('text=Checking authentication...')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-loading"]')).toContainText('Checking authentication...');
   });
 
   test('should toggle between sign in and sign up modes', async ({ page }) => {
     await page.goto('/');
 
     // Should start in sign in mode
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
     await expect(page.locator('[data-testid="submit-button"]')).toContainText('Sign In');
 
     // Click toggle to sign up mode
     await page.click('[data-testid="toggle-auth-mode"]');
 
     // Should switch to sign up mode
-    await expect(page.locator('text=Create your account')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Create your account');
     await expect(page.locator('[data-testid="submit-button"]')).toContainText('Create Account');
 
     // Click toggle back to sign in mode
     await page.click('[data-testid="toggle-auth-mode"]');
 
     // Should be back in sign in mode
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
     await expect(page.locator('[data-testid="submit-button"]')).toContainText('Sign In');
   });
 
@@ -230,6 +230,6 @@ test.describe('Authenticated State', () => {
     await page.click('[data-testid="sign-out-button"]');
 
     // Should be redirected to login
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue');
   });
 });
