@@ -3,8 +3,27 @@ import { test, expect } from '@playwright/test';
 // Test configuration for authentication tests
 test.describe('Authentication Protection', () => {
   test.beforeEach(async ({ page }) => {
-    // Clear any existing authentication state
+    // Clear any existing authentication state thoroughly
     await page.context().clearCookies();
+    await page.context().clearPermissions();
+
+    // Clear local storage and session storage
+    await page.goto('/');
+    await page.evaluate(() => {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+    });
+
+    // Clear any cached service workers
+    await page.evaluate(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => registration.unregister());
+        });
+      }
+    });
+
+    // Navigate again to ensure clean state
     await page.goto('/');
   });
 

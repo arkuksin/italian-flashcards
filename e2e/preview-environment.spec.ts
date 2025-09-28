@@ -259,6 +259,49 @@ test.describe('Environment Detection', () => {
     expect(page.url()).toContain('http');
   });
 
+  test('should capture console logs and debug authentication state', async ({ page }) => {
+    // Capture console logs to see debug output
+    const consoleLogs: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'log') {
+        consoleLogs.push(msg.text());
+      }
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    // Wait a moment for AuthContext to initialize
+    await page.waitForTimeout(2000);
+
+    // Log all captured console messages
+    console.log('=== CAPTURED CONSOLE LOGS ===');
+    consoleLogs.forEach(log => console.log(log));
+    console.log('=== END CONSOLE LOGS ===');
+
+    // Check what's actually visible on the page
+    const pageState = await page.evaluate(() => {
+      return {
+        hasLoginForm: !!document.querySelector('text=Sign in to continue'),
+        hasAuthLoading: !!document.querySelector('[data-testid="auth-loading"]'),
+        hasProtectedContent: !!document.querySelector('[data-testid="protected-content"]'),
+        hasFlashcardApp: !!document.querySelector('[data-testid="flashcard-app"]'),
+        hasModeSelection: !!document.querySelector('text=Mode Selection'),
+        bodyContent: document.body.innerText.substring(0, 500), // First 500 chars
+      };
+    });
+
+    console.log('=== PAGE STATE ===');
+    console.log(pageState);
+    console.log('=== END PAGE STATE ===');
+
+    // Take a screenshot for visual debugging
+    await page.screenshot({
+      path: 'test-results/debug-auth-state.png',
+      fullPage: true
+    });
+  });
+
   test('should have test database configuration', async ({ page }) => {
     await page.goto('/');
 
