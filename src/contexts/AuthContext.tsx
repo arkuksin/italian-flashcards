@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                            window.location.hostname.includes('.vercel.app')
 
     // Additional safety check - never use mock auth if we're in CI or have a proper domain
-    const isCI = process?.env?.CI === 'true' || import.meta.env.CI === 'true'
+    const isCI = import.meta.env.CI === 'true'
     const hasProperDomain = window.location.hostname !== 'localhost' &&
                            window.location.hostname !== '127.0.0.1' &&
                            !window.location.hostname.includes('localhost')

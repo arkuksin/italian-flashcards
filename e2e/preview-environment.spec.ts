@@ -262,10 +262,20 @@ test.describe('Environment Detection', () => {
   test('should capture console logs and debug authentication state', async ({ page }) => {
     // Capture console logs to see debug output
     const consoleLogs: string[] = [];
+    const errorLogs: string[] = [];
+
     page.on('console', msg => {
       if (msg.type() === 'log') {
         consoleLogs.push(msg.text());
+      } else if (msg.type() === 'error') {
+        errorLogs.push(`ERROR: ${msg.text()}`);
+      } else if (msg.type() === 'warning') {
+        errorLogs.push(`WARN: ${msg.text()}`);
       }
+    });
+
+    page.on('pageerror', error => {
+      errorLogs.push(`PAGE ERROR: ${error.message}`);
     });
 
     await page.goto('/');
@@ -278,6 +288,10 @@ test.describe('Environment Detection', () => {
     console.log('=== CAPTURED CONSOLE LOGS ===');
     consoleLogs.forEach(log => console.log(log));
     console.log('=== END CONSOLE LOGS ===');
+
+    console.log('=== ERROR LOGS ===');
+    errorLogs.forEach(log => console.log(log));
+    console.log('=== END ERROR LOGS ===');
 
     // Check what's actually visible on the page using proper selectors
     const pageState = await page.evaluate(() => {
