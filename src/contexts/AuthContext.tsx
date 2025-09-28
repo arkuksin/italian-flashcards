@@ -70,15 +70,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const isVitestTest = import.meta.env.VITEST === 'true'
     const isJestTest = import.meta.env.JEST === 'true'
     const hasTestModeParam = window.location.search.includes('test-mode=true')
-    const isPlaywrightE2E = navigator.userAgent.includes('Playwright')
-    const isProductionBuild = import.meta.env.PROD === true
-    const isVercelPreview = window.location.hostname.includes('vercel.app')
 
-    // Only use mock auth for unit tests, NOT for E2E tests or production
+    // Enhanced E2E test detection
+    const isPlaywrightE2E = navigator.userAgent.includes('Playwright') ||
+                           navigator.userAgent.includes('HeadlessChrome') ||
+                           window.navigator.webdriver === true ||
+                           (window as any).__playwright !== undefined ||
+                           (window as any).__e2e_test !== undefined
+
+    const isProductionBuild = import.meta.env.PROD === true
+    const isVercelPreview = window.location.hostname.includes('vercel.app') ||
+                           window.location.hostname.includes('-git-') ||
+                           window.location.hostname.includes('.vercel.app')
+
+    // Additional safety check - never use mock auth if we're in CI or have a proper domain
+    const isCI = process?.env?.CI === 'true' || import.meta.env.CI === 'true'
+    const hasProperDomain = window.location.hostname !== 'localhost' &&
+                           window.location.hostname !== '127.0.0.1' &&
+                           !window.location.hostname.includes('localhost')
+
+    // Only use mock auth for local unit tests, NOT for E2E tests, CI, or any deployment
     const isUnitTestMode = (isVitestTest || isJestTest || hasTestModeParam) &&
                           !isPlaywrightE2E &&
                           !isProductionBuild &&
-                          !isVercelPreview
+                          !isVercelPreview &&
+                          !isCI &&
+                          !hasProperDomain
 
     console.log('🔍 Test mode evaluation:', {
       isUnitTestMode,
@@ -87,7 +104,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasTestModeParam,
       isPlaywrightE2E,
       isProductionBuild,
-      isVercelPreview
+      isVercelPreview,
+      isCI,
+      hasProperDomain,
+      hostname: window.location.hostname,
+      userAgent: navigator.userAgent.substring(0, 100),
+      webdriver: window.navigator.webdriver
     })
 
     if (isUnitTestMode) {
