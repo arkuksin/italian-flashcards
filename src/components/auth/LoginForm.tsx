@@ -78,7 +78,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               Italian Flashcards
             </h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-gray-600 dark:text-gray-300" data-testid="auth-form-subtitle">
               {isSignUp ? 'Create your account' : 'Sign in to continue'}
             </p>
           </div>
