@@ -4,6 +4,7 @@ import { ModeSelection } from './components/ModeSelection';
 import { Header } from './components/Header';
 import { FlashCard } from './components/FlashCard';
 import { ProgressBar } from './components/ProgressBar';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { useKeyboard } from './hooks/useKeyboard';
 import { WORDS, getShuffledWords } from './data/words';
 import { AppState, LearningDirection, Word } from './types';
@@ -161,66 +162,68 @@ function App() {
     onShuffle: handleToggleShuffle,
   });
 
-  if (!hasSelectedMode) {
-    return <ModeSelection onModeSelect={handleModeSelect} />;
-  }
-
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      state.darkMode ? 'dark' : ''
-    }`}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
-        <Header
-          darkMode={state.darkMode}
-          shuffleMode={state.shuffleMode}
-          learningDirection={state.learningDirection}
-          onToggleDarkMode={handleToggleDarkMode}
-          onToggleShuffle={handleToggleShuffle}
-          onToggleDirection={handleToggleDirection}
-          onRestart={handleRestart}
-        />
+    <ProtectedRoute>
+      {!hasSelectedMode ? (
+        <ModeSelection onModeSelect={handleModeSelect} />
+      ) : (
+        <div className={`min-h-screen transition-colors duration-300 ${
+          state.darkMode ? 'dark' : ''
+        }`}>
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+            <Header
+              darkMode={state.darkMode}
+              shuffleMode={state.shuffleMode}
+              learningDirection={state.learningDirection}
+              onToggleDarkMode={handleToggleDarkMode}
+              onToggleShuffle={handleToggleShuffle}
+              onToggleDirection={handleToggleDirection}
+              onRestart={handleRestart}
+            />
 
-        <div className="container mx-auto px-6 py-8">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Progress Sidebar */}
-            <div className="lg:col-span-1">
-              <ProgressBar
-                progress={state.progress}
-                totalWords={words.length}
-                currentIndex={state.currentWordIndex}
-              />
-            </div>
-
-            {/* Main Content */}
-            <div className="lg:col-span-2">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={state.currentWordIndex}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <FlashCard
-                    word={currentWord}
-                    learningDirection={state.learningDirection}
-                    userInput={state.userInput}
-                    showAnswer={state.showAnswer}
-                    onInputChange={handleInputChange}
-                    onSubmit={handleSubmit}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    isCorrect={isCorrect}
-                    currentIndex={state.currentWordIndex}
+            <div className="container mx-auto px-6 py-8" data-testid="flashcard-app">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Progress Sidebar */}
+                <div className="lg:col-span-1">
+                  <ProgressBar
+                    progress={state.progress}
                     totalWords={words.length}
+                    currentIndex={state.currentWordIndex}
                   />
-                </motion.div>
-              </AnimatePresence>
+                </div>
+
+                {/* Main Content */}
+                <div className="lg:col-span-2">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={state.currentWordIndex}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FlashCard
+                        word={currentWord}
+                        learningDirection={state.learningDirection}
+                        userInput={state.userInput}
+                        showAnswer={state.showAnswer}
+                        onInputChange={handleInputChange}
+                        onSubmit={handleSubmit}
+                        onNext={handleNext}
+                        onPrevious={handlePrevious}
+                        isCorrect={isCorrect}
+                        currentIndex={state.currentWordIndex}
+                        totalWords={words.length}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </ProtectedRoute>
   );
 }
 
