@@ -1,0 +1,276 @@
+import { test, expect } from '@playwright/test';
+
+/**
+ * Vercel Preview URL Specific Testing
+ *
+ * This test is designed to run against the specific Vercel preview URL
+ * to understand what's different about that environment.
+ */
+
+test.describe('Vercel Preview URL Testing', () => {
+  // Configuration for the preview URL
+  const PREVIEW_URL_PATTERN = 'italian-flashcards-git-test-environment-setup-arkuksins-projects.vercel.app';
+
+  test('test against specific preview URL pattern', async ({ page }) => {
+    const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || page.url();
+    console.log('🌐 Base URL from environment:', baseUrl);
+
+    // Check if we're testing against the preview URL
+    const isPreviewUrl = baseUrl.includes('vercel.app') || baseUrl.includes(PREVIEW_URL_PATTERN);
+    console.log('🎯 Is Preview URL:', isPreviewUrl);
+
+    if (isPreviewUrl) {
+      console.log('✅ Testing against Vercel preview environment');
+    } else {
+      console.log('ℹ️ Testing against local/other environment');
+    }
+
+    // Navigate to the URL
+    await page.goto('/');
+    console.log('📍 Navigated to:', page.url());
+
+    // Wait for load and capture network activity
+    const networkRequests: string[] = [];
+    const networkErrors: string[] = [];
+
+    page.on('request', request => {
+      networkRequests.push(`${request.method()} ${request.url()}`);
+    });
+
+    page.on('requestfailed', request => {
+      networkErrors.push(`FAILED: ${request.method()} ${request.url()} - ${request.failure()?.errorText}`);
+    });
+
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(5000);
+
+    // Analyze the environment
+    const environmentAnalysis = await page.evaluate(() => {
+      return {
+        // URL analysis
+        currentUrl: window.location.href,
+        hostname: window.location.hostname,
+        isVercelApp: window.location.hostname.includes('vercel.app'),
+        isGitBranch: window.location.hostname.includes('-git-'),
+
+        // Performance timing
+        navigationTiming: performance.timing ? {
+          loadEventEnd: performance.timing.loadEventEnd,
+          domContentLoadedEventEnd: performance.timing.domContentLoadedEventEnd,
+          loadComplete: performance.timing.loadEventEnd - performance.timing.navigationStart
+        } : null,
+
+        // React hydration check
+        hasReactDevTools: !!(window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__,
+        reactVersion: !!(window as any).React ? 'present' : 'not detected',
+
+        // Auth context state
+        authContextInfo: {
+          hasAuthProvider: document.body.innerHTML.includes('AuthProvider'),
+          hasAuthContext: document.body.innerHTML.includes('AuthContext'),
+          hasSupabaseClient: typeof (window as any).supabase !== 'undefined'
+        },
+
+        // Environment variables (if exposed)
+        envInfo: {
+          mode: (import.meta.env as any).MODE,
+          prod: (import.meta.env as any).PROD,
+          dev: (import.meta.env as any).DEV,
+        },
+
+        // DOM state
+        domInfo: {
+          hasRoot: !!document.querySelector('#root'),
+          rootContent: document.querySelector('#root')?.innerHTML?.length || 0,
+          totalElements: document.querySelectorAll('*').length,
+          hasDataTestIds: document.querySelectorAll('[data-testid]').length,
+          bodyClasses: document.body.className,
+          htmlClasses: document.documentElement.className
+        }
+      };
+    });
+
+    console.log('🔍 ENVIRONMENT ANALYSIS:');
+    console.log(JSON.stringify(environmentAnalysis, null, 2));
+
+    console.log('🌐 NETWORK ACTIVITY:');
+    console.log('Requests made:');
+    networkRequests.slice(0, 10).forEach(req => console.log(`  - ${req}`));
+    if (networkRequests.length > 10) {
+      console.log(`  ... and ${networkRequests.length - 10} more requests`);
+    }
+
+    if (networkErrors.length > 0) {
+      console.log('❌ Network errors:');
+      networkErrors.forEach(err => console.log(`  - ${err}`));
+    } else {
+      console.log('✅ No network errors detected');
+    }
+
+    // Check for Supabase-specific requests
+    const supabaseRequests = networkRequests.filter(req => req.includes('supabase'));
+    console.log('🔐 Supabase requests:', supabaseRequests.length);
+    supabaseRequests.forEach(req => console.log(`  - ${req}`));
+
+    // Test specific authentication flow for preview environment
+    await this.testAuthFlowInPreview(page);
+
+    // Always pass but capture the analysis
+    expect(environmentAnalysis.domInfo.hasRoot).toBe(true);
+  });
+
+  test('compare behavior between different URL formats', async ({ page }) => {
+    const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:5173';
+
+    // Test different URL variations
+    const urlVariations = [
+      baseUrl,
+      `${baseUrl}/`,
+      `${baseUrl}/?test=true`,
+      `${baseUrl}/?debug=1`,
+      `${baseUrl}#test`
+    ];
+
+    const results = [];
+
+    for (const url of urlVariations) {
+      console.log(`🧪 Testing URL variation: ${url}`);
+
+      await page.goto(url);
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
+
+      const result = await page.evaluate(() => {
+        return {
+          url: window.location.href,
+          hasAuthForm: !!document.querySelector('[data-testid="auth-form-subtitle"]'),
+          hasProtectedContent: !!document.querySelector('[data-testid="protected-content"]'),
+          hasAuthLoading: !!document.querySelector('[data-testid="auth-loading"]'),
+          testIdCount: document.querySelectorAll('[data-testid]').length,
+          bodyTextLength: document.body.innerText.length
+        };
+      });
+
+      results.push(result);
+      console.log(`  Result:`, JSON.stringify(result, null, 2));
+
+      // Take screenshot for each variation
+      const urlHash = url.replace(/[^a-zA-Z0-9]/g, '_');
+      await page.screenshot({
+        path: `test-results/url-variation-${urlHash}.png`,
+        fullPage: true
+      });
+    }
+
+    console.log('📊 URL VARIATION RESULTS SUMMARY:');
+    results.forEach((result, index) => {
+      console.log(`${urlVariations[index]}:`);
+      console.log(`  - Auth form: ${result.hasAuthForm ? '✅' : '❌'}`);
+      console.log(`  - Protected: ${result.hasProtectedContent ? '✅' : '❌'}`);
+      console.log(`  - Loading: ${result.hasAuthLoading ? '✅' : '❌'}`);
+      console.log(`  - Test IDs: ${result.testIdCount}`);
+    });
+
+    expect(results.length).toBe(urlVariations.length);
+  });
+
+  test('capture console logs and errors from preview environment', async ({ page }) => {
+    console.log('📝 Capturing detailed console logs and errors...');
+
+    const logs: { type: string, text: string, timestamp: number }[] = [];
+
+    // Capture all console activity
+    page.on('console', msg => {
+      logs.push({
+        type: msg.type(),
+        text: msg.text(),
+        timestamp: Date.now()
+      });
+    });
+
+    page.on('pageerror', error => {
+      logs.push({
+        type: 'pageerror',
+        text: error.message,
+        timestamp: Date.now()
+      });
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    // Wait for auth initialization
+    await page.waitForTimeout(8000);
+
+    // Try to interact with the page to trigger any lazy-loaded errors
+    await page.mouse.move(100, 100);
+    await page.keyboard.press('Tab');
+
+    console.log('📝 CONSOLE LOGS CAPTURED:');
+    console.log('='.repeat(60));
+
+    const errorLogs = logs.filter(log => log.type === 'error' || log.type === 'pageerror');
+    const warningLogs = logs.filter(log => log.type === 'warning');
+    const infoLogs = logs.filter(log => log.type === 'log' || log.type === 'info');
+
+    console.log(`❌ ERRORS (${errorLogs.length}):`);
+    errorLogs.forEach(log => console.log(`  [${log.type}] ${log.text}`));
+
+    console.log(`⚠️ WARNINGS (${warningLogs.length}):`);
+    warningLogs.forEach(log => console.log(`  [${log.type}] ${log.text}`));
+
+    console.log(`ℹ️ INFO/DEBUG (${infoLogs.length}):`);
+    infoLogs.slice(0, 10).forEach(log => console.log(`  [${log.type}] ${log.text}`));
+    if (infoLogs.length > 10) {
+      console.log(`  ... and ${infoLogs.length - 10} more info logs`);
+    }
+
+    // Check for specific auth-related errors
+    const authErrors = logs.filter(log =>
+      log.text.toLowerCase().includes('auth') ||
+      log.text.toLowerCase().includes('supabase') ||
+      log.text.toLowerCase().includes('context')
+    );
+
+    if (authErrors.length > 0) {
+      console.log('🔐 AUTH-RELATED LOGS:');
+      authErrors.forEach(log => console.log(`  [${log.type}] ${log.text}`));
+    }
+
+    expect(logs.length).toBeGreaterThan(0);
+  });
+
+  // Helper method for testing auth flow in preview
+  async testAuthFlowInPreview(page: any) {
+    console.log('🔐 Testing authentication flow in preview environment...');
+
+    const authStates = [];
+
+    // Check initial state
+    for (let i = 0; i < 5; i++) {
+      await page.waitForTimeout(1000);
+
+      const state = await page.evaluate(() => {
+        return {
+          iteration: Date.now(),
+          hasAuthLoading: !!document.querySelector('[data-testid="auth-loading"]'),
+          hasAuthForm: !!document.querySelector('[data-testid="auth-form-subtitle"]'),
+          hasProtectedContent: !!document.querySelector('[data-testid="protected-content"]'),
+          loadingText: document.querySelector('[data-testid="auth-loading"]')?.textContent?.trim(),
+          authFormText: document.querySelector('[data-testid="auth-form-subtitle"]')?.textContent?.trim(),
+          allTestIds: Array.from(document.querySelectorAll('[data-testid]')).map(el => el.getAttribute('data-testid'))
+        };
+      });
+
+      authStates.push(state);
+      console.log(`🔄 Auth state check ${i + 1}:`, JSON.stringify(state, null, 2));
+
+      // If we found a stable state, break
+      if (state.hasAuthForm || state.hasProtectedContent) {
+        break;
+      }
+    }
+
+    return authStates;
+  }
+});

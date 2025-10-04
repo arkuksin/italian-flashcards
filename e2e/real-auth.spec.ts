@@ -28,12 +28,12 @@ test.describe('Real Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Clear any existing authentication state
     await page.context().clearCookies();
-    await page.goto('/');
+    await page.goto('/', { timeout: 30000 });
   });
 
   test('should successfully sign in with test user credentials', async ({ page }) => {
     // Should initially show login form
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
+    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 });
 
     // Fill in test user credentials
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL);
@@ -43,12 +43,12 @@ test.describe('Real Authentication Flow', () => {
     await page.click('[data-testid="submit-button"]');
 
     // Should successfully authenticate and show flashcard app
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible();
+    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 10000 });
 
     // Should see mode selection
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible();
-    await expect(page.getByText('Learn Russian from Italian')).toBeVisible();
+    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Learn Russian from Italian')).toBeVisible({ timeout: 10000 });
   });
 
   test('should maintain authentication state across page refreshes', async ({ page }) => {

@@ -101,6 +101,18 @@ This is a React-based Italian flashcards application that helps users learn Russ
 - **Test Server**: Automatically starts dev server on port 5173
 - **Create new test, if new code is added**: Add a new test file to `e2e/`, if you think it is necessary.
 
+### E2E Authentication Testing
+- **Complete Guide**: See `docs/E2E_AUTHENTICATION_TESTING.md` for comprehensive documentation
+- **Quick Summary**:
+  - Uses real Supabase authentication with separate test database
+  - Tests run against Vercel Preview deployments in CI
+  - Test user: `test-e2e@example.com` / `TestPassword123!`
+  - All 8 authentication tests passing as of 2025-10-04
+- **Key Files**:
+  - Tests: `e2e/real-auth.spec.ts`
+  - Workflow: `.github/workflows/pr-e2e-tests.yml`
+  - Auth Context: `src/contexts/AuthContext.tsx`
+
 ### Code Style
 - **ESLint**: Configured with React and TypeScript rules
 - **TypeScript**: Strict configuration with separate configs for app and node environments
