@@ -1,0 +1,281 @@
+import { test, expect } from '@playwright/test';
+
+/**
+ * Simple Preview Environment Element Detection Test
+ *
+ * This test focuses specifically on detecting what authentication elements
+ * are actually present in the Vercel preview environment.
+ */
+
+test.describe('Preview Auth Elements Detection', () => {
+  test('detect what auth elements actually exist in preview', async ({ page }) => {
+    console.log('🔍 Starting simple element detection test...');
+    console.log('🌐 Target URL:', process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:5173');
+
+    // Clear auth state
+    await page.context().clearCookies();
+
+    // Navigate to app
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    console.log('📍 Current URL:', page.url());
+
+    // Wait for React to initialize
+    await page.waitForTimeout(5000);
+
+    // Check what's actually on the page
+    const pageContent = await page.evaluate(() => {
+      return {
+        // Page basics
+        title: document.title,
+        bodyText: document.body.innerText,
+
+        // All data-testid elements
+        allTestIds: Array.from(document.querySelectorAll('[data-testid]')).map(el => ({
+          testId: el.getAttribute('data-testid'),
+          tagName: el.tagName.toLowerCase(),
+          visible: (el as HTMLElement).offsetWidth > 0 && (el as HTMLElement).offsetHeight > 0,
+          text: el.textContent?.trim().substring(0, 100) || ''
+        })),
+
+        // Specific auth elements we're looking for
+        authElements: {
+          authLoading: !!document.querySelector('[data-testid="auth-loading"]'),
+          authFormSubtitle: !!document.querySelector('[data-testid="auth-form-subtitle"]'),
+          emailInput: !!document.querySelector('[data-testid="email-input"]'),
+          passwordInput: !!document.querySelector('[data-testid="password-input"]'),
+          submitButton: !!document.querySelector('[data-testid="submit-button"]'),
+          protectedContent: !!document.querySelector('[data-testid="protected-content"]'),
+          flashcardApp: !!document.querySelector('[data-testid="flashcard-app"]')
+        },
+
+        // Text content analysis
+        textAnalysis: {
+          hasSignInText: document.body.innerText.includes('Sign in to continue'),
+          hasCreateAccountText: document.body.innerText.includes('Create your account'),
+          hasItalianFlashcardsText: document.body.innerText.includes('Italian Flashcards'),
+          hasCheckingAuthText: document.body.innerText.includes('Checking authentication'),
+          hasModeSelectionText: document.body.innerText.includes('Mode Selection')
+        },
+
+        // Get actual text from auth subtitle if it exists
+        authSubtitleText: document.querySelector('[data-testid="auth-form-subtitle"]')?.textContent?.trim() || null,
+
+        // Count total elements for debugging
+        totalElements: document.querySelectorAll('*').length,
+        totalDataTestIds: document.querySelectorAll('[data-testid]').length
+      };
+    });
+
+    console.log('📊 PAGE CONTENT ANALYSIS:');
+    console.log('='.repeat(50));
+    console.log('Title:', pageContent.title);
+    console.log('Total elements:', pageContent.totalElements);
+    console.log('Total data-testids:', pageContent.totalDataTestIds);
+    console.log('');
+
+    console.log('🏷️ ALL DATA-TESTID ELEMENTS:');
+    pageContent.allTestIds.forEach(el => {
+      console.log(`  - ${el.testId} (${el.tagName}) [${el.visible ? 'VISIBLE' : 'HIDDEN'}]: "${el.text}"`);
+    });
+    console.log('');
+
+    console.log('🔐 AUTH ELEMENTS STATUS:');
+    Object.entries(pageContent.authElements).forEach(([key, value]) => {
+      console.log(`  - ${key}: ${value ? '✅ FOUND' : '❌ MISSING'}`);
+    });
+    console.log('');
+
+    console.log('📝 TEXT CONTENT ANALYSIS:');
+    Object.entries(pageContent.textAnalysis).forEach(([key, value]) => {
+      console.log(`  - ${key}: ${value ? '✅ FOUND' : '❌ MISSING'}`);
+    });
+    console.log('');
+
+    if (pageContent.authSubtitleText) {
+      console.log(`📋 Auth Subtitle Text: "${pageContent.authSubtitleText}"`);
+    }
+
+    console.log('📄 BODY TEXT PREVIEW (first 300 chars):');
+    console.log(pageContent.bodyText.substring(0, 300));
+    console.log('');
+
+    // Take screenshot
+    await page.screenshot({
+      path: 'test-results/simple-auth-detection.png',
+      fullPage: true
+    });
+
+    // Check if we're in one of the expected states
+    const inLoadingState = pageContent.authElements.authLoading;
+    const inAuthFormState = pageContent.authElements.authFormSubtitle;
+    const inAuthenticatedState = pageContent.authElements.protectedContent;
+
+    console.log('🎯 AUTHENTICATION STATE DETECTION:');
+    console.log(`  - Loading state: ${inLoadingState ? '✅' : '❌'}`);
+    console.log(`  - Auth form state: ${inAuthFormState ? '✅' : '❌'}`);
+    console.log(`  - Authenticated state: ${inAuthenticatedState ? '✅' : '❌'}`);
+
+    // The main assertion - we should be in one of these three states
+    const inValidState = inLoadingState || inAuthFormState || inAuthenticatedState;
+
+    if (!inValidState) {
+      console.log('❌ ERROR: App is not in any expected authentication state!');
+      console.log('This suggests the app may not be loading correctly.');
+
+      // Additional debugging for broken state
+      console.log('🔧 ADDITIONAL DEBUG INFO:');
+      console.log('Available test IDs:', pageContent.allTestIds.map(el => el.testId).join(', '));
+
+      // Check if we have any React content at all
+      const hasReactContent = pageContent.allTestIds.length > 0 || pageContent.textAnalysis.hasItalianFlashcardsText;
+      console.log('Has React content:', hasReactContent ? '✅' : '❌');
+    }
+
+    // Expect that we're in at least one valid authentication state
+    expect(inValidState,
+      `App should be in loading, auth form, or authenticated state. ` +
+      `Found states: loading=${inLoadingState}, authForm=${inAuthFormState}, authenticated=${inAuthenticatedState}. ` +
+      `Available testIds: ${pageContent.allTestIds.map(el => el.testId).join(', ')}`
+    ).toBe(true);
+  });
+
+  test('wait and retry element detection with multiple attempts', async ({ page }) => {
+    console.log('🔄 Testing with multiple retry attempts...');
+
+    await page.goto('/');
+
+    const maxAttempts = 6;
+    let attempt = 0;
+    let foundAuthElement = false;
+
+    while (attempt < maxAttempts && !foundAuthElement) {
+      attempt++;
+      console.log(`🔄 Attempt ${attempt}/${maxAttempts}...`);
+
+      await page.waitForTimeout(2000);
+
+      const hasAuthForm = await page.locator('[data-testid="auth-form-subtitle"]').isVisible().catch(() => false);
+      const hasAuthLoading = await page.locator('[data-testid="auth-loading"]').isVisible().catch(() => false);
+      const hasProtectedContent = await page.locator('[data-testid="protected-content"]').isVisible().catch(() => false);
+
+      console.log(`  Auth form: ${hasAuthForm ? '✅' : '❌'}`);
+      console.log(`  Auth loading: ${hasAuthLoading ? '✅' : '❌'}`);
+      console.log(`  Protected content: ${hasProtectedContent ? '✅' : '❌'}`);
+
+      if (hasAuthForm || hasAuthLoading || hasProtectedContent) {
+        foundAuthElement = true;
+        console.log(`✅ Found auth element on attempt ${attempt}`);
+
+        if (hasAuthForm) {
+          const authText = await page.locator('[data-testid="auth-form-subtitle"]').textContent();
+          console.log(`📋 Auth form text: "${authText}"`);
+        }
+
+        break;
+      }
+
+      // Take screenshot of each attempt
+      await page.screenshot({
+        path: `test-results/retry-attempt-${attempt}.png`,
+        fullPage: true
+      });
+    }
+
+    expect(foundAuthElement, `No auth elements found after ${maxAttempts} attempts`).toBe(true);
+  });
+
+  test('verify the specific failing test case scenario', async ({ page }) => {
+    console.log('🎯 Testing the exact scenario that is failing in CI...');
+
+    // Replicate the exact conditions from the failing auth-protection test
+    await page.context().clearCookies();
+    await page.context().clearPermissions();
+
+    await page.goto('/');
+    await page.evaluate(() => {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+    });
+
+    await page.evaluate(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => registration.unregister());
+        });
+      }
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    console.log('🔍 Attempting to find auth-form-subtitle element...');
+
+    // Try different ways to find the element
+    const elementQueries = [
+      { name: 'Direct testid', selector: '[data-testid="auth-form-subtitle"]' },
+      { name: 'Contains "Sign in"', selector: 'text=Sign in to continue' },
+      { name: 'Any p with "Sign in"', selector: 'p:has-text("Sign in to continue")' },
+      { name: 'Any element with testid', selector: '[data-testid="auth-form-subtitle"]:has-text("Sign in")' }
+    ];
+
+    for (const query of elementQueries) {
+      console.log(`🔍 Testing query: ${query.name} - ${query.selector}`);
+
+      try {
+        const element = page.locator(query.selector);
+        const isVisible = await element.isVisible({ timeout: 5000 }).catch(() => false);
+        const count = await element.count();
+
+        console.log(`  - Visible: ${isVisible ? '✅' : '❌'}`);
+        console.log(`  - Count: ${count}`);
+
+        if (count > 0) {
+          const text = await element.first().textContent().catch(() => 'Error getting text');
+          console.log(`  - Text: "${text}"`);
+        }
+      } catch (error) {
+        console.log(`  - Error: ${error}`);
+      }
+    }
+
+    // Check the exact assertion that's failing
+    try {
+      await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText('Sign in to continue', { timeout: 10000 });
+      console.log('✅ SUCCESS: Found auth-form-subtitle with expected text!');
+    } catch (error) {
+      console.log('❌ FAILED: Could not find auth-form-subtitle with expected text');
+      console.log('Error:', error);
+
+      // Capture what we actually found
+      const actualElements = await page.evaluate(() => {
+        const subtitle = document.querySelector('[data-testid="auth-form-subtitle"]');
+        if (subtitle) {
+          return {
+            found: true,
+            text: subtitle.textContent,
+            visible: !!(subtitle as HTMLElement).offsetWidth && !!(subtitle as HTMLElement).offsetHeight,
+            className: subtitle.className,
+            innerHTML: subtitle.innerHTML
+          };
+        }
+        return { found: false };
+      });
+
+      console.log('Actual element state:', actualElements);
+
+      // Take final screenshot
+      await page.screenshot({
+        path: 'test-results/failing-test-scenario.png',
+        fullPage: true
+      });
+
+      // Don't fail the test, just report findings
+      expect.soft(false, `auth-form-subtitle element not found as expected. Actual state: ${JSON.stringify(actualElements)}`);
+    }
+
+    // The test should always pass to provide debugging info
+    expect(page.url()).toContain('http');
+  });
+});

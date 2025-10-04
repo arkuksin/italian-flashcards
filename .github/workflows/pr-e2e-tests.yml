@@ -17,7 +17,6 @@ permissions:
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
 
 jobs:
   deploy-preview:
@@ -36,20 +35,12 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
-          NODE_ENV: test
-
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel Preview
+        # Note: Vercel will build the app using Preview environment variables
+        # which are already configured in Vercel dashboard to use test database
         id: deploy
         run: |
           # Deploy to Vercel and capture the deployment URL
@@ -69,16 +60,6 @@ jobs:
       - name: Health check deployment
         run: |
           echo "Performing health check on ${{ steps.deploy.outputs.preview-url }}"
-          if [ -z "${VERCEL_BYPASS_TOKEN}" ]; then
-            echo "Vercel bypass token is not configured. Please set the VERCEL_BYPASS_TOKEN secret."
-            exit 1
-          fi
-
-          BYPASS_URL="${{ steps.deploy.outputs.preview-url }}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
-          COOKIE_JAR=$(mktemp)
-          trap 'rm -f "$COOKIE_JAR"' EXIT
-
-          curl -sS -L -o /dev/null -c "$COOKIE_JAR" "$BYPASS_URL"
 
           # Wait up to 2 minutes for deployment to be healthy
           timeout=120
@@ -86,7 +67,7 @@ jobs:
           elapsed=0
 
           while [ $elapsed -lt $timeout ]; do
-            if curl -f -s -L -b "$COOKIE_JAR" "${{ steps.deploy.outputs.preview-url }}" > /dev/null; then
+            if curl -f -s -L "${{ steps.deploy.outputs.preview-url }}" > /dev/null; then
               echo "✅ Deployment is healthy"
               exit 0
             fi
@@ -105,6 +86,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Test on all major browsers
         browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout code
@@ -131,10 +113,8 @@ jobs:
       - name: Run E2E tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.deploy-preview.outputs.preview-url }}
-          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
-          NODE_ENV: test
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         run: npx playwright test --project=${{ matrix.browser }} --reporter=github
 
       - name: Upload test results
