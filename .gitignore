@@ -55,3 +55,15 @@ playwright-state.json
 # Common secret patterns (backup safety)
 **/config/secrets.json
 **/config/credentials.json
+
+# Vercel CLI generated files (contain deployment info and secrets)
+.env.vercel.*
+.vercel/
+
+# Supabase CLI cache
+supabase/.temp/
+
+# Personal tokens and credentials (for local Claude Code usage)
+token.txt
+*.token
+credentials.txt

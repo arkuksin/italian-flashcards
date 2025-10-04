@@ -1,4 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { existsSync } from 'fs';
+
+// Load test environment variables (local development only)
+// In CI, environment variables are provided by GitHub Actions
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const envPath = resolve(__dirname, '.env.test.local');
+if (!process.env.CI && existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -10,9 +23,14 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0, // Reduced to 1 for faster feedback
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Optimized timeouts for fast CI feedback */
+  timeout: 30000, // 30 seconds per test (increased for slower CI + Vercel deploy)
+  expect: {
+    timeout: 10000, // 10 seconds for assertions
+  },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
@@ -29,12 +47,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     /* Record video on failure */
     video: 'retain-on-failure',
-    /* Use saved storage state when running against Vercel deployments */
-    storageState: process.env.VERCEL_BYPASS_TOKEN ? 'playwright-state.json' : undefined,
   },
-
-  /* Global setup to handle Vercel bypass authentication */
-  globalSetup: process.env.VERCEL_BYPASS_TOKEN ? './e2e/global-setup.ts' : undefined,
 
   /* Configure projects for major browsers */
   projects: [
@@ -70,5 +83,11 @@ export default defineConfig({
     url: 'http://localhost:5173',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      // Force dev server to use test database for local E2E tests
+      // Use env vars from .env.test.local or fallback to test database
+      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://slhyzoupwluxgasvapoc.supabase.co',
+      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg',
+    },
   },
 });
