@@ -36,6 +36,7 @@ dist-ssr
 /mcp-vercel-tools/.env
 /.codex/*.local.json
 /.claude
+.mcp.json
 
 # Security sensitive files
 *.pem
