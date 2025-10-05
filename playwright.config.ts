@@ -79,15 +79,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: process.env.CI ? undefined : {
-    command: 'npm run dev',
+    command: 'npm run dev:test',
     url: 'http://localhost:5173',
     timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI,
-    env: {
-      // Force dev server to use test database for local E2E tests
-      // Use env vars from .env.test.local or fallback to test database
-      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://slhyzoupwluxgasvapoc.supabase.co',
-      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg',
-    },
+    reuseExistingServer: false, // Always start fresh to pick up test env vars
   },
 });

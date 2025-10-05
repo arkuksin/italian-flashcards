@@ -40,3 +40,35 @@ export interface AppState {
   darkMode: boolean;
   shuffleMode: boolean;
 }
+
+// Progress tracking types for database integration
+export interface WordProgress {
+  id: string
+  user_id: string
+  word_id: number
+  correct_count: number
+  wrong_count: number
+  last_practiced: string
+  mastery_level: number // 0-5 (Leitner System levels)
+}
+
+export interface LearningSession {
+  id: string
+  user_id: string
+  started_at: string
+  ended_at: string | null
+  words_studied: number
+  correct_answers: number
+  learning_direction: 'ru-it' | 'it-ru'
+}
+
+export interface ProgressStats {
+  totalWordsStudied: number
+  totalAttempts: number
+  correctAnswers: number
+  accuracy: number
+  currentStreak: number
+  longestStreak: number
+  masteredWords: number
+  wordsInProgress: number
+}
