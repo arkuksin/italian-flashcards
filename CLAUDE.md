@@ -134,6 +134,14 @@ interface Word {
 - Dark mode preference is stored in localStorage
 - No user authentication or cloud storage currently implemented
 
+# Communication Style
+
+Always communicate in simple, clear English:
+- Use short, straightforward sentences
+- Explain technical terms when you must use them
+- Use plain language instead of complex vocabulary
+- Keep explanations concise and easy to understand
+
 ## Future Development Considerations
 
 The project includes a detailed plan (`plan.md`) for backend integration with Supabase, user authentication, and persistent progress tracking. This plan outlines migration to a full-stack architecture with user accounts and database storage.
