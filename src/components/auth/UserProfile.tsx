@@ -111,7 +111,7 @@ export const UserProfile: React.FC = () => {
                 top: `${dropdownPosition.top}px`,
                 right: `${dropdownPosition.right}px`,
               }}
-              className="w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
+              className="w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-[9999]"
               data-testid="user-profile-dropdown"
             >
               {/* User Info */}

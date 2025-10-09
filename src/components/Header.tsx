@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="flex justify-between items-center p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700"
+      className="flex justify-between items-center p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 relative z-50"
     >
       <div className="flex items-center space-x-4">
         <motion.h1
