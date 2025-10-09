@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
@@ -10,12 +10,16 @@ import { User, LogOut, ChevronDown } from 'lucide-react'
  * Displays the authenticated user's profile information with a dropdown menu.
  * Shows user avatar (from Google/GitHub), name, and email.
  * Provides a logout button in the dropdown.
+ *
+ * Uses fixed positioning to ensure dropdown appears above all other elements.
  */
 export const UserProfile: React.FC = () => {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   if (!user) return null
 
@@ -27,6 +31,17 @@ export const UserProfile: React.FC = () => {
 
   // Get user email
   const email = user.email
+
+  // Calculate dropdown position when opened
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setDropdownPosition({
+        top: rect.bottom + 8, // 8px gap (mt-2)
+        right: window.innerWidth - rect.right
+      })
+    }
+  }, [isOpen])
 
   const handleSignOut = async () => {
     try {
@@ -40,12 +55,14 @@ export const UserProfile: React.FC = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" id="user-profile-container">
       {/* Profile Button */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         data-testid="user-profile-button"
+        id="user-profile-button"
       >
         {/* Avatar */}
         {avatarUrl ? (
@@ -83,13 +100,18 @@ export const UserProfile: React.FC = () => {
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Dropdown Content - High z-index to appear above flashcards */}
+            {/* Dropdown Content - Fixed positioning to break out of stacking context */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
+              style={{
+                position: 'fixed',
+                top: `${dropdownPosition.top}px`,
+                right: `${dropdownPosition.right}px`,
+              }}
+              className="w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
               data-testid="user-profile-dropdown"
             >
               {/* User Info */}
