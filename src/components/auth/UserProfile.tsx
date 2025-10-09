@@ -83,7 +83,7 @@ export const UserProfile: React.FC = () => {
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Dropdown Content */}
+            {/* Dropdown Content - High z-index to appear above flashcards */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
