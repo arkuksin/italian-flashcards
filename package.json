@@ -14,7 +14,14 @@
     "test:e2e:headed": "playwright test --headed",
     "setup:e2e": "node scripts/setup-e2e.js",
     "setup:branch-protection": "node scripts/setup-branch-protection.js",
-    "verify:branch-protection": "node scripts/verify-branch-protection.js"
+    "verify:branch-protection": "node scripts/verify-branch-protection.js",
+    "test:create-user": "node scripts/create-test-user.js",
+    "test:cleanup-users": "node scripts/cleanup-test-users.js --database=test --dry-run",
+    "prod:list-users": "node scripts/list-production-users.js",
+    "prod:delete-users": "node scripts/delete-invalid-users.js",
+    "prod:delete-users:dry-run": "node scripts/delete-invalid-users.js --dry-run",
+    "prod:cleanup-users": "node scripts/cleanup-test-users.js --database=production --dry-run",
+    "health:check": "node scripts/monitor-email-health.js"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",

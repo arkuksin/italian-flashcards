@@ -113,6 +113,47 @@ This is a React-based Italian flashcards application that helps users learn Russ
   - Workflow: `.github/workflows/pr-e2e-tests.yml`
   - Auth Context: `src/contexts/AuthContext.tsx`
 
+### Email & Authentication Testing
+
+**IMPORTANT**: Email bounce prevention is critical for maintaining Supabase email sending privileges.
+
+**For Testing Authentication**:
+- Use test database: `https://slhyzoupwluxgasvapoc.supabase.co`
+- Create test users: `npm run test:create-user`
+- Never use fake email addresses in any database
+- See: `docs/TESTING_BEST_PRACTICES.md`
+
+**Database Configuration**:
+- **Test Database** (default in `.env.local`): Safe for all development and testing
+- **Production Database** (`.env.production.local`): Only for final verification
+
+**Available Scripts**:
+```bash
+npm run test:create-user        # Create test user safely
+npm run test:cleanup-users      # Clean test database (dry-run)
+npm run prod:list-users         # Audit production users
+npm run prod:delete-users       # Delete specific users (with confirmation)
+npm run prod:cleanup-users      # Preview production cleanup
+```
+
+**Why This Matters**:
+- High email bounce rates can suspend Supabase email sending
+- Throwaway domains (@test.com, @mailinator.com) cause bounces
+- Email validation now blocks these patterns automatically
+- Regular cleanup prevents accumulation of test users
+
+**Prevention Measures**:
+- ✅ Email validator in `src/lib/emailValidator.ts` blocks 14 throwaway domains
+- ✅ Local development uses test database by default
+- ✅ Warning comments in `src/components/auth/LoginForm.tsx`
+- ✅ Automated cleanup scripts available
+
+**Documentation**:
+- `docs/TESTING_BEST_PRACTICES.md` - Complete testing guidelines
+- `docs/E2E_AUTHENTICATION_TESTING.md` - E2E test setup
+- `docs/CLEANUP_PROCEDURES.md` - Maintenance procedures
+- `cleanup/bounce-logs-check.md` - Monitoring guide
+
 ### Code Style
 - **ESLint**: Configured with React and TypeScript rules
 - **TypeScript**: Strict configuration with separate configs for app and node environments

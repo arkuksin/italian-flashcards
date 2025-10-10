@@ -1,0 +1,332 @@
+name: User & Email Health Check
+
+# Runs weekly to monitor user database health and email bounce rates
+# Alerts team if suspicious users or bounce issues are detected
+
+on:
+  # Run every Monday at 9:00 AM UTC
+  schedule:
+    - cron: '0 9 * * 1'
+
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      strict_mode:
+        description: 'Enable strict mode (fail workflow on issues)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+  issues: write  # For creating GitHub issues on critical findings
+
+jobs:
+  health-check:
+    name: Database Health Monitoring
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run production health check
+        id: health_check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+          TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          # Run health check with strict mode if requested
+          if [ "${{ github.event.inputs.strict_mode }}" = "true" ]; then
+            npm run health:check -- --strict --output=health-report.md
+          else
+            npm run health:check -- --output=health-report.md
+          fi
+        continue-on-error: true
+
+      - name: Read health report
+        id: read_report
+        if: always()
+        run: |
+          # Read the markdown report
+          if [ -f health-report.md ]; then
+            echo "REPORT_EXISTS=true" >> $GITHUB_OUTPUT
+
+            # Extract overall status
+            if grep -q "🔴 CRITICAL" health-report.md; then
+              echo "STATUS=critical" >> $GITHUB_OUTPUT
+            elif grep -q "🟡 NEEDS ATTENTION" health-report.md; then
+              echo "STATUS=warning" >> $GITHUB_OUTPUT
+            else
+              echo "STATUS=healthy" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "REPORT_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "STATUS=error" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload health report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-report-${{ github.run_number }}
+          path: |
+            health-report.md
+            cleanup/health-reports/*.json
+          retention-days: 90
+
+      - name: Create GitHub issue for critical status
+        if: steps.read_report.outputs.STATUS == 'critical'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('health-report.md', 'utf8');
+
+            // Check if issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'email-health,critical'
+            });
+
+            if (issues.data.length === 0) {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔴 CRITICAL: Email/User Health Issues Detected',
+                body: `## Critical Issues Detected in User Database
+
+            The automated health check has detected critical issues that require immediate attention.
+
+            **Run**: #${{ github.run_number }}
+            **Date**: ${{ github.event.repository.updated_at }}
+            **Workflow**: [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            ---
+
+            ${report}
+
+            ---
+
+            ## Immediate Actions Required
+
+            1. **Review the health report** attached to this issue
+            2. **Run production audit**: \`npm run prod:list-users\`
+            3. **Check Supabase bounce logs**: [Dashboard → Authentication → Logs](https://app.supabase.com/project/gjftooyqkmijlvqbkwdr/logs/auth-logs)
+            4. **Follow cleanup procedures**: See \`docs/CLEANUP_PROCEDURES.md\`
+
+            ## Related Documentation
+
+            - [Cleanup Procedures](./docs/CLEANUP_PROCEDURES.md)
+            - [Testing Best Practices](./docs/TESTING_BEST_PRACTICES.md)
+            - [Verify Bounce Improvement](./cleanup/verify-bounce-improvement.md)
+
+            ---
+
+            **This issue was automatically created by the User Health Check workflow.**
+            Close this issue after resolving all critical findings.`,
+                labels: ['email-health', 'critical', 'automated']
+              });
+
+              console.log('Created critical health issue');
+            } else {
+              console.log('Critical health issue already exists');
+            }
+
+      - name: Comment on existing issue for warnings
+        if: steps.read_report.outputs.STATUS == 'warning'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('health-report.md', 'utf8');
+
+            // Find open health issues
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'email-health'
+            });
+
+            if (issues.data.length > 0) {
+              // Add comment to existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues.data[0].number,
+                body: `## ⚠️ Weekly Health Check - Warnings Detected
+
+            **Run**: #${{ github.run_number }}
+            **Date**: ${{ github.event.repository.updated_at }}
+            **Status**: 🟡 Needs Attention
+
+            ${report}
+
+            **Workflow**: [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+              });
+
+              console.log('Added warning comment to existing issue');
+            } else {
+              // Create new warning issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '⚠️ Email/User Health Warnings Detected',
+                body: `## Warnings Detected in User Database
+
+            The automated health check has detected issues that need attention.
+
+            **Run**: #${{ github.run_number }}
+            **Date**: ${{ github.event.repository.updated_at }}
+
+            ---
+
+            ${report}
+
+            ---
+
+            ## Recommended Actions
+
+            1. Review the health report
+            2. Monitor bounce logs over next 48 hours
+            3. Consider running cleanup if issues persist
+
+            See: \`docs/CLEANUP_PROCEDURES.md\``,
+                labels: ['email-health', 'warning', 'automated']
+              });
+
+              console.log('Created warning health issue');
+            }
+
+      - name: Close issues if healthy
+        if: steps.read_report.outputs.STATUS == 'healthy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Find open health issues
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'email-health,automated'
+            });
+
+            for (const issue of issues.data) {
+              // Add comment and close
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `## ✅ Health Check Passed
+
+            **Run**: #${{ github.run_number }}
+            **Date**: ${{ github.event.repository.updated_at }}
+            **Status**: 🟢 HEALTHY
+
+            All metrics are healthy. Closing this issue.
+
+            **Workflow**: [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+              });
+
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+
+              console.log(`Closed issue #${issue.number}`);
+            }
+
+            if (issues.data.length === 0) {
+              console.log('No open health issues to close');
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Health Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.read_report.outputs.STATUS }}" = "healthy" ]; then
+            echo "✅ **Status**: HEALTHY" >> $GITHUB_STEP_SUMMARY
+            echo "All database metrics are within acceptable thresholds." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.read_report.outputs.STATUS }}" = "warning" ]; then
+            echo "⚠️ **Status**: NEEDS ATTENTION" >> $GITHUB_STEP_SUMMARY
+            echo "Some metrics need monitoring. See report for details." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.read_report.outputs.STATUS }}" = "critical" ]; then
+            echo "🔴 **Status**: CRITICAL" >> $GITHUB_STEP_SUMMARY
+            echo "Immediate action required! GitHub issue created." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Status**: ERROR" >> $GITHUB_STEP_SUMMARY
+            echo "Health check failed to run. Check workflow logs." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Report**: Download artifact 'health-report-${{ github.run_number }}' for full details" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail workflow if critical (strict mode)
+        if: github.event.inputs.strict_mode == 'true' && steps.read_report.outputs.STATUS == 'critical'
+        run: |
+          echo "::error::Critical health issues detected in strict mode"
+          exit 1
+
+  notify-on-failure:
+    name: Notify on Workflow Failure
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: failure()
+
+    steps:
+      - name: Create failure notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '❌ User Health Check Workflow Failed',
+              body: `## Workflow Execution Failed
+
+            The automated health check workflow failed to complete.
+
+            **Run**: #${{ github.run_number }}
+            **Date**: ${{ github.event.repository.updated_at }}
+            **Workflow**: [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            ## Possible Causes
+
+            - Supabase connection issues
+            - Missing environment secrets
+            - Script execution errors
+
+            ## Actions Required
+
+            1. Check workflow logs
+            2. Verify GitHub secrets are set
+            3. Test scripts locally: \`npm run health:check\`
+            4. Contact DevOps if issues persist
+
+            ---
+
+            **This issue was automatically created.**`,
+              labels: ['email-health', 'workflow-failure', 'automated']
+            });

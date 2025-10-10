@@ -3,6 +3,19 @@ import { motion } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 import { LoadingSpinner } from '../ui/LoadingSpinner'
 import { Mail, Lock, Eye, EyeOff, Github } from 'lucide-react'
+import { isValidProductionEmail } from '../../lib/emailValidator'
+
+// ⚠️ WARNING: Email Bounce Prevention
+// This signup flow triggers email confirmations via Supabase.
+// NEVER test with fake/throwaway emails (@test.com, @mailinator.com, etc.)
+// as they cause bounce rates that can suspend email sending.
+//
+// For testing authentication:
+// 1. Use test database (slhyzoupwluxgasvapoc) in .env.local
+// 2. Create test users with: npm run test:create-user
+// 3. Use real email addresses you control (e.g., yourname+test@gmail.com)
+//
+// See: docs/TESTING_BEST_PRACTICES.md
 
 interface LoginFormProps {
   message?: string
@@ -26,6 +39,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
     setSuccessMessage('')
 
     try {
+      // Validate email for signup to prevent bounce issues
+      if (isSignUp) {
+        const emailValidation = isValidProductionEmail(email)
+        if (!emailValidation.valid) {
+          setError(emailValidation.warning || 'Please use a valid email address')
+          setLoading(false)
+          return
+        }
+      }
+
       const result = isSignUp
         ? await signUpWithEmail(email, password)
         : await signInWithEmail(email, password)
