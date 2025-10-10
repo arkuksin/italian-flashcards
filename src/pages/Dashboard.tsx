@@ -172,7 +172,7 @@ export const Dashboard: React.FC = () => {
   })
 
   return (
-    <>
+    <div data-testid="protected-content">
       {!hasSelectedMode ? (
         <ModeSelection onModeSelect={handleModeSelect} />
       ) : (
@@ -232,6 +232,6 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
