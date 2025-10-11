@@ -86,8 +86,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TEMPORARY: Only test chromium for fast debugging
-        browser: [chromium]
+        # Test on all major browsers
+        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
