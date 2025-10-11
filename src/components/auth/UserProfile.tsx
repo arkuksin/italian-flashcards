@@ -98,6 +98,7 @@ export const UserProfile: React.FC = () => {
             <div
               className="fixed inset-0 z-40"
               onClick={() => setIsOpen(false)}
+              data-testid="dropdown-backdrop"
             />
 
             {/* Dropdown Content - Fixed positioning to break out of stacking context */}
