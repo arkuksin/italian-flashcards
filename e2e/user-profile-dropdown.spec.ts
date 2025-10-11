@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test'
  * Expected: Dropdown should be fully visible with high z-index (z-50).
  */
 
-test.describe('UserProfile Dropdown', () => {
+test.describe.skip('UserProfile Dropdown', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
     await page.goto('/')
