@@ -8,5 +8,11 @@
   "github": {
     "enabled": false,
     "autoAlias": false
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
