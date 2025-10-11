@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight } from 'lucide-react';
 import { LearningDirection } from '../types';
+import { UserProfile } from './auth/UserProfile';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -28,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="flex justify-between items-center p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700"
+      className="flex justify-between items-center p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 relative z-50"
     >
       <div className="flex items-center space-x-4">
         <motion.h1
@@ -90,6 +91,11 @@ export const Header: React.FC<HeaderProps> = ({
         >
           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </motion.button>
+
+        {/* User Profile with Logout */}
+        <div className="ml-2 pl-2 border-l border-gray-300 dark:border-gray-600">
+          <UserProfile />
+        </div>
       </div>
     </motion.header>
   );

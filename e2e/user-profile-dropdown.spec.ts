@@ -1,0 +1,169 @@
+import { test, expect } from '@playwright/test'
+
+/**
+ * E2E Test for UserProfile Dropdown Visibility
+ *
+ * This test verifies that the UserProfile dropdown menu is visible
+ * and appears above all other elements (including flashcards).
+ *
+ * Bug: The dropdown was hidden behind flashcard elements due to low z-index.
+ * Expected: Dropdown should be fully visible with high z-index (z-50).
+ */
+
+test.describe('UserProfile Dropdown', () => {
+  test.beforeEach(async ({ page }) => {
+    // Navigate to the app
+    await page.goto('/')
+
+    // Wait for authentication to complete (should show either login or dashboard)
+    await page.waitForLoadState('domcontentloaded')
+  })
+
+  test('dropdown menu should be visible and appear above flashcard', async ({ page }) => {
+    // Check if we're on login page or already authenticated
+    const isLoginPage = await page.locator('[data-testid="email-input"]').isVisible().catch(() => false)
+
+    if (isLoginPage) {
+      // If on login page, we need to authenticate first
+      // For this test, we'll use the test credentials
+      const testEmail = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
+      const testPassword = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
+
+      await page.fill('[data-testid="email-input"]', testEmail)
+      await page.fill('[data-testid="password-input"]', testPassword)
+      await page.click('[data-testid="submit-button"]')
+
+      // Wait for redirect to dashboard
+      await page.waitForURL('/', { timeout: 10000 })
+    }
+
+    // Wait for mode selection to appear
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+
+    // Select a learning mode
+    await page.click('[data-testid="mode-ru-it"]')
+
+    // Wait for dashboard to load
+    await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
+
+    // Verify user profile button is visible
+    const profileButton = page.locator('[data-testid="user-profile-button"]')
+    await expect(profileButton).toBeVisible()
+
+    // Get the flashcard element for comparison
+    const flashcard = page.locator('[data-testid="flashcard-app"]')
+    await expect(flashcard).toBeVisible()
+
+    // Click on user profile to open dropdown
+    await profileButton.click()
+
+    // Wait for dropdown to appear
+    const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
+    await expect(dropdown).toBeVisible({ timeout: 5000 })
+
+    // Critical Test: Verify dropdown is actually visible (not hidden behind elements)
+    // Check if the dropdown has text content visible
+    await expect(dropdown).toContainText('Signed in with')
+    await expect(dropdown.locator('[data-testid="logout-button"]')).toBeVisible()
+
+    // Test z-index by checking if elements are interactable
+    // The logout button should be clickable (not blocked by other elements)
+    const logoutButton = dropdown.locator('[data-testid="logout-button"]')
+    await expect(logoutButton).toBeEnabled()
+
+    // Verify we can hover over the logout button
+    // If z-index is wrong, this would fail because the flashcard would block it
+    await logoutButton.hover()
+
+    // Get computed z-index values
+    const dropdownZIndex = await dropdown.evaluate((el) => {
+      return window.getComputedStyle(el).zIndex
+    })
+
+    const flashcardZIndex = await flashcard.evaluate((el) => {
+      return window.getComputedStyle(el).zIndex
+    })
+
+    console.log(`Dropdown z-index: ${dropdownZIndex}`)
+    console.log(`Flashcard z-index: ${flashcardZIndex}`)
+
+    // Verify dropdown has higher z-index than flashcard
+    // Dropdown should have z-50 (which is "50" in computed style)
+    expect(parseInt(dropdownZIndex)).toBeGreaterThan(parseInt(flashcardZIndex) || 0)
+    expect(parseInt(dropdownZIndex)).toBeGreaterThanOrEqual(50)
+
+    // Test that we can interact with dropdown content
+    // If dropdown is hidden behind flashcard, this click would fail
+    await logoutButton.click()
+
+    // After logout, should redirect to login page
+    await expect(page).toHaveURL('/login', { timeout: 5000 })
+  })
+
+  test('dropdown should close when clicking outside', async ({ page }) => {
+    // Check if we're on login page or already authenticated
+    const isLoginPage = await page.locator('[data-testid="email-input"]').isVisible().catch(() => false)
+
+    if (isLoginPage) {
+      const testEmail = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
+      const testPassword = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
+
+      await page.fill('[data-testid="email-input"]', testEmail)
+      await page.fill('[data-testid="password-input"]', testPassword)
+      await page.click('[data-testid="submit-button"]')
+      await page.waitForURL('/', { timeout: 10000 })
+    }
+
+    // Wait for mode selection and select it
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+    await page.click('[data-testid="mode-ru-it"]')
+
+    await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
+
+    // Open dropdown
+    const profileButton = page.locator('[data-testid="user-profile-button"]')
+    await profileButton.click()
+
+    const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
+    await expect(dropdown).toBeVisible()
+
+    // Click outside to close dropdown
+    await page.click('[data-testid="flashcard-app"]')
+
+    // Dropdown should be hidden
+    await expect(dropdown).not.toBeVisible()
+  })
+
+  test('dropdown should show user information', async ({ page }) => {
+    const isLoginPage = await page.locator('[data-testid="email-input"]').isVisible().catch(() => false)
+
+    if (isLoginPage) {
+      const testEmail = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
+      const testPassword = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
+
+      await page.fill('[data-testid="email-input"]', testEmail)
+      await page.fill('[data-testid="password-input"]', testPassword)
+      await page.click('[data-testid="submit-button"]')
+      await page.waitForURL('/', { timeout: 10000 })
+    }
+
+    // Wait for mode selection and select it
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+    await page.click('[data-testid="mode-ru-it"]')
+
+    await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
+
+    // Open dropdown
+    await page.click('[data-testid="user-profile-button"]')
+
+    const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
+    await expect(dropdown).toBeVisible()
+
+    // Verify dropdown contains user email
+    await expect(dropdown).toContainText('@')
+
+    // Verify dropdown has logout button
+    await expect(dropdown.locator('[data-testid="logout-button"]')).toBeVisible()
+    await expect(dropdown.locator('[data-testid="logout-button"]')).toContainText('Sign Out')
+  })
+})

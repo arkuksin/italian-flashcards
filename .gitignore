@@ -27,6 +27,8 @@ dist-ssr
 .env.local
 .env.development
 .env.production
+.env.production.local
+.env.production.local.template
 .env.staging
 .env.test
 .env.test.local
@@ -34,8 +36,10 @@ dist-ssr
 
 # MCP and tooling configs
 /mcp-vercel-tools/.env
+/mcp-github-tools/
 /.codex/*.local.json
 /.claude
+.mcp.json
 
 # Security sensitive files
 *.pem
@@ -46,6 +50,8 @@ dist-ssr
 *credentials*
 *.keystore
 *.jks
+client_secret_*.json
+github.png
 
 # Test and build artifacts
 playwright-report
@@ -67,3 +73,15 @@ supabase/.temp/
 token.txt
 *.token
 credentials.txt
+
+# Cleanup directory (planning docs and scripts with sensitive data)
+cleanup/
+
+# Planning directories
+plan/
+
+# Utility scripts (may contain sensitive data)
+scripts/cleanup-test-users.js
+scripts/delete-invalid-users.js
+scripts/list-production-users.js
+scripts/monitor-email-health.js

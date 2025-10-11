@@ -17,6 +17,63 @@ Your Supabase project is already configured and connected! This guide documents 
 
 ### 🔄 Next Steps Required
 
+## ⚠️ Email Bounce Prevention
+
+**IMPORTANT**: Supabase monitors email deliverability and can temporarily restrict email sending if bounce rates are high.
+
+### To Avoid Bounce Issues
+
+**✅ DO**:
+- ✅ **Use test database for all development and testing**
+  - Local development: Already configured in `.env.local` → test database
+  - Test database URL: `https://slhyzoupwluxgasvapoc.supabase.co`
+  - Safe to experiment without affecting production
+
+- ✅ **Create test users with `scripts/create-test-user.js`**
+  ```bash
+  npm run test:create-user
+  ```
+  - Bypasses email confirmation (`email_confirm: true`)
+  - No emails sent = no bounce risk
+  - Works instantly
+
+- ✅ **Use real email addresses you control**
+  - Your personal email: `yourname@gmail.com`
+  - Email aliases: `yourname+test@gmail.com`
+  - Dedicated test account: `myapp-test@gmail.com`
+
+**❌ DON'T**:
+- ❌ **Don't use throwaway email domains**
+  - `@test.com`, `@example.com`, `@mailinator.com`
+  - `@guerrillamail.com`, `@temp-mail.org`, `@throwaway.email`
+  - These cause immediate bounces and damage sender reputation
+
+- ❌ **Don't create test users in production database**
+  - Production URL: `https://gjftooyqkmijlvqbkwdr.supabase.co`
+  - Only use for actual production deployments
+  - Test users here can cause bounce issues
+
+- ❌ **Don't test signup flow with fake emails**
+  - Email validation now blocks throwaway domains
+  - Use script-based creation or real emails instead
+
+### Why This Matters
+
+High bounce rates (>5%) can cause Supabase to:
+- ❌ Temporarily restrict email sending
+- ❌ Block new user signups (no confirmation emails)
+- ❌ Disable password resets
+- ❌ Break your application for new users
+
+### See Also
+
+- **[Testing Best Practices](./TESTING_BEST_PRACTICES.md)** - Complete testing guidelines
+- **[E2E Authentication Testing](./E2E_AUTHENTICATION_TESTING.md)** - E2E test configuration
+- **[Cleanup Procedures](./CLEANUP_PROCEDURES.md)** - Maintenance procedures
+- **[Bounce Logs Check](../cleanup/bounce-logs-check.md)** - Monitoring guide
+
+---
+
 ## Step 1: Apply Database Schema
 
 The database schema is ready in `supabase/schema.sql`. You need to execute it in your Supabase project:
@@ -143,14 +200,14 @@ Expected output:
 ### Frontend (.env.local)
 ```env
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_6bQGCR5p7zgjg2sX1G3uEA_JrAiR1W2
+VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_ANON_KEY_HERE
 ```
 
 ### MCP Server (.env)
 ```env
 SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_Vn-6lepBjN0SNTPXjqj4pw_39XY77hB
-SUPABASE_ACCESS_TOKEN=sbp_e4e16205e4db13cad9d121cd2d97e0a9b1d99fe2
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_YOUR_SERVICE_ROLE_KEY_HERE
+SUPABASE_ACCESS_TOKEN=sbp_YOUR_ACCESS_TOKEN_HERE
 ```
 
 ## Project Structure

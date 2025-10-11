@@ -27,7 +27,7 @@ Cleanup Preview Deployment
 
 **1. Production Database**
 - **URL**: `https://gjftooyqkmijlvqbkwdr.supabase.co`
-- **Anon Key**: `sb_publishable_6bQGCR5p7zgjg2sX1G3uEA_JrAiR1W2`
+- **Anon Key**: `sb_publishable_YOUR_PRODUCTION_KEY_HERE`
 - **Purpose**: Real user data, used in production deployments
 - **Users**: Real application users
 
@@ -84,7 +84,7 @@ VITE_TEST_MODE=true
 **Production Environment** (used for main branch):
 ```bash
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_6bQGCR5p7zgjg2sX1G3uEA_JrAiR1W2
+VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_PRODUCTION_KEY_HERE
 ```
 
 ### Local Development Environment
@@ -106,7 +106,7 @@ TEST_USER_PASSWORD=TestPassword123!
 ```bash
 # Production database (or use test database for safe development)
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_6bQGCR5p7zgjg2sX1G3uEA_JrAiR1W2
+VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_PRODUCTION_KEY_HERE
 ```
 
 ## GitHub Actions Workflow
@@ -472,6 +472,117 @@ playwright.config.ts            # Playwright configuration
 **Result**: All tests passing ✅
 
 **Commit**: `3cfbb028` - "fix: correct E2E test workflow to use Vercel's Preview environment variables"
+
+## Email Bounce Prevention (Added 2025-10-09)
+
+### Background
+
+Supabase temporarily flagged our production project due to high bounce rates from test emails sent to invalid addresses during development. Email bounces occur when confirmation emails can't be delivered (e.g., to fake domains like @test.com), and high bounce rates can cause Supabase to restrict email sending privileges.
+
+### Prevention Measures Implemented
+
+1. ✅ **E2E tests use test database with pre-confirmed user**
+   - Tests run against `slhyzoupwluxgasvapoc.supabase.co` (test database)
+   - Completely isolated from production (`gjftooyqkmijlvqbkwdr.supabase.co`)
+   - No impact on production bounce rates
+
+2. ✅ **Test user created via admin API (bypasses email)**
+   - User created with `email_confirm: true` via `scripts/create-test-user.js`
+   - No confirmation email sent during user creation
+   - Zero bounce risk from E2E test setup
+
+3. ✅ **No confirmation emails triggered during automated tests**
+   - Tests use pre-existing test user for all authentication scenarios
+   - No signup tests that would trigger email confirmations
+   - Login-only flow for all E2E test cases
+
+4. ✅ **Production database isolated from testing activities**
+   - Local development uses test database by default (`.env.local`)
+   - CI/CD E2E tests use test database (Vercel Preview environment)
+   - Production database only used for actual production deployments
+
+5. ✅ **Email validation on signup forms**
+   - `src/lib/emailValidator.ts` blocks throwaway domains
+   - Prevents accidental signup with fake emails
+   - Shows helpful error messages to users
+
+### Best Practices
+
+**Never manually create test users in production**:
+```bash
+# ❌ BAD: Manual signup in production with fake email
+# This causes bounces!
+
+# ✅ GOOD: Use the script with test database
+npm run test:create-user
+```
+
+**Use `scripts/create-test-user.js` for test user creation**:
+```bash
+# Safe: No email confirmation sent
+node scripts/create-test-user.js
+```
+
+**Run tests against test database only**:
+```bash
+# E2E tests automatically use test database
+npm run test:e2e
+
+# Verify which database is being used:
+cat .env.local | grep VITE_SUPABASE_URL
+# Should show: slhyzoupwluxgasvapoc.supabase.co
+```
+
+**See `docs/TESTING_BEST_PRACTICES.md` for complete guidelines**:
+- Email testing best practices
+- Database selection guide
+- Cleanup procedures
+- Troubleshooting
+
+### Monitoring
+
+**Bounce logs should show 0 bounces for test database**:
+- Test database is isolated and only used for testing
+- No production users affected by test activities
+- Safe to experiment without bounce consequences
+
+**Production bounce rate should remain at 0%**:
+- Supabase Dashboard → Authentication → Logs → Bounced
+- Goal: 0 bounced emails per week
+- Weekly monitoring recommended
+
+**Regular audits via `npm run prod:list-users`**:
+```bash
+# Audit production users quarterly
+npm run prod:list-users
+
+# Review for any test users that shouldn't be there
+cat cleanup/production-users-audit.json | grep "suspicious"
+
+# Clean up if needed
+npm run prod:delete-users
+```
+
+### Related Documentation
+
+- **[Testing Best Practices](./TESTING_BEST_PRACTICES.md)** - Complete testing guidelines
+- **[Cleanup Procedures](./CLEANUP_PROCEDURES.md)** - Maintenance procedures
+- **[Bounce Logs Check](../cleanup/bounce-logs-check.md)** - Monitoring guide
+- **[Supabase Email Config](../cleanup/supabase-email-config.md)** - Email settings
+
+### Impact
+
+**Before**:
+- ❌ Risk of test emails bouncing in production
+- ❌ Manual test user creation could cause bounces
+- ❌ No validation on signup forms
+
+**After**:
+- ✅ Complete isolation: test database for all testing
+- ✅ Script-based user creation bypasses email
+- ✅ Email validation blocks throwaway domains
+- ✅ Zero bounce risk from E2E tests
+- ✅ Production database protected
 
 ## Success Metrics
 
