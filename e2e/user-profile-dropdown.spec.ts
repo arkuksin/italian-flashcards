@@ -127,9 +127,8 @@ test.describe('UserProfile Dropdown', () => {
     const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
     await expect(dropdown).toBeVisible()
 
-    // Click outside to close (click the backdrop or use force click on flashcard)
-    // Note: Clicking the flashcard directly might be blocked by backdrop, so we force it
-    await page.click('[data-testid="flashcard-app"]', { force: true })
+    // Click outside to close dropdown
+    await page.click('[data-testid="flashcard-app"]')
 
     // Dropdown should be hidden
     await expect(dropdown).not.toBeVisible()

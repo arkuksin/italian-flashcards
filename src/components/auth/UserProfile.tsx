@@ -20,6 +20,7 @@ export const UserProfile: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   if (!user) return null
 
@@ -40,6 +41,33 @@ export const UserProfile: React.FC = () => {
         top: rect.bottom + 8, // 8px gap (mt-2)
         right: window.innerWidth - rect.right
       })
+    }
+  }, [isOpen])
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click is outside both button and dropdown
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+
+    // Add listener after a small delay to prevent immediate close
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 0)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isOpen])
 
@@ -103,6 +131,7 @@ export const UserProfile: React.FC = () => {
 
             {/* Dropdown Content - Fixed positioning to break out of stacking context */}
             <motion.div
+              ref={dropdownRef}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
