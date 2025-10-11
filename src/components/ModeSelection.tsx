@@ -58,6 +58,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
 
           <div className="grid md:grid-cols-2 gap-6">
             <motion.button
+              data-testid="mode-ru-it"
               onClick={() => onModeSelect('ru-it')}
               className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
               whileHover={{ scale: 1.02, y: -5 }}
@@ -78,6 +79,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
             </motion.button>
 
             <motion.button
+              data-testid="mode-it-ru"
               onClick={() => onModeSelect('it-ru')}
               className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-500"
               whileHover={{ scale: 1.02, y: -5 }}

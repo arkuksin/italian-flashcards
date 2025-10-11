@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test'
  * Expected: Dropdown should be fully visible with high z-index (z-50).
  */
 
-test.describe.skip('UserProfile Dropdown', () => {
+test.describe('UserProfile Dropdown', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
     await page.goto('/')
@@ -36,6 +36,12 @@ test.describe.skip('UserProfile Dropdown', () => {
       // Wait for redirect to dashboard
       await page.waitForURL('/', { timeout: 10000 })
     }
+
+    // Wait for mode selection to appear
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+
+    // Select a learning mode
+    await page.click('[data-testid="mode-ru-it"]')
 
     // Wait for dashboard to load
     await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
@@ -108,6 +114,10 @@ test.describe.skip('UserProfile Dropdown', () => {
       await page.waitForURL('/', { timeout: 10000 })
     }
 
+    // Wait for mode selection and select it
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+    await page.click('[data-testid="mode-ru-it"]')
+
     await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
 
     // Open dropdown
@@ -136,6 +146,10 @@ test.describe.skip('UserProfile Dropdown', () => {
       await page.click('[data-testid="submit-button"]')
       await page.waitForURL('/', { timeout: 10000 })
     }
+
+    // Wait for mode selection and select it
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+    await page.click('[data-testid="mode-ru-it"]')
 
     await page.waitForSelector('[data-testid="flashcard-app"]', { timeout: 10000 })
 

@@ -13,7 +13,7 @@ import { test, expect } from '@playwright/test'
  * 4. Verify dropdown is clickable (not hidden)
  */
 
-test.describe.skip('UserProfile Dropdown Z-Index', () => {
+test.describe('UserProfile Dropdown Z-Index', () => {
   test('dropdown z-index should be higher than flashcard', async ({ page }) => {
     // Navigate to app
     await page.goto('/')
@@ -34,6 +34,10 @@ test.describe.skip('UserProfile Dropdown Z-Index', () => {
       // Wait for dashboard
       await page.waitForURL('/', { timeout: 10000 })
     }
+
+    // Wait for mode selection and select it
+    await page.waitForSelector('[data-testid="mode-ru-it"]', { timeout: 10000 })
+    await page.click('[data-testid="mode-ru-it"]')
 
     // Wait for dashboard to load
     await page.waitForSelector('[data-testid="user-profile-button"]', { timeout: 10000 })
