@@ -1,14 +1,22 @@
 {
   "mcpServers": {
+    "supabase": {
+      "command": "bash",
+      "args": ["mcp-supabase/start-test.sh"],
+      "cwd": "/mnt/c/dev/projects/italian-flashcards"
+    },
+    "supabase-prod": {
+      "command": "bash",
+      "args": ["mcp-supabase/start-prod.sh"],
+      "cwd": "/mnt/c/dev/projects/italian-flashcards"
+    },
     "vercel": {
-      "command": "node",
-      "args": ["dist/index.js"],
-      "cwd": "./mcp-vercel-tools",
-      "env": {
-        "VERCEL_TOKEN": "${env:VERCEL_TOKEN}",
-        "VERCEL_TEAM_ID": "${env:VERCEL_TEAM_ID}",
-        "VERCEL_PROJECT_ID": "${env:VERCEL_PROJECT_ID}"
-      }
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -a; [ -f mcp-vercel-tools/.env ] && . mcp-vercel-tools/.env || . .env; set +a; exec node mcp-vercel-tools/dist/index.js"
+      ],
+      "cwd": "/mnt/c/dev/projects/italian-flashcards"
     }
   }
 }
