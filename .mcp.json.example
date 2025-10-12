@@ -3,12 +3,12 @@
     "supabase": {
       "command": "bash",
       "args": ["mcp-supabase/start-test.sh"],
-      "cwd": "/mnt/c/dev/projects/italian-flashcards"
+      "cwd": "/path/to/your/project/italian-flashcards"
     },
     "supabase-prod": {
       "command": "bash",
       "args": ["mcp-supabase/start-prod.sh"],
-      "cwd": "/mnt/c/dev/projects/italian-flashcards"
+      "cwd": "/path/to/your/project/italian-flashcards"
     },
     "vercel": {
       "command": "bash",
@@ -16,7 +16,7 @@
         "-c",
         "set -a; [ -f mcp-vercel-tools/.env ] && . mcp-vercel-tools/.env || . .env; set +a; exec node mcp-vercel-tools/dist/index.js"
       ],
-      "cwd": "/mnt/c/dev/projects/italian-flashcards"
+      "cwd": "/path/to/your/project/italian-flashcards"
     }
   }
 }
