@@ -4,7 +4,11 @@ import { ModeSelection } from '../components/ModeSelection'
 import { Header } from '../components/Header'
 import { FlashCard } from '../components/FlashCard'
 import { ProgressBar } from '../components/ProgressBar'
+import { Statistics } from '../components/Statistics'
+import { UserProfile } from '../components/auth/UserProfile'
 import { useKeyboard } from '../hooks/useKeyboard'
+import { useProgress } from '../hooks/useProgress'
+import { useAuth } from '../contexts/AuthContext'
 import { WORDS, getShuffledWords } from '../data/words'
 import { AppState, LearningDirection, Word } from '../types'
 
@@ -19,18 +23,22 @@ import { AppState, LearningDirection, Word } from '../types'
  * - Dark mode, shuffle, and other settings
  */
 export const Dashboard: React.FC = () => {
+  const { user } = useAuth()
+  const {
+    progress: dbProgress,
+    loading: progressLoading,
+    updateProgress,
+    startSession,
+    endSession,
+    currentSession,
+  } = useProgress()
+
   const [hasSelectedMode, setHasSelectedMode] = useState(false)
   const [words, setWords] = useState<Word[]>(WORDS)
   const [state, setState] = useState<AppState>({
     currentWordIndex: 0,
     userInput: '',
     showAnswer: false,
-    progress: {
-      correct: 0,
-      wrong: 0,
-      streak: 0,
-      completed: new Set(),
-    },
     learningDirection: 'ru-it',
     darkMode: false,
     shuffleMode: false,
@@ -49,8 +57,10 @@ export const Dashboard: React.FC = () => {
 
   const currentWord = words[state.currentWordIndex]
 
-  const handleModeSelect = (direction: LearningDirection) => {
+  const handleModeSelect = async (direction: LearningDirection) => {
     setState(prev => ({ ...prev, learningDirection: direction }))
+    // Start a new learning session in the database
+    await startSession(direction)
     setHasSelectedMode(true)
   }
 
@@ -78,7 +88,7 @@ export const Dashboard: React.FC = () => {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!state.userInput.trim() || state.showAnswer) return
 
     const targetWord = state.learningDirection === 'ru-it'
@@ -90,16 +100,12 @@ export const Dashboard: React.FC = () => {
 
     setIsCorrect(correct)
 
+    // Update progress in database
+    await updateProgress(currentWord.id, correct)
+
     setState(prev => ({
       ...prev,
       showAnswer: true,
-      progress: {
-        ...prev.progress,
-        correct: correct ? prev.progress.correct + 1 : prev.progress.correct,
-        wrong: correct ? prev.progress.wrong : prev.progress.wrong + 1,
-        streak: correct ? prev.progress.streak + 1 : 0,
-        completed: new Set([...prev.progress.completed, currentWord.id]),
-      },
     }))
   }
 
@@ -138,20 +144,20 @@ export const Dashboard: React.FC = () => {
     setIsCorrect(null)
   }
 
-  const handleRestart = () => {
+  const handleRestart = async () => {
+    // End current session
+    if (currentSession) {
+      await endSession()
+    }
+
     setState(prev => ({
       ...prev,
       currentWordIndex: 0,
       userInput: '',
       showAnswer: false,
-      progress: {
-        correct: 0,
-        wrong: 0,
-        streak: 0,
-        completed: new Set(),
-      },
     }))
     setIsCorrect(null)
+    setHasSelectedMode(false)
 
     if (state.shuffleMode) {
       setWords(getShuffledWords())
@@ -171,10 +177,43 @@ export const Dashboard: React.FC = () => {
     onShuffle: handleToggleShuffle,
   })
 
+  if (progressLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading your progress...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const currentWordProgress = dbProgress.get(currentWord?.id)
+
   return (
     <div data-testid="protected-content">
       {!hasSelectedMode ? (
-        <ModeSelection onModeSelect={handleModeSelect} />
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
+          {/* Dashboard Header with UserProfile */}
+          <div className="flex justify-end items-center p-6">
+            <UserProfile />
+          </div>
+
+          <div className="container mx-auto px-6">
+            {/* User Stats Section */}
+            <div className="max-w-4xl mx-auto mb-8">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                  Welcome back, {user?.email}!
+                </h1>
+                <Statistics />
+              </div>
+            </div>
+
+            {/* Mode Selection */}
+            <ModeSelection onModeSelect={handleModeSelect} />
+          </div>
+        </div>
       ) : (
         <div className={`min-h-screen transition-colors duration-300 ${
           state.darkMode ? 'dark' : ''
@@ -191,11 +230,21 @@ export const Dashboard: React.FC = () => {
             />
 
             <div className="container mx-auto px-6 py-8" data-testid="flashcard-app">
+              {currentSession && (
+                <div className="mb-4 flex justify-center">
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+                    data-testid="session-active"
+                  >
+                    Active session · {state.learningDirection === 'ru-it' ? 'Italian from Russian' : 'Russian from Italian'}
+                  </span>
+                </div>
+              )}
+
               <div className="grid lg:grid-cols-3 gap-8">
                 {/* Progress Sidebar */}
                 <div className="lg:col-span-1">
                   <ProgressBar
-                    progress={state.progress}
                     totalWords={words.length}
                     currentIndex={state.currentWordIndex}
                   />
@@ -223,6 +272,7 @@ export const Dashboard: React.FC = () => {
                         isCorrect={isCorrect}
                         currentIndex={state.currentWordIndex}
                         totalWords={words.length}
+                        wordProgress={currentWordProgress}
                       />
                     </motion.div>
                   </AnimatePresence>

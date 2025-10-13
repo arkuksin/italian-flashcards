@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { User, LogOut, ChevronDown } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { User, LogOut, ChevronDown, Shield } from 'lucide-react'
 
 /**
  * UserProfile Component
@@ -181,12 +181,22 @@ export const UserProfile: React.FC = () => {
                 </div>
               )}
 
-              {/* Logout Button */}
+              {/* Menu Items */}
               <div className="p-2">
+                <Link
+                  to="/privacy"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full flex items-center space-x-2 px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Privacy Policy</span>
+                </Link>
+
+                {/* Logout Button */}
                 <button
                   onClick={handleSignOut}
                   disabled={isLoggingOut}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center space-x-2 px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
                   data-testid="logout-button"
                 >
                   <LogOut className="w-4 h-4" />

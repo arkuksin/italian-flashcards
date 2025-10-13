@@ -8,23 +8,46 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import { VercelClient } from './vercel-client.js';
 
 // Load environment variables from .env file
-dotenv.config();
+// dotenv.config();
 
-// Environment validation
+import fs from 'fs';
+import path from 'path';
+import { parse as parseDotenv } from 'dotenv';
+
+// .env leise (ohne Logs) laden
+try {
+    const envPath = path.resolve(process.cwd(), '.env');
+    if (fs.existsSync(envPath)) {
+        const parsed = parseDotenv(fs.readFileSync(envPath));
+        for (const [k, v] of Object.entries(parsed)) {
+            if (process.env[k] === undefined) process.env[k] = String(v);
+        }
+    }
+} catch { /* still & silent */ }
+
+// Environment validation - accept both VERCEL_TOKEN and VERCEL_API_TOKEN
 const envSchema = z.object({
-  VERCEL_API_TOKEN: z.string().min(1, 'VERCEL_API_TOKEN is required'),
+  VERCEL_TOKEN: z.string().optional(),
+  VERCEL_API_TOKEN: z.string().optional(),
   VERCEL_TEAM_ID: z.string().optional(),
+  VERCEL_PROJECT_ID: z.string().optional(),
 });
 
 // Parse and validate environment
-const env = envSchema.parse(process.env);
+const parsedEnv = envSchema.parse(process.env);
+
+// Use VERCEL_TOKEN or fall back to VERCEL_API_TOKEN
+const apiToken = parsedEnv.VERCEL_TOKEN || parsedEnv.VERCEL_API_TOKEN;
+if (!apiToken) {
+  throw new Error('VERCEL_TOKEN or VERCEL_API_TOKEN is required');
+}
 
 // Initialize Vercel client
-const vercelClient = new VercelClient(env.VERCEL_API_TOKEN, env.VERCEL_TEAM_ID);
+const vercelClient = new VercelClient(apiToken, parsedEnv.VERCEL_TEAM_ID);
 
 // Create MCP server
 const server = new Server(

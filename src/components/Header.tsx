@@ -79,6 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
           whileHover={{ scale: 1.1, rotate: 180 }}
           whileTap={{ scale: 0.9 }}
           title="Restart session (Ctrl+R)"
+          data-testid="restart-button"
         >
           <RotateCcw className="w-5 h-5" />
         </motion.button>

@@ -1,12 +1,12 @@
 {
   "mcpServers": {
-    "supabase": {
-      "command": "npx",
-      "args": ["@supabase/mcp-server-supabase"],
+    "vercel": {
+      "command": "node",
+      "args": ["mcp-vercel-tools/dist/index.js"],
       "env": {
-        "SUPABASE_URL": "${SUPABASE_URL}",
-        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}",
-        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}",
+        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}",
+        "VERCEL_PROJECT_ID": "${VERCEL_PROJECT_ID}"
       }
     }
   }

@@ -54,15 +54,15 @@ VERCEL_API_KEY=your_vercel_api_token_here
 ```env
 # Supabase Configuration
 SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_Vn-6lepBjN0SNTPXjqj4pw_39XY77hB
-SUPABASE_ACCESS_TOKEN=sbp_8419c0bd784828cb69d51e8fbd00251e7823ee00
+SUPABASE_SERVICE_ROLE_KEY=<supabase_service_role_key>
+SUPABASE_ACCESS_TOKEN=<supabase_access_token>
 
 # Vercel Configuration (for MCP)
 VERCEL_API_KEY=your_vercel_api_token_here
 
 # Frontend Configuration
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_6bQGCR5p7zgjg2sX1G3uEA_JrAiR1W2
+VITE_SUPABASE_ANON_KEY=<supabase_anon_key>
 ```
 
 ## 🧪 Testing the MCP Server

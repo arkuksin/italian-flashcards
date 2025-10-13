@@ -44,3 +44,41 @@ export const sortWordsByPriority = (
     return new Date(progressA.last_practiced).getTime() - new Date(progressB.last_practiced).getTime()
   })
 }
+
+/**
+ * Calculates mastery level based on performance using Leitner system
+ *
+ * @param correctCount - Number of correct answers
+ * @param wrongCount - Number of wrong answers
+ * @returns Mastery level (0-5)
+ */
+export const calculateMasteryLevel = (correctCount: number, wrongCount: number): number => {
+  const totalAttempts = correctCount + wrongCount
+  const successRate = totalAttempts > 0 ? correctCount / totalAttempts : 0
+
+  // Leitner system mastery thresholds
+  if (successRate >= 0.9 && totalAttempts >= 5) return 5
+  if (successRate >= 0.8 && totalAttempts >= 4) return 4
+  if (successRate >= 0.7 && totalAttempts >= 3) return 3
+  if (successRate >= 0.6 && totalAttempts >= 2) return 2
+  if (totalAttempts >= 1) return 1
+
+  return 0
+}
+
+/**
+ * Gets all words that are due for review
+ *
+ * @param allWordIds - All available word IDs
+ * @param progressMap - Map of word IDs to their progress data
+ * @returns Array of word IDs that are due for review
+ */
+export const getDueWords = (
+  allWordIds: number[],
+  progressMap: Map<number, WordProgress>
+): number[] => {
+  return allWordIds.filter(wordId => {
+    const progress = progressMap.get(wordId)
+    return isWordDue(progress)
+  })
+}
