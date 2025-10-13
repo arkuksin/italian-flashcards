@@ -4,6 +4,7 @@ import { useAuth } from './contexts/AuthContext'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Callback } from './pages/Callback'
+import { PrivacyPolicy } from './pages/PrivacyPolicy'
 import { LoadingSpinner } from './components/ui/LoadingSpinner'
 
 /**
@@ -46,6 +47,7 @@ function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/auth/callback" element={<Callback />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
 
       {/* Protected Routes */}
       <Route

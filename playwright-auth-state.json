@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "sb-slhyzoupwluxgasvapoc-auth-token",
+          "value": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsImtpZCI6IjdzOVRMallvOCtvZXFoY3UiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NsaHl6b3Vwd2x1eGdhc3ZhcG9jLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIwMTA4MzFjOC1lZGUyLTQxMGEtOTZlNy0xYzVhNzhhZGU2MTciLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzYwMzg2NTUxLCJpYXQiOjE3NjAzODI5NTEsImVtYWlsIjoidGVzdC1lMmVAZXhhbXBsZS5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiRTJFIFRlc3QgVXNlciJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzYwMzgyOTUxfV0sInNlc3Npb25faWQiOiIwNTljY2ZmYS03MTU1LTQ1ODQtYTdmMy0yMDNmNmZlMmVmODEiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.s2uNN02TC3rEtqweqXki1Kb3tBmXZK0zVilrVQXs4jc\",\"token_type\":\"bearer\",\"expires_in\":3600,\"expires_at\":1760386551,\"refresh_token\":\"pconj6hiwwze\",\"user\":{\"id\":\"010831c8-ede2-410a-96e7-1c5a78ade617\",\"aud\":\"authenticated\",\"role\":\"authenticated\",\"email\":\"test-e2e@example.com\",\"email_confirmed_at\":\"2025-10-03T21:41:06.552748Z\",\"phone\":\"\",\"confirmed_at\":\"2025-10-03T21:41:06.552748Z\",\"last_sign_in_at\":\"2025-10-13T19:15:51.574215087Z\",\"app_metadata\":{\"provider\":\"email\",\"providers\":[\"email\"]},\"user_metadata\":{\"email_verified\":true,\"name\":\"E2E Test User\"},\"identities\":[{\"identity_id\":\"9194c27c-6ffb-48b2-8d23-ecdf532b6ab2\",\"id\":\"010831c8-ede2-410a-96e7-1c5a78ade617\",\"user_id\":\"010831c8-ede2-410a-96e7-1c5a78ade617\",\"identity_data\":{\"email\":\"test-e2e@example.com\",\"email_verified\":false,\"phone_verified\":false,\"sub\":\"010831c8-ede2-410a-96e7-1c5a78ade617\"},\"provider\":\"email\",\"last_sign_in_at\":\"2025-10-03T21:41:06.512963Z\",\"created_at\":\"2025-10-03T21:41:06.514727Z\",\"updated_at\":\"2025-10-03T21:41:06.514727Z\",\"email\":\"test-e2e@example.com\"}],\"created_at\":\"2025-10-03T21:41:06.46926Z\",\"updated_at\":\"2025-10-13T19:15:51.580245Z\",\"is_anonymous\":false},\"weak_password\":null}"
+        }
+      ]
+    }
+  ]
+}

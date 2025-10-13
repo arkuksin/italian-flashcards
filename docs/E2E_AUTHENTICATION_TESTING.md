@@ -27,13 +27,13 @@ Cleanup Preview Deployment
 
 **1. Production Database**
 - **URL**: `https://gjftooyqkmijlvqbkwdr.supabase.co`
-- **Anon Key**: `sb_publishable_YOUR_PRODUCTION_KEY_HERE`
+- **Anon Key**: `<production_supabase_anon_key>`
 - **Purpose**: Real user data, used in production deployments
 - **Users**: Real application users
 
 **2. Test Database**
 - **URL**: `https://slhyzoupwluxgasvapoc.supabase.co`
-- **Anon Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg`
+- **Anon Key**: `<test_supabase_anon_key>`
 - **Purpose**: E2E testing, used in Vercel Preview deployments
 - **Users**: Test users only (e.g., `test-e2e@example.com`)
 
@@ -41,7 +41,7 @@ Cleanup Preview Deployment
 
 Created in the **test database** only:
 - **Email**: `test-e2e@example.com`
-- **Password**: `TestPassword123!`
+- **Password**: `<test_user_password>`
 - **Email Confirmed**: Yes (auto-confirmed for testing)
 - **Metadata**: `{ name: 'E2E Test User' }`
 
@@ -54,17 +54,17 @@ Located in: Repository Settings → Secrets and variables → Actions
 **Required Secrets:**
 ```bash
 # Vercel Deployment
-VERCEL_TOKEN=ufjRDdqAeoxJF5U6r57qxb0F
+VERCEL_TOKEN=<your_vercel_token>
 VERCEL_ORG_ID=team_u6SeJMdPvkQRESdCl2eN7f2F
 VERCEL_PROJECT_ID=prj_MF9abEzyIQBMVraPsD3K81CXm3o6
 
 # Test User Credentials (for Playwright tests)
 TEST_USER_EMAIL=test-e2e@example.com
-TEST_USER_PASSWORD=TestPassword123!
+TEST_USER_PASSWORD=<test_user_password>
 
 # Test Database Configuration (for GitHub Secrets reference only)
 VITE_SUPABASE_URL_TEST=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY_TEST=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_ANON_KEY_TEST=<test_supabase_anon_key>
 ```
 
 **Note**: `VITE_SUPABASE_URL_TEST` and `VITE_SUPABASE_ANON_KEY_TEST` are defined but **NOT used** by the workflow anymore (as of the fix on 2025-10-04). Vercel builds with its own environment variables.
@@ -76,7 +76,7 @@ Located in: Vercel Dashboard → Project Settings → Environment Variables
 **Preview Environment** (used for PR deployments):
 ```bash
 VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>
 NODE_ENV=test
 VITE_TEST_MODE=true
 ```
@@ -84,7 +84,7 @@ VITE_TEST_MODE=true
 **Production Environment** (used for main branch):
 ```bash
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_PRODUCTION_KEY_HERE
+VITE_SUPABASE_ANON_KEY=<production_supabase_anon_key>
 ```
 
 ### Local Development Environment
@@ -93,20 +93,20 @@ VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_PRODUCTION_KEY_HERE
 ```bash
 # Test database configuration
 VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>
 NODE_ENV=test
 VITE_TEST_MODE=true
 
 # Test user credentials
 TEST_USER_EMAIL=test-e2e@example.com
-TEST_USER_PASSWORD=TestPassword123!
+TEST_USER_PASSWORD=<test_user_password>
 ```
 
 **For local development** (`.env.local`):
 ```bash
 # Production database (or use test database for safe development)
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_PRODUCTION_KEY_HERE
+VITE_SUPABASE_ANON_KEY=<production_supabase_anon_key>
 ```
 
 ## GitHub Actions Workflow
@@ -189,7 +189,7 @@ export default defineConfig({
     env: {
       // Use test database for local E2E tests
       VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://slhyzoupwluxgasvapoc.supabase.co',
-      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJ...',
+      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || '<test_supabase_anon_key>',
     },
   },
 });
@@ -384,7 +384,7 @@ if (isUnitTestMode) {
 1. Go to Vercel Dashboard → Project → Settings → Environment Variables
 2. Verify **Preview** environment has:
    - `VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co`
-   - `VITE_SUPABASE_ANON_KEY=eyJ...` (test database anon key)
+   - `VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>` (test database anon key)
 3. Verify **Production** environment has production database credentials
 4. Redeploy to pick up changes
 

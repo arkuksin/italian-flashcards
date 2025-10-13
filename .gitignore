@@ -85,3 +85,7 @@ scripts/cleanup-test-users.js
 scripts/delete-invalid-users.js
 scripts/list-production-users.js
 scripts/monitor-email-health.js
+
+# Gemini cache directories
+.gemini/
+mcp-vercel-tools/.gemini/

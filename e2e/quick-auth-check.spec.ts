@@ -10,6 +10,10 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Quick Auth Check', () => {
+  test.use({
+    // Force fresh session so login UI can be validated
+    storageState: { cookies: [], origins: [] },
+  });
   test('can access app and find auth form', async ({ page }) => {
     console.log('🚀 Starting quick auth check...');
     console.log('📍 Base URL:', page.context()._options.baseURL || process.env.PLAYWRIGHT_TEST_BASE_URL);
