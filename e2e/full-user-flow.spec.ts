@@ -115,10 +115,12 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     const logoutButton = page.getByTestId('logout-button')
     await expect(logoutButton).toBeVisible({ timeout: 10000 })
 
-    await Promise.all([
-      page.waitForURL('**/login', { timeout: 15000 }),
-      logoutButton.click(),
-    ])
+    await logoutButton.click()
+
+    // React Router updates the URL via history API (no full page load on Firefox/WebKit),
+    // so wait for the SPA navigation by asserting the final location instead of waiting
+    // for a "load" event that never fires in those browsers.
+    await expect(page).toHaveURL(/\/login(?:\?.*)?$/, { timeout: 15000 })
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })
