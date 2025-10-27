@@ -38,10 +38,28 @@ async function globalSetup(config: FullConfig) {
     // Perform login
     await page.fill('[data-testid="email-input"]', testEmail);
     await page.fill('[data-testid="password-input"]', testPassword);
+
+    console.log('🔍 Submitting login form...');
     await page.click('[data-testid="submit-button"]');
 
-    console.log('🔍 Waiting for authentication to complete...');
-    // Wait for successful authentication with shorter timeout
+    // Wait for either redirect or error message
+    console.log('🔍 Waiting for authentication response...');
+    await page.waitForTimeout(2000); // Give it time to process
+
+    // Check for error messages
+    const errorElement = await page.locator('[data-testid="error-message"]').count();
+    if (errorElement > 0) {
+      const errorText = await page.locator('[data-testid="error-message"]').textContent();
+      console.log('❌ Login error displayed:', errorText);
+    }
+
+    console.log('🔍 Current URL after submit:', page.url());
+
+    // Wait for redirect to dashboard (URL should change from /login)
+    console.log('🔍 Waiting for redirect from /login...');
+    await page.waitForURL(url => !url.includes('/login'), { timeout: 10000 });
+
+    console.log('🔍 Waiting for protected content to appear...');
     await page.locator('[data-testid="protected-content"]').waitFor({ timeout: 5000 });
 
     // Save authenticated state for all tests to reuse
