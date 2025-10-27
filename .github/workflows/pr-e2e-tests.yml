@@ -39,15 +39,19 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel Preview
-        # Explicitly pass test database credentials as build environment variables
+        # Explicitly set test database credentials as environment variables
         # to ensure preview deployments use the test database, not production
         id: deploy
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
         run: |
           # Deploy to Vercel with test database credentials
+          # Environment variables are set via the env: block above
           DEPLOYMENT_URL=$(vercel deploy \
             --token="${{ secrets.VERCEL_TOKEN }}" \
-            --build-env VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL_TEST }}" \
-            --build-env VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}" \
+            --build-env VITE_SUPABASE_URL="${VITE_SUPABASE_URL}" \
+            --build-env VITE_SUPABASE_ANON_KEY="${VITE_SUPABASE_ANON_KEY}" \
             --yes | tail -1)
 
           # Wait for deployment to be ready
