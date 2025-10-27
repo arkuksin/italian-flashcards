@@ -57,7 +57,7 @@ async function globalSetup(config: FullConfig) {
 
     // Wait for redirect to dashboard (URL should change from /login)
     console.log('🔍 Waiting for redirect from /login...');
-    await page.waitForURL(url => !url.includes('/login'), { timeout: 10000 });
+    await page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 });
 
     console.log('🔍 Waiting for protected content to appear...');
     await page.locator('[data-testid="protected-content"]').waitFor({ timeout: 5000 });
