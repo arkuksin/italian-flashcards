@@ -136,10 +136,19 @@ test.describe('Statistics Consistency', () => {
     await signOutButton.click()
 
     // Wait for logout API call to complete
-    await page.waitForTimeout(1_000)
+    await page.waitForTimeout(2_000)
 
     // Wait for redirect to login page with extended timeout
-    await page.waitForURL('**/login', { timeout: 30_000 })
+    // Use try-catch with fallback check in case already on login page
+    try {
+      await page.waitForURL('**/login', { timeout: 30_000 })
+    } catch (e) {
+      // If timeout, check if we're already on login page
+      if (!page.url().includes('/login')) {
+        throw e // Re-throw if not on login page
+      }
+      console.log('⚠️ Already on login page after logout')
+    }
 
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')

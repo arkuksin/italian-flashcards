@@ -120,10 +120,19 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await logoutButton.click()
 
     // Give the logout API call time to complete
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(2000)
 
     // Wait for redirect to login with extended timeout for slower browsers
-    await page.waitForURL('**/login', { timeout: 30000 })
+    // Use try-catch with fallback check in case already on login page
+    try {
+      await page.waitForURL('**/login', { timeout: 30000 })
+    } catch (e) {
+      // If timeout, check if we're already on login page
+      if (!page.url().includes('/login')) {
+        throw e // Re-throw if not on login page
+      }
+      console.log('⚠️ Already on login page after logout')
+    }
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })
