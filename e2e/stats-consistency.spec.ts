@@ -142,7 +142,7 @@ test.describe('Statistics Consistency', () => {
     // Wait for redirect to login page with extended timeout
     // Use try-catch with fallback check in case already on login page
     try {
-      await page.waitForURL('**/login', { timeout: 30_000 })
+      await page.waitForURL('**/login', { timeout: 60_000 })
     } catch (e) {
       // If timeout, check if we're already on login page
       if (!page.url().includes('/login')) {

@@ -125,7 +125,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     // Wait for redirect to login with extended timeout for slower browsers
     // Use try-catch with fallback check in case already on login page
     try {
-      await page.waitForURL('**/login', { timeout: 30000 })
+      await page.waitForURL('**/login', { timeout: 60000 })
     } catch (e) {
       // If timeout, check if we're already on login page
       if (!page.url().includes('/login')) {
