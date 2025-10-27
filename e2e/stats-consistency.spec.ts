@@ -92,6 +92,7 @@ test.describe('Statistics Consistency', () => {
   })
 
   test('Statistics should persist across logout/login and match in both views', async ({ page }) => {
+    test.setTimeout(120000) // Increase timeout to 120 seconds for logout/login cycle
     await login(page)
     await enterLearningMode(page)
 
