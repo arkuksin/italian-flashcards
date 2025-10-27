@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 import { LoadingSpinner } from '../ui/LoadingSpinner'
@@ -254,6 +255,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
               }
             </button>
           </div>
+        </div>
+        <div className="text-center mt-4">
+          <Link to="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:underline">
+            Privacy Policy
+          </Link>
         </div>
       </motion.div>
     </div>

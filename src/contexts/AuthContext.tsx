@@ -198,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Sign up with email and password
   const signUpWithEmail = async (email: string, password: string): Promise<{ error: AuthError | null }> => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -208,6 +208,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         return { error: { ...error, message: handleAuthError(error) } as AuthError }
+      }
+
+      const identities = data?.user?.identities ?? []
+      const hasEmailIdentity = identities.some(identity => identity.provider === 'email')
+
+      if (!hasEmailIdentity) {
+        const duplicateError: AuthError = {
+          name: 'SignUpError',
+          message: 'This email is already registered. Please sign in with your existing method or use “Forgot password” to regain access.',
+          status: 400
+        }
+        return { error: duplicateError }
       }
 
       return { error: null }

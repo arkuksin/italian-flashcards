@@ -21,7 +21,8 @@
     "prod:delete-users": "node scripts/delete-invalid-users.js",
     "prod:delete-users:dry-run": "node scripts/delete-invalid-users.js --dry-run",
     "prod:cleanup-users": "node scripts/cleanup-test-users.js --database=production --dry-run",
-    "health:check": "node scripts/monitor-email-health.js"
+    "health:check": "node scripts/monitor-email-health.js",
+    "health:auth-config": "node scripts/check-supabase-auth-config.js"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",

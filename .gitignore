@@ -57,6 +57,7 @@ github.png
 playwright-report
 test-results
 playwright-state.json
+playwright-auth-state.json
 
 # Common secret patterns (backup safety)
 **/config/secrets.json
@@ -85,3 +86,7 @@ scripts/cleanup-test-users.js
 scripts/delete-invalid-users.js
 scripts/list-production-users.js
 scripts/monitor-email-health.js
+
+# Gemini cache directories
+.gemini/
+mcp-vercel-tools/.gemini/

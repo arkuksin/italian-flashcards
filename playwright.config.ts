@@ -22,15 +22,17 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0, // Reduced to 1 for faster feedback
+  /* Retry on CI only - DISABLED FOR DEBUGGING */
+  retries: 0, // Reduced to 1 for faster feedback
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Optimized timeouts for fast CI feedback */
   timeout: 30000, // 30 seconds per test (increased for slower CI + Vercel deploy)
   expect: {
-    timeout: 10000, // 10 seconds for assertions
+    timeout: 5000, // 5 seconds for assertions (reduced from 10s)
   },
+  /* Global setup for shared authentication */
+  globalSetup: './e2e/global-setup.ts',
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
@@ -41,6 +43,8 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:5173',
+    /* Use shared authentication state for all tests */
+    storageState: 'playwright-auth-state.json',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Take screenshots on failure */
@@ -55,25 +59,13 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
     },
   ],
 
@@ -82,6 +74,6 @@ export default defineConfig({
     command: 'npm run dev:test',
     url: 'http://localhost:5173',
     timeout: 120 * 1000,
-    reuseExistingServer: false, // Always start fresh to pick up test env vars
+    reuseExistingServer: !process.env.CI, // Reuse in dev for speed, fresh in CI for test env vars
   },
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Send, Check, X } from 'lucide-react';
-import { Word, LearningDirection } from '../types';
+import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
+import { Word, LearningDirection, WordProgress } from '../types';
 
 interface FlashCardProps {
   word: Word;
@@ -15,6 +15,7 @@ interface FlashCardProps {
   isCorrect: boolean | null;
   currentIndex: number;
   totalWords: number;
+  wordProgress?: WordProgress;
 }
 
 export const FlashCard: React.FC<FlashCardProps> = ({
@@ -29,11 +30,30 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   isCorrect,
   currentIndex,
   totalWords,
+  wordProgress,
 }) => {
   const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
   const targetWord = learningDirection === 'ru-it' ? word.italian : word.russian;
   const canGoNext = currentIndex < totalWords - 1;
   const canGoPrevious = currentIndex > 0;
+
+  // Mastery level colors
+  const getMasteryColor = (level: number) => {
+    const colors = [
+      'bg-gray-200 dark:bg-gray-700', // Level 0
+      'bg-red-200 dark:bg-red-900/50', // Level 1
+      'bg-orange-200 dark:bg-orange-900/50', // Level 2
+      'bg-yellow-200 dark:bg-yellow-900/50', // Level 3
+      'bg-green-200 dark:bg-green-900/50', // Level 4
+      'bg-blue-200 dark:bg-blue-900/50', // Level 5
+    ]
+    return colors[Math.min(level, 5)]
+  }
+
+  const getMasteryLabel = (level: number) => {
+    const labels = ['New', 'Beginner', 'Learning', 'Practicing', 'Advanced', 'Mastered']
+    return labels[Math.min(level, 5)]
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +82,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
               {learningDirection === 'ru-it' ? 'Translate to Italian:' : 'Translate to Russian:'}
             </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2
+              className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2"
+              data-testid="question-text"
+            >
               {sourceWord}
             </h2>
             {word.category && (
@@ -70,11 +93,34 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 {word.category}
               </span>
             )}
+
+            {/* Mastery Level Indicator */}
+            {wordProgress && (
+              <div className="mt-4 flex items-center justify-center gap-2" data-testid="mastery-indicator">
+                <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <div className="flex gap-1">
+                  {[0, 1, 2, 3, 4, 5].map((level) => (
+                    <div
+                      key={level}
+                      className={`w-2 h-6 rounded ${
+                        level <= wordProgress.mastery_level
+                          ? getMasteryColor(wordProgress.mastery_level)
+                          : 'bg-gray-200 dark:bg-gray-700'
+                      }`}
+                      title={`Mastery Level: ${getMasteryLabel(wordProgress.mastery_level)}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
+                  {getMasteryLabel(wordProgress.mastery_level)}
+                </span>
+              </div>
+            )}
           </motion.div>
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="mb-6">
+        <form onSubmit={handleSubmit} className="mb-6" data-testid="answer-form">
           <div className="relative">
             <input
               type="text"
@@ -105,6 +151,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
+            data-testid="answer-feedback"
           >
             <div className={`p-6 rounded-2xl border-2 ${
               isCorrect
@@ -127,7 +174,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               
               <div className="text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Correct answer:</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
                   {targetWord}
                 </p>
                 {!isCorrect && userInput.trim() && (
@@ -148,6 +195,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             className="flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
             whileHover={canGoPrevious ? { scale: 1.05 } : {}}
             whileTap={canGoPrevious ? { scale: 0.95 } : {}}
+            data-testid="previous-button"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             Previous
@@ -165,6 +213,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             className="flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
             whileHover={canGoNext ? { scale: 1.05 } : {}}
             whileTap={canGoNext ? { scale: 0.95 } : {}}
+            data-testid="next-button"
           >
             Next
             <ChevronRight className="w-5 h-5 ml-2" />

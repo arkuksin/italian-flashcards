@@ -42,7 +42,7 @@ Add these variables for **Preview** (used for PR testing):
 | Variable Name | Value | Environment |
 |---------------|-------|-------------|
 | `VITE_SUPABASE_URL` | `https://slhyzoupwluxgasvapoc.supabase.co` | Preview |
-| `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg` | Preview |
+| `VITE_SUPABASE_ANON_KEY` | `<test_supabase_anon_key>` | Preview |
 | `VITE_TEST_MODE` | `true` | Preview |
 | `NODE_ENV` | `test` | Preview |
 
@@ -53,7 +53,7 @@ Add these for local development simulation:
 | Variable Name | Value | Environment |
 |---------------|-------|-------------|
 | `VITE_SUPABASE_URL` | `https://slhyzoupwluxgasvapoc.supabase.co` | Development |
-| `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg` | Development |
+| `VITE_SUPABASE_ANON_KEY` | `<test_supabase_anon_key>` | Development |
 | `VITE_TEST_MODE` | `true` | Development |
 | `NODE_ENV` | `development` | Development |
 

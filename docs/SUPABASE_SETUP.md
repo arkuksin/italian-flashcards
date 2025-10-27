@@ -200,14 +200,14 @@ Expected output:
 ### Frontend (.env.local)
 ```env
 VITE_SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_YOUR_ANON_KEY_HERE
+VITE_SUPABASE_ANON_KEY=sb_publishable_<YOUR_ANON_KEY>
 ```
 
 ### MCP Server (.env)
 ```env
 SUPABASE_URL=https://gjftooyqkmijlvqbkwdr.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_YOUR_SERVICE_ROLE_KEY_HERE
-SUPABASE_ACCESS_TOKEN=sbp_YOUR_ACCESS_TOKEN_HERE
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_<YOUR_SERVICE_ROLE_KEY>
+SUPABASE_ACCESS_TOKEN=sbp_<YOUR_ACCESS_TOKEN>
 ```
 
 ## Project Structure
@@ -237,6 +237,7 @@ italian-flashcards/
 ### Authentication Issues
 - Verify redirect URLs are configured in Supabase
 - Check that email confirmations are properly configured
+- Run `npm run health:auth-config` (requires `SUPABASE_PROD_ACCESS_TOKEN`) to confirm the hosted project uses the correct Site URL and redirect allow list
 - For OAuth, ensure callback URLs match exactly
 
 ### Database Issues
