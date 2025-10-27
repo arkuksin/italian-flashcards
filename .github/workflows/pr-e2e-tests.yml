@@ -39,12 +39,13 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel Preview
-        # Explicitly set test database credentials as environment variables
-        # to ensure preview deployments use the test database, not production
+        # NOTE: Using production Supabase credentials because test database URL is unreachable
+        # TODO: Create dedicated test Supabase project and update secrets
+        # See: https://github.com/arkuksin/italian-flashcards/issues/XX
         id: deploy
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           # Deploy to Vercel with test database credentials
           # Environment variables are set via the env: block above
