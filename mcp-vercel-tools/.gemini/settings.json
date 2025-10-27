@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "node",
+      "args": [
+        "/mnt/c/dev/projects/italian-flashcards/mcp-vercel-tools/dist/index.js",
+        "--stdio"
+      ]
+    }
+  }
+}
