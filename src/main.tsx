@@ -5,12 +5,15 @@ import App from './App.tsx';
 import './index.css';
 import './lib/env';
 import { AuthProvider } from './contexts/AuthContext';
+import { ProgressProvider } from './hooks/useProgress';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <ProgressProvider>
+          <App />
+        </ProgressProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>

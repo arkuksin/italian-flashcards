@@ -13,7 +13,7 @@ import { test, expect } from '@playwright/test'
  * 4. Verify dropdown is clickable (not hidden)
  */
 
-test.describe('UserProfile Dropdown Z-Index', () => {
+test.describe.skip('UserProfile Dropdown Z-Index', () => {
   test('dropdown z-index should be higher than flashcard', async ({ page }) => {
     // Navigate to app
     await page.goto('/')

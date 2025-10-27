@@ -2,6 +2,14 @@
   "version": 1,
   "providers": [
     {
+      "id": "supabase",
+      "name": "supabase",
+      "type": "stdio",
+      "command": "node",
+      "args": ["dist/index.js"],
+      "cwd": "./mcp-supabase"
+    },
+    {
       "id": "vercel",
       "name": "vercel",
       "type": "stdio",

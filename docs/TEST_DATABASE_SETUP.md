@@ -59,7 +59,7 @@ Copy `.env.test.local` to `.env.local` when testing:
 
 ```env
 VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg
+VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>
 VITE_TEST_MODE=true
 ```
 
@@ -68,7 +68,7 @@ Add these environment variables in Vercel dashboard:
 
 ```env
 VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg
+VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>
 VITE_TEST_MODE=true
 NODE_ENV=test
 ```
@@ -79,9 +79,9 @@ Copy `.env.test.production.example` to `.env.test.production`:
 ```env
 PLAYWRIGHT_TEST_BASE_URL=https://your-test-deployment.vercel.app
 VITE_SUPABASE_URL=https://slhyzoupwluxgasvapoc.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg
+VITE_SUPABASE_ANON_KEY=<test_supabase_anon_key>
 TEST_USER_EMAIL=test-e2e@example.com
-TEST_USER_PASSWORD=TestPassword123!
+TEST_USER_PASSWORD=<test_user_password>
 ```
 
 ## 🔐 API Credentials Reference
@@ -91,11 +91,11 @@ TEST_USER_PASSWORD=TestPassword123!
 | Key Type | Value |
 |----------|--------|
 | **URL** | `https://slhyzoupwluxgasvapoc.supabase.co` |
-| **Anon Key** (Public) | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.hxK65OHKF8ScncLF7zlcu0qEYgKAqipmtAT2UySKVwg` |
-| **Service Role Key** (Server) | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsaHl6b3Vwd2x1eGdhc3ZhcG9jIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTAwMDY5OCwiZXhwIjoyMDc0NTc2Njk4fQ.sHXPnNygm8rNozI-7p4CBxIpWMk49IpqJyLam2F7lLU` |
+| **Anon Key** (Public) | `<test_supabase_anon_key>` |
+| **Service Role Key** (Server) | `<test_supabase_service_role_key>` |
 
 ### Access Token
-- **Access Token**: `sbp_8419c0bd784828cb69d51e8fbd00251e7823ee00`
+- **Access Token**: `<supabase_access_token>`
 
 ## 📚 Test Data
 

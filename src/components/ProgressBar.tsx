@@ -1,29 +1,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Target, Flame, TrendingUp } from 'lucide-react';
-import { Progress } from '../types';
+import { useProgress } from '../hooks/useProgress';
 
 interface ProgressBarProps {
-  progress: Progress;
   totalWords: number;
   currentIndex: number;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
-  progress,
   totalWords,
   currentIndex,
 }) => {
-  const { correct, wrong, streak, completed } = progress;
-  const total = correct + wrong;
-  const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-  const completionRate = Math.round((completed.size / totalWords) * 100);
+  // Get database statistics for persistent progress tracking
+  const { getStats } = useProgress();
+  const dbStats = getStats();
+
+  // Use database values for display (persistent across sessions)
+  const correct = dbStats.correctAnswers;
+  const wrong = dbStats.totalAttempts - dbStats.correctAnswers;
+  const accuracy = dbStats.accuracy;
+  const streak = dbStats.currentStreak;
+  const completed = dbStats.totalWordsStudied;
+
+  const completionRate = Math.round((completed / totalWords) * 100);
 
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg"
+      data-testid="progress-bar"
     >
       {/* Progress Bar */}
       <div className="mb-6">
@@ -118,7 +125,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           </span>
         </div>
         <p className="text-sm text-purple-600 dark:text-purple-400">
-          Words Completed: {completed.size} / {totalWords}
+          Words Completed: {completed} / {totalWords}
         </p>
       </motion.div>
     </motion.div>

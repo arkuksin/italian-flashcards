@@ -24,18 +24,10 @@ export type DbLearningSessionUpdate = Database['public']['Tables']['learning_ses
 
 export type LearningDirection = 'ru-it' | 'it-ru';
 
-export interface Progress {
-  correct: number;
-  wrong: number;
-  streak: number;
-  completed: Set<number>;
-}
-
 export interface AppState {
   currentWordIndex: number;
   userInput: string;
   showAnswer: boolean;
-  progress: Progress;
   learningDirection: LearningDirection;
   darkMode: boolean;
   shuffleMode: boolean;
