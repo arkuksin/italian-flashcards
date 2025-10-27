@@ -17,15 +17,39 @@ export const Callback: React.FC = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get the session from the URL hash/query parameters
-        // Supabase automatically processes the OAuth callback
+        // Check if we have a hash or query parameters (OAuth flow)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const queryParams = new URLSearchParams(window.location.search)
+
+        const hasAuthParams = hashParams.has('access_token') ||
+                             queryParams.has('code') ||
+                             hashParams.has('error')
+
+        console.log('Callback URL:', window.location.href)
+        console.log('Has auth params:', hasAuthParams)
+
+        // If there's an error in the URL, handle it
+        if (hashParams.has('error')) {
+          const errorDescription = hashParams.get('error_description') || 'Authentication failed'
+          console.error('OAuth error:', errorDescription)
+          setError(errorDescription)
+          setTimeout(() => {
+            navigate('/login', { replace: true })
+          }, 3000)
+          return
+        }
+
+        // For PKCE flow, Supabase will automatically exchange the code for a session
+        // We need to wait for the onAuthStateChange event in AuthContext
+        // Give it a moment to process
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // Now check if we have a session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
         if (sessionError) {
           console.error('Error getting session:', sessionError)
           setError(sessionError.message)
-
-          // Redirect to login after 3 seconds
           setTimeout(() => {
             navigate('/login', { replace: true })
           }, 3000)
@@ -39,8 +63,6 @@ export const Callback: React.FC = () => {
         } else {
           console.log('No session found after OAuth callback')
           setError('No session found. Please try logging in again.')
-
-          // Redirect to login after 3 seconds
           setTimeout(() => {
             navigate('/login', { replace: true })
           }, 3000)
@@ -48,8 +70,6 @@ export const Callback: React.FC = () => {
       } catch (err) {
         console.error('Error in OAuth callback:', err)
         setError('An unexpected error occurred during authentication.')
-
-        // Redirect to login after 3 seconds
         setTimeout(() => {
           navigate('/login', { replace: true })
         }, 3000)
