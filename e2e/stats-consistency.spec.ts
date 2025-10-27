@@ -134,7 +134,12 @@ test.describe('Statistics Consistency', () => {
     const signOutButton = page.locator('[data-testid="logout-button"]')
     await expect(signOutButton).toBeVisible({ timeout: 10_000 })
     await signOutButton.click()
+
+    // Wait for logout API call to complete
     await page.waitForTimeout(1_000)
+
+    // Wait for redirect to login page with extended timeout
+    await page.waitForURL('**/login', { timeout: 30_000 })
 
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')
