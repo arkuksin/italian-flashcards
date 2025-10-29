@@ -57,6 +57,7 @@ github.png
 playwright-report
 test-results
 playwright-state.json
+playwright-auth-state.json
 
 # Common secret patterns (backup safety)
 **/config/secrets.json

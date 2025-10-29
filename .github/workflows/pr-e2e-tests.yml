@@ -39,12 +39,20 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel Preview
-        # Note: Vercel will build the app using Preview environment variables
-        # which are already configured in Vercel dashboard to use test database
+        # Using dedicated test Supabase project for preview deployments
+        # Test project: https://supabase.com/dashboard/project/slhyzoupwluxgasvapoc
         id: deploy
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
         run: |
-          # Deploy to Vercel and capture the deployment URL
-          DEPLOYMENT_URL=$(vercel deploy --token="${{ secrets.VERCEL_TOKEN }}" --yes | tail -1)
+          # Deploy to Vercel with test database credentials
+          # Environment variables are set via the env: block above
+          DEPLOYMENT_URL=$(vercel deploy \
+            --token="${{ secrets.VERCEL_TOKEN }}" \
+            --build-env VITE_SUPABASE_URL="${VITE_SUPABASE_URL}" \
+            --build-env VITE_SUPABASE_ANON_KEY="${VITE_SUPABASE_ANON_KEY}" \
+            --yes | tail -1)
 
           # Wait for deployment to be ready
           echo "Waiting for deployment to be ready..."
@@ -113,6 +121,7 @@ jobs:
       - name: Run E2E tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.deploy-preview.outputs.preview-url }}
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         run: npx playwright test --project=${{ matrix.browser }} --reporter=github
