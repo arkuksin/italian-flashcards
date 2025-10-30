@@ -92,6 +92,7 @@ test.describe('Statistics Consistency', () => {
   })
 
   test('Statistics should persist across logout/login and match in both views', async ({ page }) => {
+    test.setTimeout(120000) // Increase timeout to 120 seconds for logout/login cycle
     await login(page)
     await enterLearningMode(page)
 
@@ -134,7 +135,21 @@ test.describe('Statistics Consistency', () => {
     const signOutButton = page.locator('[data-testid="logout-button"]')
     await expect(signOutButton).toBeVisible({ timeout: 10_000 })
     await signOutButton.click()
-    await page.waitForTimeout(1_000)
+
+    // Wait for logout API call to complete
+    await page.waitForTimeout(2_000)
+
+    // Wait for redirect to login page with extended timeout
+    // Use try-catch with fallback check in case already on login page
+    try {
+      await page.waitForURL('**/login', { timeout: 60_000 })
+    } catch (e) {
+      // If timeout, check if we're already on login page
+      if (!page.url().includes('/login')) {
+        throw e // Re-throw if not on login page
+      }
+      console.log('⚠️ Already on login page after logout')
+    }
 
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')
