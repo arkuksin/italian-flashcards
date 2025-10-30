@@ -1,0 +1,10 @@
+# Active Tasks
+
+This directory contains documentation for tasks currently in development.
+
+Each task should have its own subdirectory with three files:
+- `plan.md` - The approved implementation plan
+- `context.md` - Key files, decisions, and context
+- `tasks.md` - Checklist of work items
+
+See `/dev/README.md` for usage instructions.
