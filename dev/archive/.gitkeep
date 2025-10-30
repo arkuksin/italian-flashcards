@@ -1,0 +1,10 @@
+# Archived Tasks
+
+This directory contains documentation for completed tasks.
+
+Archived tasks serve as:
+- Reference for similar future work
+- Knowledge base of past decisions
+- Historical record of implementation approaches
+
+When a task is complete, move its directory from `/dev/active/` to `/dev/archive/`.

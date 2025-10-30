@@ -1,188 +1,94 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## Project Overview
 
-This is a React-based Italian flashcards application that helps users learn Russian-Italian word pairs. The application features an interactive flashcard interface with progress tracking, multiple learning modes, and a modern UI built with Tailwind CSS and Framer Motion.
+Italian flashcards application for learning Russian-Italian word pairs. Built with React 18, TypeScript, Tailwind CSS, Supabase backend, and deployed on Vercel.
 
-## Key Commands
+**📚 Full Documentation**: [docs/INDEX.md](docs/INDEX.md)
+
+## Quick Commands
 
 ### Development
-- `npm run dev` - Start the development server (Vite)
-- `npm run build` - Build the application for production
-- `npm run preview` - Preview the production build locally
-- `npm run lint` - Run ESLint to check for code issues
+- `npm run dev` - Start dev server
+- `npm run build` - Production build
+- `npm run lint` - Check code quality
 
 ### Testing
-- `npm run test:e2e` - Run Playwright end-to-end tests
-- The e2e tests are configured to run against `http://localhost:5173`
+- `npm run test:e2e` - Run E2E tests
+- `npm run test:e2e:ui` - Interactive test UI
+- `npm run test:create-user` - Create safe test user
+- `npm run test:cleanup-users` - Clean test database
 
-### Branch Protection & Security
-- `npm run setup:branch-protection` - Configure GitHub branch protection for main branch
-- `npm run verify:branch-protection` - Verify branch protection configuration
-- See `docs/branch-protection.md` for detailed setup and security guidelines
+### Database & Security
+- `npm run setup:branch-protection` - Configure GitHub branch protection
+- `npm run prod:list-users` - Audit production users (read-only)
+- `npm run health:check` - Monitor email health
 
-### Platform-specific Development Servers
-- `./start-linux.sh` - Start development server on Linux
-- `./start-windows.ps1` - Start development server on Windows (PowerShell)
+**Details**: [docs/dev/TESTING.md](docs/dev/TESTING.md), [docs/dev/DATABASE.md](docs/dev/DATABASE.md)
 
-## Architecture
+## Specialized Agents
 
-### Core Application Structure
-- **Entry Point**: `src/main.tsx` renders the main App component
-- **Main Component**: `src/App.tsx` contains the primary application logic and state management
-- **Component Architecture**: Uses a modular component-based structure with clear separation of concerns
+Delegate to specialized agents for focused workflows:
 
-### Key Components
-- **ModeSelection** (`src/components/ModeSelection.tsx`): Initial learning direction selection (Russian→Italian or Italian→Russian)
-- **Header** (`src/components/Header.tsx`): Navigation bar with controls for dark mode, shuffle, direction toggle, and restart
-- **FlashCard** (`src/components/FlashCard.tsx`): Main flashcard interface for word learning
-- **ProgressBar** (`src/components/ProgressBar.tsx`): Visual progress tracking sidebar
+- **test-runner** - E2E test execution and debugging
+- **e2e-test-generator** - Create new test coverage
+- **git-github-manager** - Complex Git workflows, PRs, commits
+- **database-cleanup-guardian** - User/data cleanup and maintenance
+- **security-auditor** - Security checks before production deploys
+- **deployment-verifier** - Verify deployments and production health
+- **markdown-beautifier** - Format documentation beautifully
 
-### Data Management
-- **Words Dataset**: `src/data/words.ts` contains 300 Russian-Italian word pairs organized by categories
-- **Categories**: nouns, verbs, colors, family, numbers, time, body, animals, weather, adjectives, transport, places, food, clothing, common, objects, emotions, professions, sports, nature, arts, entertainment, communication, events, health, directions, days, months, seasons, location
-- **Shuffle Function**: `getShuffledWords()` provides randomized word order
+**See**: `.claude/agents/` for detailed agent documentation
 
-### State Management
-- **AppState Interface**: Defined in `src/types/index.ts` with:
-  - `currentWordIndex`: Current position in word array
-  - `userInput`: User's typed answer
-  - `showAnswer`: Whether to reveal the correct answer
-  - `progress`: Tracking correct/wrong answers and streaks
-  - `learningDirection`: 'ru-it' or 'it-ru'
-  - `darkMode`: UI theme toggle
-  - `shuffleMode`: Random word order toggle
+## Skills
 
-### Hooks
-- **useKeyboard** (`src/hooks/useKeyboard.ts`): Custom hook for keyboard shortcuts and navigation
+Reusable patterns and guidelines available via skills:
 
-### Styling and UI
-- **Tailwind CSS**: Primary styling framework with dark mode support
-- **Framer Motion**: Animations and transitions between flashcards
-- **Dark Mode**: Persistent theme stored in localStorage
+- **react-component-generator** - Create React components following project patterns
+- **database-migration-creator** - Supabase schema changes and migrations
+- **git-commit-formatter** - Conventional commit messages
+- **supabase-query-helper** - Type-safe database queries
+- **test-case-writer** - Playwright E2E test creation
 
-## Features
+**See**: `.claude/skills/` for skill details
 
-### Learning Modes
-- **Russian → Italian**: Learn Italian translations of Russian words
-- **Italian → Russian**: Learn Russian translations of Italian words
-- **Bidirectional Support**: Switch between modes during learning
+## Documentation
 
-### Progress Tracking
-- **Statistics**: Correct/wrong answer counts and current streak
-- **Completion Tracking**: Set of completed word IDs
-- **Visual Progress**: Progress bar showing current position and statistics
+All detailed information organized in `/docs`:
 
-### User Experience
-- **Keyboard Navigation**: Arrow keys, Enter for submit, and various shortcuts
-- **Shuffle Mode**: Randomize word order for varied practice
-- **Dark/Light Theme**: Persistent theme preference
-- **Responsive Design**: Works on mobile and desktop
+- **[Documentation Index](docs/INDEX.md)** - Central navigation hub
+- **[Architecture](docs/dev/ARCHITECTURE.md)** - Components, state, hooks, data flow
+- **[Testing](docs/dev/TESTING.md)** - E2E tests, authentication testing, email safety
+- **[Database](docs/dev/DATABASE.md)** - Supabase schema, queries, maintenance
+- **[Deployment](docs/dev/DEPLOYMENT.md)** - Vercel, CI/CD, environments
+- **[Authentication](docs/dev/AUTHENTICATION.md)** - OAuth flows, user management
+- **[Code Standards](docs/dev/CODE_STANDARDS.md)** - TypeScript, React, styling conventions
 
-## Development Notes
+## ⚠️ Critical Safety Rules
 
-### Technology Stack
-- **React 18** with TypeScript
-- **Vite** for build tooling and development server
-- **Tailwind CSS** for styling
-- **Framer Motion** for animations
-- **Lucide React** for icons
-- **Playwright** for end-to-end testing
+### Email Bounce Prevention (TOP PRIORITY)
+- **NEVER** use fake/throwaway emails (@test.com, @mailinator.com, etc.)
+- **ALWAYS** use test database for development (`slhyzoupwluxgasvapoc`)
+- **ALWAYS** create test users with `npm run test:create-user`
+- High bounce rates **restrict** Supabase email sending
 
-### Build Configuration
-- **Base Path**: Configured for both Vercel (`/`) and GitHub Pages (`/italian-flashcards/`)
-- **Optimizations**: Excludes `lucide-react` from dependency optimization
+### Database Safety
+- **Test DB**: `slhyzoupwluxgasvapoc.supabase.co` (safe for testing)
+- **Production DB**: `gjftooyqkmijlvqbkwdr.supabase.co` (NEVER test against this)
+- Local `.env.local` already points to test database
 
-### Testing Setup
-- **Playwright Config**: Located in `playwright.config.ts`
-- **Test Directory**: `e2e/` contains end-to-end tests
-- **Test Server**: Automatically starts dev server on port 5173
-- **Create new test, if new code is added**: Add a new test file to `e2e/`, if you think it is necessary.
+**Details**: [docs/dev/DATABASE.md](docs/dev/DATABASE.md), [docs/TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md)
 
-### E2E Authentication Testing
-- **Complete Guide**: See `docs/E2E_AUTHENTICATION_TESTING.md` for comprehensive documentation
-- **Quick Summary**:
-  - Uses real Supabase authentication with separate test database
-  - Tests run against Vercel Preview deployments in CI
-  - Test user: `test-e2e@example.com` / `TestPassword123!`
-  - All 8 authentication tests passing as of 2025-10-04
-- **Key Files**:
-  - Tests: `e2e/real-auth.spec.ts`
-  - Workflow: `.github/workflows/pr-e2e-tests.yml`
-  - Auth Context: `src/contexts/AuthContext.tsx`
-
-### Email & Authentication Testing
-
-**IMPORTANT**: Email bounce prevention is critical for maintaining Supabase email sending privileges.
-
-**For Testing Authentication**:
-- Use test database: `https://slhyzoupwluxgasvapoc.supabase.co`
-- Create test users: `npm run test:create-user`
-- Never use fake email addresses in any database
-- See: `docs/TESTING_BEST_PRACTICES.md`
-
-**Database Configuration**:
-- **Test Database** (default in `.env.local`): Safe for all development and testing
-- **Production Database** (`.env.production.local`): Only for final verification
-
-**Available Scripts**:
-```bash
-npm run test:create-user        # Create test user safely
-npm run test:cleanup-users      # Clean test database (dry-run)
-npm run prod:list-users         # Audit production users
-npm run prod:delete-users       # Delete specific users (with confirmation)
-npm run prod:cleanup-users      # Preview production cleanup
-```
-
-**Why This Matters**:
-- High email bounce rates can suspend Supabase email sending
-- Throwaway domains (@test.com, @mailinator.com) cause bounces
-- Email validation now blocks these patterns automatically
-- Regular cleanup prevents accumulation of test users
-
-**Prevention Measures**:
-- ✅ Email validator in `src/lib/emailValidator.ts` blocks 14 throwaway domains
-- ✅ Local development uses test database by default
-- ✅ Warning comments in `src/components/auth/LoginForm.tsx`
-- ✅ Automated cleanup scripts available
-
-**Documentation**:
-- `docs/TESTING_BEST_PRACTICES.md` - Complete testing guidelines
-- `docs/E2E_AUTHENTICATION_TESTING.md` - E2E test setup
-- `docs/CLEANUP_PROCEDURES.md` - Maintenance procedures
-- `cleanup/bounce-logs-check.md` - Monitoring guide
-
-### Code Style
-- **ESLint**: Configured with React and TypeScript rules
-- **TypeScript**: Strict configuration with separate configs for app and node environments
-
-## Data Structure
-
-### Word Interface
-```typescript
-interface Word {
-  id: number;
-  russian: string;
-  italian: string;
-  category?: string;
-}
-```
-
-### Learning State
-- Progress is tracked per session but not persisted between browser sessions
-- Dark mode preference is stored in localStorage
-- No user authentication or cloud storage currently implemented
-
-# Communication Style
+## Communication Style
 
 Always communicate in simple, clear English:
 - Use short, straightforward sentences
-- Explain technical terms when you must use them
-- Use plain language instead of complex vocabulary
+- Explain technical terms when necessary
+- Avoid complex vocabulary
 - Keep explanations concise and easy to understand
 
-## Future Development Considerations
+---
 
-The project includes a detailed plan (`plan.md`) for backend integration with Supabase, user authentication, and persistent progress tracking. This plan outlines migration to a full-stack architecture with user accounts and database storage.
+**Need Help?** Check [docs/INDEX.md](docs/INDEX.md) for complete documentation navigation.
