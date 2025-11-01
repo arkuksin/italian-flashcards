@@ -1,0 +1,87 @@
+{
+  "modeSelection": {
+    "title": "Italienische Lernkarten",
+    "subtitle": "Meistern Sie 300 wichtige italienische Wörter mit interaktiven Lernkarten",
+    "chooseDirection": "Wählen Sie Ihre Lernrichtung:",
+    "modes": {
+      "ruToIt": {
+        "title": "Russisch zu Italienisch",
+        "description": "Lernen Sie Italienisch vom Russischen"
+      },
+      "itToRu": {
+        "title": "Italienisch zu Russisch",
+        "description": "Lernen Sie Russisch vom Italienischen"
+      }
+    },
+    "features": {
+      "keyboard": {
+        "title": "Vollständige Tastaturunterstützung",
+        "description": "Navigation mit Pfeiltasten, Absenden mit Enter"
+      },
+      "progress": {
+        "title": "Fortschrittsverfolgung",
+        "description": "Überwachen Sie Genauigkeit, Serien und Fortschritt"
+      },
+      "design": {
+        "title": "Schönes Design",
+        "description": "Dunkelmodus, Animationen und flüssige UX"
+      }
+    }
+  },
+  "flashcard": {
+    "typeAnswer": "Geben Sie Ihre Antwort ein...",
+    "checkAnswer": "Antwort prüfen",
+    "showAnswer": "Antwort zeigen",
+    "nextCard": "Nächste Karte",
+    "translateToItalian": "Übersetzen Sie ins Italienische:",
+    "translateToRussian": "Übersetzen Sie ins Russische:",
+    "inputPlaceholder": "Geben Sie Ihre Übersetzung ein...",
+    "correctAnswer": "Richtige Antwort:",
+    "yourAnswer": "Ihre Antwort",
+    "mastery": {
+      "title": "Beherrschungsgrad",
+      "levels": {
+        "0": "Neu",
+        "1": "Anfänger",
+        "2": "Lernen",
+        "3": "Üben",
+        "4": "Fortgeschritten",
+        "5": "Gemeistert"
+      }
+    },
+    "feedback": {
+      "correct": "Richtig!",
+      "incorrect": "Nicht ganz richtig"
+    },
+    "navigation": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "progress": "{{current}} von {{total}}"
+    },
+    "shortcuts": "Verwenden Sie ← / → zum Navigieren, Eingabe zum Absenden"
+  },
+  "feedback": {
+    "correct": "Richtig!",
+    "incorrect": "Falsch",
+    "wellDone": "Gut gemacht!",
+    "keepGoing": "Weiter so!",
+    "almostThere": "Fast richtig!"
+  },
+  "progress": {
+    "title": "Fortschritt",
+    "wordsLearned": "Gelernte Wörter",
+    "accuracy": "Genauigkeit",
+    "streak": "Serie",
+    "currentStreak": "Aktuelle Serie",
+    "longestStreak": "Längste Serie",
+    "masteryLevel": "Beherrschungsniveau",
+    "totalWords": "Wörter insgesamt",
+    "completedWords": "Abgeschlossene Wörter"
+  },
+  "session": {
+    "title": "Lernsitzung",
+    "cardsCompleted": "Abgeschlossene Karten",
+    "correctAnswers": "Richtige Antworten",
+    "timeSpent": "Verbrachte Zeit"
+  }
+}

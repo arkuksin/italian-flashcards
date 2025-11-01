@@ -1,0 +1,34 @@
+{
+  "title": "Настройки",
+  "sections": {
+    "appearance": {
+      "title": "Внешний вид",
+      "darkMode": "Темная тема",
+      "darkModeDescription": "Включить темную тему"
+    },
+    "learning": {
+      "title": "Настройки обучения",
+      "defaultDirection": "Направление обучения по умолчанию",
+      "shuffleMode": "Режим перемешивания",
+      "shuffleModeDescription": "Случайный порядок карточек",
+      "dailyGoal": "Ежедневная цель",
+      "dailyGoalDescription": "Количество слов для изучения в день"
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "enabled": "Включить уведомления",
+      "dailyReminder": "Ежедневное напоминание"
+    },
+    "language": {
+      "title": "Язык интерфейса",
+      "description": "Выберите предпочитаемый язык",
+      "select": "Выбрать язык"
+    }
+  },
+  "languages": {
+    "en": "Английский",
+    "ru": "Русский",
+    "it": "Итальянский",
+    "de": "Немецкий"
+  }
+}

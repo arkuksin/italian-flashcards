@@ -22,7 +22,12 @@ export type DbLearningSession = Database['public']['Tables']['learning_sessions'
 export type DbLearningSessionInsert = Database['public']['Tables']['learning_sessions']['Insert']
 export type DbLearningSessionUpdate = Database['public']['Tables']['learning_sessions']['Update']
 
+export type DbUserPreferences = Database['public']['Tables']['user_preferences']['Row']
+export type DbUserPreferencesInsert = Database['public']['Tables']['user_preferences']['Insert']
+export type DbUserPreferencesUpdate = Database['public']['Tables']['user_preferences']['Update']
+
 export type LearningDirection = 'ru-it' | 'it-ru';
+export type SupportedLanguage = 'en' | 'ru' | 'it' | 'de';
 
 export interface AppState {
   currentWordIndex: number;

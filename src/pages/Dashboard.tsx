@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { ModeSelection } from '../components/ModeSelection'
 import { Header } from '../components/Header'
 import { FlashCard } from '../components/FlashCard'
@@ -23,6 +24,7 @@ import { AppState, LearningDirection, Word } from '../types'
  * - Dark mode, shuffle, and other settings
  */
 export const Dashboard: React.FC = () => {
+  const { t } = useTranslation('dashboard')
   const { user } = useAuth()
   const {
     progress: dbProgress,
@@ -182,7 +184,7 @@ export const Dashboard: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading your progress...</p>
+          <p className="text-gray-600 dark:text-gray-300">{t('loading')}</p>
         </div>
       </div>
     )
@@ -204,7 +206,7 @@ export const Dashboard: React.FC = () => {
             <div className="max-w-4xl mx-auto mb-8">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  Welcome back, {user?.email}!
+                  {t('welcome', { name: user?.email?.split('@')[0] || '' })}
                 </h1>
                 <Statistics />
               </div>
@@ -236,7 +238,7 @@ export const Dashboard: React.FC = () => {
                     className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
                     data-testid="session-active"
                   >
-                    Active session · {state.learningDirection === 'ru-it' ? 'Italian from Russian' : 'Russian from Italian'}
+                    {t('session.active')} · {state.learningDirection === 'ru-it' ? t('session.ruToIt') : t('session.itToRu')}
                   </span>
                 </div>
               )}

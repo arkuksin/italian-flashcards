@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 
 interface ModeSelectionProps {
@@ -8,6 +9,8 @@ interface ModeSelectionProps {
 }
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) => {
+  const { t } = useTranslation('learning');
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6">
       <motion.div
@@ -32,16 +35,16 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
           >
-            Italian FlashCards
+            {t('modeSelection.title')}
           </motion.h1>
-          
+
           <motion.p
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="text-lg text-gray-600 dark:text-gray-400"
           >
-            Master 300 essential Italian words with interactive flashcards
+            {t('modeSelection.subtitle')}
           </motion.p>
         </div>
 
@@ -53,7 +56,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
           className="space-y-6"
         >
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-8">
-            Choose your learning direction:
+            {t('modeSelection.chooseDirection')}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -73,7 +76,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
                   Italiano
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Learn Italian from Russian
+                  {t('modeSelection.modes.ruToIt.description')}
                 </p>
               </div>
             </motion.button>
@@ -94,7 +97,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
                   Русский
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Learn Russian from Italian
+                  {t('modeSelection.modes.itToRu.description')}
                 </p>
               </div>
             </motion.button>
@@ -110,18 +113,18 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
         >
           <div className="space-y-2">
             <div className="text-2xl">⌨️</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">Full Keyboard Support</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Navigate with arrow keys, submit with Enter</p>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.keyboard.title')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.keyboard.description')}</p>
           </div>
           <div className="space-y-2">
             <div className="text-2xl">📊</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">Progress Tracking</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor accuracy, streaks, and completion</p>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.progress.title')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.progress.description')}</p>
           </div>
           <div className="space-y-2">
             <div className="text-2xl">🎨</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">Beautiful Design</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Dark mode, animations, and smooth UX</p>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.design.title')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.design.description')}</p>
           </div>
         </motion.div>
       </motion.div>

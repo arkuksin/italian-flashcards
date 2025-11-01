@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { UserProfile } from './auth/UserProfile';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -23,7 +25,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleDirection,
   onRestart,
 }) => {
-  const directionText = learningDirection === 'ru-it' ? 'Русский → Italiano' : 'Italiano → Русский';
+  const { t } = useTranslation('common');
+  const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
 
   return (
     <motion.header
@@ -37,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          FlashCards
+          {t('app.shortTitle')}
         </motion.h1>
         <motion.div
           className="flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium"
@@ -54,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          title="Toggle learning direction (Ctrl+T)"
+          title={t('tooltips.toggleDirection')}
         >
           <ArrowLeftRight className="w-5 h-5" />
         </motion.button>
@@ -68,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          title="Toggle shuffle mode (Ctrl+S)"
+          title={t('tooltips.toggleShuffle')}
         >
           <Shuffle className="w-5 h-5" />
         </motion.button>
@@ -78,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           whileHover={{ scale: 1.1, rotate: 180 }}
           whileTap={{ scale: 0.9 }}
-          title="Restart session (Ctrl+R)"
+          title={t('tooltips.restartSession')}
           data-testid="restart-button"
         >
           <RotateCcw className="w-5 h-5" />
@@ -89,9 +92,13 @@ export const Header: React.FC<HeaderProps> = ({
           className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
+          title={t('tooltips.toggleDarkMode')}
         >
           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </motion.button>
+
+        {/* Language Switcher */}
+        <LanguageSwitcher compact />
 
         {/* User Profile with Logout */}
         <div className="ml-2 pl-2 border-l border-gray-300 dark:border-gray-600">

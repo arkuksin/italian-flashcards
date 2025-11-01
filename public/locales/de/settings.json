@@ -1,0 +1,34 @@
+{
+  "title": "Einstellungen",
+  "sections": {
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "darkMode": "Dunkelmodus",
+      "darkModeDescription": "Dunkles Design aktivieren"
+    },
+    "learning": {
+      "title": "Lerneinstellungen",
+      "defaultDirection": "Standard-Lernrichtung",
+      "shuffleMode": "Zufallsmodus",
+      "shuffleModeDescription": "Kartenlänge zufällig",
+      "dailyGoal": "Tagesziel",
+      "dailyGoalDescription": "Anzahl der Wörter pro Tag zu lernen"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "enabled": "Benachrichtigungen aktivieren",
+      "dailyReminder": "Tägliche Erinnerung"
+    },
+    "language": {
+      "title": "Sprache der Benutzeroberfläche",
+      "description": "Wählen Sie Ihre bevorzugte Sprache",
+      "select": "Sprache auswählen"
+    }
+  },
+  "languages": {
+    "en": "Englisch",
+    "ru": "Russisch",
+    "it": "Italienisch",
+    "de": "Deutsch"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "app": {
+    "title": "Italian FlashCards",
+    "shortTitle": "FlashCards"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "actions": {
+    "continue": "Continue",
+    "start": "Start Session",
+    "submit": "Submit",
+    "next": "Next",
+    "previous": "Previous",
+    "restart": "Restart",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "offline": "You are offline",
+    "syncing": "Syncing data...",
+    "syncSuccess": "Data synchronized"
+  },
+  "direction": {
+    "ruToIt": "Russian → Italian",
+    "itToRu": "Italian → Russian",
+    "toggle": "Toggle learning direction"
+  },
+  "tooltips": {
+    "toggleDirection": "Toggle learning direction (Ctrl+T)",
+    "toggleShuffle": "Toggle shuffle mode (Ctrl+S)",
+    "restartSession": "Restart session (Ctrl+R)",
+    "toggleDarkMode": "Toggle dark mode"
+  },
+  "userProfile": {
+    "signedInWith": "Signed in with",
+    "privacyPolicy": "Privacy Policy",
+    "signOut": "Sign Out",
+    "signingOut": "Signing out..."
+  }
+}

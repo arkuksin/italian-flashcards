@@ -1,0 +1,49 @@
+{
+  "app": {
+    "title": "Italienische Lernkarten",
+    "shortTitle": "Lernkarten"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "actions": {
+    "continue": "Weiter",
+    "start": "Sitzung starten",
+    "submit": "Absenden",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "restart": "Neu starten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Bestätigen"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "warning": "Warnung",
+    "offline": "Sie sind offline",
+    "syncing": "Daten werden synchronisiert...",
+    "syncSuccess": "Daten synchronisiert"
+  },
+  "direction": {
+    "ruToIt": "Russisch → Italienisch",
+    "itToRu": "Italienisch → Russisch",
+    "toggle": "Lernrichtung wechseln"
+  },
+  "tooltips": {
+    "toggleDirection": "Lernrichtung wechseln (Strg+T)",
+    "toggleShuffle": "Zufallsmodus umschalten (Strg+S)",
+    "restartSession": "Sitzung neu starten (Strg+R)",
+    "toggleDarkMode": "Dunkelmodus umschalten"
+  },
+  "userProfile": {
+    "signedInWith": "Angemeldet mit",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "signOut": "Abmelden",
+    "signingOut": "Abmeldung..."
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { TrendingUp, Target, Award, Zap } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
 
@@ -12,6 +13,7 @@ import { useProgress } from '../hooks/useProgress'
  * - Mastered words count
  */
 export const Statistics: React.FC = () => {
+  const { t } = useTranslation('dashboard')
   const { getStats, loading, error, isOnline } = useProgress()
 
   if (loading) {
@@ -28,28 +30,28 @@ export const Statistics: React.FC = () => {
   const statCards = [
     {
       icon: Target,
-      label: 'Words Studied',
+      label: t('overview.wordsLearned'),
       value: stats.totalWordsStudied,
       color: 'text-blue-600 dark:text-blue-400',
       bgColor: 'bg-blue-50 dark:bg-blue-900/20',
     },
     {
       icon: TrendingUp,
-      label: 'Accuracy',
+      label: t('overview.accuracy'),
       value: `${stats.accuracy}%`,
       color: 'text-green-600 dark:text-green-400',
       bgColor: 'bg-green-50 dark:bg-green-900/20',
     },
     {
       icon: Zap,
-      label: 'Current Streak',
+      label: t('overview.currentStreak'),
       value: stats.currentStreak,
       color: 'text-orange-600 dark:text-orange-400',
       bgColor: 'bg-orange-50 dark:bg-orange-900/20',
     },
     {
       icon: Award,
-      label: 'Mastered',
+      label: t('stats.mastered'),
       value: stats.masteredWords,
       color: 'text-purple-600 dark:text-purple-400',
       bgColor: 'bg-purple-50 dark:bg-purple-900/20',
@@ -61,7 +63,7 @@ export const Statistics: React.FC = () => {
       {!isOnline && (
         <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
           <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            ⚠️ Offline mode - Changes will sync when connection is restored
+            ⚠️ {t('stats.offlineMode')}
           </p>
         </div>
       )}
@@ -97,13 +99,13 @@ export const Statistics: React.FC = () => {
       {/* Additional Progress Details */}
       <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="text-gray-600 dark:text-gray-400 mb-1">Total Attempts</div>
+          <div className="text-gray-600 dark:text-gray-400 mb-1">{t('stats.totalAttempts')}</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-white">
             {stats.totalAttempts}
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="text-gray-600 dark:text-gray-400 mb-1">In Progress</div>
+          <div className="text-gray-600 dark:text-gray-400 mb-1">{t('stats.inProgress')}</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-white">
             {stats.wordsInProgress}
           </div>

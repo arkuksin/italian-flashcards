@@ -1,0 +1,87 @@
+{
+  "modeSelection": {
+    "title": "Flashcard Italiane",
+    "subtitle": "Impara 300 parole italiane essenziali con flashcard interattive",
+    "chooseDirection": "Scegli la tua direzione di apprendimento:",
+    "modes": {
+      "ruToIt": {
+        "title": "Russo a Italiano",
+        "description": "Impara l'italiano dal russo"
+      },
+      "itToRu": {
+        "title": "Italiano a Russo",
+        "description": "Impara il russo dall'italiano"
+      }
+    },
+    "features": {
+      "keyboard": {
+        "title": "Supporto completo tastiera",
+        "description": "Naviga con le frecce, invia con Invio"
+      },
+      "progress": {
+        "title": "Tracciamento progressi",
+        "description": "Monitora precisione, serie e completamento"
+      },
+      "design": {
+        "title": "Design elegante",
+        "description": "Tema scuro, animazioni e UX fluida"
+      }
+    }
+  },
+  "flashcard": {
+    "typeAnswer": "Digita la tua risposta...",
+    "checkAnswer": "Controlla risposta",
+    "showAnswer": "Mostra risposta",
+    "nextCard": "Prossima carta",
+    "translateToItalian": "Traduci in italiano:",
+    "translateToRussian": "Traduci in russo:",
+    "inputPlaceholder": "Scrivi la tua traduzione...",
+    "correctAnswer": "Risposta corretta:",
+    "yourAnswer": "La tua risposta",
+    "mastery": {
+      "title": "Livello di padronanza",
+      "levels": {
+        "0": "Nuovo",
+        "1": "Principiante",
+        "2": "Apprendimento",
+        "3": "Pratica",
+        "4": "Avanzato",
+        "5": "Padroneggiato"
+      }
+    },
+    "feedback": {
+      "correct": "Corretto!",
+      "incorrect": "Non del tutto corretto"
+    },
+    "navigation": {
+      "previous": "Precedente",
+      "next": "Successivo",
+      "progress": "{{current}} di {{total}}"
+    },
+    "shortcuts": "Usa ← / → per navigare, Invio per inviare"
+  },
+  "feedback": {
+    "correct": "Corretto!",
+    "incorrect": "Sbagliato",
+    "wellDone": "Ottimo lavoro!",
+    "keepGoing": "Continua così!",
+    "almostThere": "Quasi giusto!"
+  },
+  "progress": {
+    "title": "Progressi",
+    "wordsLearned": "Parole imparate",
+    "accuracy": "Precisione",
+    "streak": "Serie",
+    "currentStreak": "Serie attuale",
+    "longestStreak": "Serie più lunga",
+    "masteryLevel": "Livello di padronanza",
+    "totalWords": "Parole totali",
+    "completedWords": "Parole completate"
+  },
+  "session": {
+    "title": "Sessione di apprendimento",
+    "cardsCompleted": "Carte completate",
+    "correctAnswers": "Risposte corrette",
+    "timeSpent": "Tempo trascorso"
+  }
+}
