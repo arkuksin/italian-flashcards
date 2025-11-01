@@ -112,30 +112,19 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(userProfileButton).toBeVisible({ timeout: 10000 })
     await userProfileButton.click()
 
-    // Wait for dropdown animation to complete (especially important for Firefox)
-    await page.waitForTimeout(500)
+    // Wait for dropdown and backdrop to be fully rendered
+    const dropdown = page.getByTestId('user-profile-dropdown')
+    await expect(dropdown).toBeVisible({ timeout: 10000 })
 
     const logoutButton = page.getByTestId('logout-button')
     await expect(logoutButton).toBeVisible({ timeout: 10000 })
 
-    // Use Promise.race to wait for either URL change or force click and wait
-    // This handles both fast (Chromium/WebKit) and slow (Firefox in CI) scenarios
-    const logoutPromise = page.waitForURL('**/login', { timeout: 60000 })
-
-    // Force click to ensure it works even if dropdown is still animating
-    await logoutButton.click({ force: true })
-
-    // Wait for either the URL to change or timeout with better error info
-    try {
-      await logoutPromise
-    } catch (e) {
-      // If timeout, check if we're already on login page
-      if (!page.url().includes('/login')) {
-        console.error('❌ Logout failed - Current URL:', page.url())
-        throw e // Re-throw if not on login page
-      }
-      console.log('⚠️ Already on login page after logout')
-    }
+    // For Firefox: Use Promise.all to click and wait for navigation simultaneously
+    // This ensures we don't miss the navigation event
+    await Promise.all([
+      page.waitForURL('**/login', { timeout: 60000 }),
+      logoutButton.click({ force: true }),
+    ])
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })
