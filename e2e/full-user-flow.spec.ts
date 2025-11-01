@@ -112,23 +112,26 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(userProfileButton).toBeVisible({ timeout: 10000 })
     await userProfileButton.click()
 
+    // Wait for dropdown animation to complete (especially important for Firefox)
+    await page.waitForTimeout(500)
+
     const logoutButton = page.getByTestId('logout-button')
     await expect(logoutButton).toBeVisible({ timeout: 10000 })
 
-    // Click logout and wait for navigation separately (not Promise.all)
-    // This is more reliable as logout involves async API call + auth state update
-    await logoutButton.click()
+    // Use Promise.race to wait for either URL change or force click and wait
+    // This handles both fast (Chromium/WebKit) and slow (Firefox in CI) scenarios
+    const logoutPromise = page.waitForURL('**/login', { timeout: 60000 })
 
-    // Give the logout API call time to complete
-    await page.waitForTimeout(2000)
+    // Force click to ensure it works even if dropdown is still animating
+    await logoutButton.click({ force: true })
 
-    // Wait for redirect to login with extended timeout for slower browsers
-    // Use try-catch with fallback check in case already on login page
+    // Wait for either the URL to change or timeout with better error info
     try {
-      await page.waitForURL('**/login', { timeout: 60000 })
+      await logoutPromise
     } catch (e) {
       // If timeout, check if we're already on login page
       if (!page.url().includes('/login')) {
+        console.error('❌ Logout failed - Current URL:', page.url())
         throw e // Re-throw if not on login page
       }
       console.log('⚠️ Already on login page after logout')
