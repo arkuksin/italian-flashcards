@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext'
 import { LoadingSpinner } from '../ui/LoadingSpinner'
 import { Mail, Lock, Eye, EyeOff, Github } from 'lucide-react'
@@ -23,6 +24,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
+  const { t } = useTranslation('auth');
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -44,7 +46,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       if (isSignUp) {
         const emailValidation = isValidProductionEmail(email)
         if (!emailValidation.valid) {
-          setError(emailValidation.warning || 'Please use a valid email address')
+          setError(emailValidation.warning || t('messages.invalidEmail'))
           setLoading(false)
           return
         }
@@ -57,13 +59,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       if (result.error) {
         setError(result.error.message)
       } else if (isSignUp) {
-        setSuccessMessage('Account created! Please check your email for verification.')
+        setSuccessMessage(t('messages.accountCreated'))
         setIsSignUp(false)
         setEmail('')
         setPassword('')
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
+      setError(t('messages.loginFailed'))
     } finally {
       setLoading(false)
     }
@@ -82,7 +84,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
         setError(result.error.message)
       }
     } catch (err) {
-      setError('Social login failed. Please try again.')
+      setError(t('messages.socialLoginFailed'))
     } finally {
       setLoading(false)
     }
@@ -100,10 +102,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Italian Flashcards
+              {t('title')}
             </h1>
             <p className="text-gray-600 dark:text-gray-300" data-testid="auth-form-subtitle">
-              {isSignUp ? 'Create your account' : 'Sign in to continue'}
+              {isSignUp ? t('subtitle.signUp') : t('subtitle.signIn')}
             </p>
           </div>
 
@@ -131,7 +133,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
+                {t('form.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -141,7 +143,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Enter your email"
+                  placeholder={t('form.emailPlaceholder')}
                   required
                   disabled={loading}
                   data-testid="email-input"
@@ -152,7 +154,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Password
+                {t('form.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -162,7 +164,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Enter your password"
+                  placeholder={t('form.passwordPlaceholder')}
                   required
                   disabled={loading}
                   data-testid="password-input"
@@ -188,7 +190,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
               {loading ? (
                 <LoadingSpinner size="small" />
               ) : (
-                isSignUp ? 'Create Account' : 'Sign In'
+                isSignUp ? t('actions.signUp') : t('actions.signIn')
               )}
             </button>
           </form>
@@ -201,7 +203,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  Or continue with
+                  {t('actions.orContinueWith')}
                 </span>
               </div>
             </div>
@@ -220,7 +222,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                <span className="ml-2">Google</span>
+                <span className="ml-2">{t('providers.google')}</span>
               </button>
 
               <button
@@ -231,7 +233,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
                 data-testid="github-login-button"
               >
                 <Github className="w-5 h-5" />
-                <span className="ml-2">GitHub</span>
+                <span className="ml-2">{t('providers.github')}</span>
               </button>
             </div>
           </div>
@@ -249,16 +251,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
               disabled={loading}
               data-testid="toggle-auth-mode"
             >
-              {isSignUp
-                ? 'Already have an account? Sign in'
-                : "Don't have an account? Sign up"
-              }
+              {isSignUp ? t('toggle.toSignIn') : t('toggle.toSignUp')}
             </button>
           </div>
         </div>
         <div className="text-center mt-4">
           <Link to="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:underline">
-            Privacy Policy
+            {t('privacyPolicy')}
           </Link>
         </div>
       </motion.div>

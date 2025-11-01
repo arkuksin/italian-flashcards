@@ -1,0 +1,49 @@
+{
+  "app": {
+    "title": "Flashcard Italiane",
+    "shortTitle": "Flashcard"
+  },
+  "navigation": {
+    "dashboard": "Pannello di controllo",
+    "settings": "Impostazioni",
+    "logout": "Esci"
+  },
+  "actions": {
+    "continue": "Continua",
+    "start": "Inizia sessione",
+    "submit": "Invia",
+    "next": "Successivo",
+    "previous": "Precedente",
+    "restart": "Ricomincia",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "confirm": "Conferma"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "warning": "Avviso",
+    "offline": "Sei offline",
+    "syncing": "Sincronizzazione dati...",
+    "syncSuccess": "Dati sincronizzati"
+  },
+  "direction": {
+    "ruToIt": "Russo → Italiano",
+    "itToRu": "Italiano → Russo",
+    "toggle": "Cambia direzione di apprendimento"
+  },
+  "tooltips": {
+    "toggleDirection": "Cambia direzione di apprendimento (Ctrl+T)",
+    "toggleShuffle": "Attiva/disattiva modalità casuale (Ctrl+S)",
+    "restartSession": "Ricomincia sessione (Ctrl+R)",
+    "toggleDarkMode": "Attiva/disattiva tema scuro"
+  },
+  "userProfile": {
+    "signedInWith": "Accesso effettuato con",
+    "privacyPolicy": "Politica sulla privacy",
+    "signOut": "Esci",
+    "signingOut": "Disconnessione..."
+  }
+}

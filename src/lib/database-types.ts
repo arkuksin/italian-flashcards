@@ -83,6 +83,44 @@ export type Database = {
           learning_direction?: string
         }
       }
+      user_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          dark_mode: boolean
+          default_learning_direction: string
+          shuffle_mode: boolean
+          daily_goal: number
+          notification_enabled: boolean
+          language_preference: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          dark_mode?: boolean
+          default_learning_direction?: string
+          shuffle_mode?: boolean
+          daily_goal?: number
+          notification_enabled?: boolean
+          language_preference?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          dark_mode?: boolean
+          default_learning_direction?: string
+          shuffle_mode?: boolean
+          daily_goal?: number
+          notification_enabled?: boolean
+          language_preference?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

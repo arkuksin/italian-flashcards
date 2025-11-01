@@ -1,0 +1,49 @@
+{
+  "app": {
+    "title": "Итальянские Карточки",
+    "shortTitle": "Карточки"
+  },
+  "navigation": {
+    "dashboard": "Панель управления",
+    "settings": "Настройки",
+    "logout": "Выйти"
+  },
+  "actions": {
+    "continue": "Продолжить",
+    "start": "Начать сессию",
+    "submit": "Отправить",
+    "next": "Следующий",
+    "previous": "Предыдущий",
+    "restart": "Начать заново",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "confirm": "Подтвердить"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Предупреждение",
+    "offline": "Вы не в сети",
+    "syncing": "Синхронизация данных...",
+    "syncSuccess": "Данные синхронизированы"
+  },
+  "direction": {
+    "ruToIt": "Русский → Итальянский",
+    "itToRu": "Итальянский → Русский",
+    "toggle": "Изменить направление обучения"
+  },
+  "tooltips": {
+    "toggleDirection": "Изменить направление обучения (Ctrl+T)",
+    "toggleShuffle": "Переключить режим перемешивания (Ctrl+S)",
+    "restartSession": "Начать сессию заново (Ctrl+R)",
+    "toggleDarkMode": "Переключить темную тему"
+  },
+  "userProfile": {
+    "signedInWith": "Вход выполнен через",
+    "privacyPolicy": "Политика конфиденциальности",
+    "signOut": "Выйти",
+    "signingOut": "Выход..."
+  }
+}

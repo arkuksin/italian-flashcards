@@ -1,0 +1,34 @@
+{
+  "title": "Impostazioni",
+  "sections": {
+    "appearance": {
+      "title": "Aspetto",
+      "darkMode": "Tema scuro",
+      "darkModeDescription": "Abilita tema scuro"
+    },
+    "learning": {
+      "title": "Preferenze di apprendimento",
+      "defaultDirection": "Direzione di apprendimento predefinita",
+      "shuffleMode": "Modalità casuale",
+      "shuffleModeDescription": "Ordine casuale delle carte",
+      "dailyGoal": "Obiettivo giornaliero",
+      "dailyGoalDescription": "Numero di parole da imparare al giorno"
+    },
+    "notifications": {
+      "title": "Notifiche",
+      "enabled": "Abilita notifiche",
+      "dailyReminder": "Promemoria giornaliero"
+    },
+    "language": {
+      "title": "Lingua dell'interfaccia",
+      "description": "Scegli la tua lingua preferita",
+      "select": "Seleziona lingua"
+    }
+  },
+  "languages": {
+    "en": "Inglese",
+    "ru": "Russo",
+    "it": "Italiano",
+    "de": "Tedesco"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "welcome": "Willkommen zurück, {{name}}!",
+  "welcomeDefault": "Willkommen zurück!",
+  "loading": "Fortschritt wird geladen...",
+  "overview": {
+    "title": "Übersicht",
+    "totalWords": "Wörter insgesamt",
+    "wordsLearned": "Gelernte Wörter",
+    "accuracy": "Genauigkeit",
+    "currentStreak": "Aktuelle Serie"
+  },
+  "session": {
+    "active": "Aktive Sitzung",
+    "ruToIt": "Italienisch vom Russischen",
+    "itToRu": "Russisch vom Italienischen"
+  },
+  "stats": {
+    "mastered": "Gemeistert",
+    "offlineMode": "Offline-Modus - Änderungen werden bei wiederhergestellter Verbindung synchronisiert",
+    "totalAttempts": "Versuche insgesamt",
+    "inProgress": "In Bearbeitung"
+  },
+  "categories": {
+    "title": "Kategorien",
+    "food": "Essen",
+    "family": "Familie",
+    "colors": "Farben",
+    "numbers": "Zahlen",
+    "time": "Zeit",
+    "body": "Körper",
+    "travel": "Reisen",
+    "places": "Orte",
+    "meals": "Mahlzeiten"
+  },
+  "mastery": {
+    "title": "Beherrschungsstatus",
+    "new": "Neu",
+    "inProgress": "In Bearbeitung",
+    "mastered": "Beherrscht"
+  },
+  "recentActivity": {
+    "title": "Letzte Aktivität",
+    "noActivity": "Keine aktuelle Aktivität",
+    "practiceToday": "Üben Sie heute, um zu beginnen!"
+  },
+  "quickActions": {
+    "title": "Schnellaktionen",
+    "startSession": "Sitzung starten",
+    "reviewWords": "Wörter wiederholen",
+    "viewStats": "Statistiken anzeigen"
+  }
+}

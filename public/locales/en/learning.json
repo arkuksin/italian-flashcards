@@ -1,0 +1,87 @@
+{
+  "modeSelection": {
+    "title": "Italian FlashCards",
+    "subtitle": "Master 300 essential Italian words with interactive flashcards",
+    "chooseDirection": "Choose your learning direction:",
+    "modes": {
+      "ruToIt": {
+        "title": "Russian to Italian",
+        "description": "Learn Italian from Russian"
+      },
+      "itToRu": {
+        "title": "Italian to Russian",
+        "description": "Learn Russian from Italian"
+      }
+    },
+    "features": {
+      "keyboard": {
+        "title": "Full Keyboard Support",
+        "description": "Navigate with arrow keys, submit with Enter"
+      },
+      "progress": {
+        "title": "Progress Tracking",
+        "description": "Monitor accuracy, streaks, and completion"
+      },
+      "design": {
+        "title": "Beautiful Design",
+        "description": "Dark mode, animations, and smooth UX"
+      }
+    }
+  },
+  "flashcard": {
+    "typeAnswer": "Type your answer...",
+    "checkAnswer": "Check Answer",
+    "showAnswer": "Show Answer",
+    "nextCard": "Next Card",
+    "translateToItalian": "Translate to Italian:",
+    "translateToRussian": "Translate to Russian:",
+    "inputPlaceholder": "Type your translation...",
+    "correctAnswer": "Correct answer:",
+    "yourAnswer": "Your answer",
+    "mastery": {
+      "title": "Mastery Level",
+      "levels": {
+        "0": "New",
+        "1": "Beginner",
+        "2": "Learning",
+        "3": "Practicing",
+        "4": "Advanced",
+        "5": "Mastered"
+      }
+    },
+    "feedback": {
+      "correct": "Correct!",
+      "incorrect": "Not quite right"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "progress": "{{current}} of {{total}}"
+    },
+    "shortcuts": "Use ← / → to navigate, Enter to submit"
+  },
+  "feedback": {
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "wellDone": "Well done!",
+    "keepGoing": "Keep going!",
+    "almostThere": "Almost there!"
+  },
+  "progress": {
+    "title": "Progress",
+    "wordsLearned": "Words Learned",
+    "accuracy": "Accuracy",
+    "streak": "Streak",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "masteryLevel": "Mastery Level",
+    "totalWords": "Total Words",
+    "completedWords": "Completed Words"
+  },
+  "session": {
+    "title": "Learning Session",
+    "cardsCompleted": "Cards Completed",
+    "correctAnswers": "Correct Answers",
+    "timeSpent": "Time Spent"
+  }
+}

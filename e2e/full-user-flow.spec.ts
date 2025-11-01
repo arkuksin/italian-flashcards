@@ -112,27 +112,19 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(userProfileButton).toBeVisible({ timeout: 10000 })
     await userProfileButton.click()
 
+    // Wait for dropdown and backdrop to be fully rendered
+    const dropdown = page.getByTestId('user-profile-dropdown')
+    await expect(dropdown).toBeVisible({ timeout: 10000 })
+
     const logoutButton = page.getByTestId('logout-button')
     await expect(logoutButton).toBeVisible({ timeout: 10000 })
 
-    // Click logout and wait for navigation separately (not Promise.all)
-    // This is more reliable as logout involves async API call + auth state update
-    await logoutButton.click()
-
-    // Give the logout API call time to complete
-    await page.waitForTimeout(2000)
-
-    // Wait for redirect to login with extended timeout for slower browsers
-    // Use try-catch with fallback check in case already on login page
-    try {
-      await page.waitForURL('**/login', { timeout: 60000 })
-    } catch (e) {
-      // If timeout, check if we're already on login page
-      if (!page.url().includes('/login')) {
-        throw e // Re-throw if not on login page
-      }
-      console.log('⚠️ Already on login page after logout')
-    }
+    // For Firefox: Use Promise.all to click and wait for navigation simultaneously
+    // This ensures we don't miss the navigation event
+    await Promise.all([
+      page.waitForURL('**/login', { timeout: 60000 }),
+      logoutButton.click({ force: true }),
+    ])
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })

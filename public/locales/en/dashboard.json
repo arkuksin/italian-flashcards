@@ -1,0 +1,52 @@
+{
+  "welcome": "Welcome back, {{name}}!",
+  "welcomeDefault": "Welcome back!",
+  "loading": "Loading your progress...",
+  "overview": {
+    "title": "Overview",
+    "totalWords": "Total Words",
+    "wordsLearned": "Words Learned",
+    "accuracy": "Accuracy",
+    "currentStreak": "Current Streak"
+  },
+  "session": {
+    "active": "Active session",
+    "ruToIt": "Italian from Russian",
+    "itToRu": "Russian from Italian"
+  },
+  "stats": {
+    "mastered": "Mastered",
+    "offlineMode": "Offline mode - Changes will sync when connection is restored",
+    "totalAttempts": "Total Attempts",
+    "inProgress": "In Progress"
+  },
+  "categories": {
+    "title": "Categories",
+    "food": "Food",
+    "family": "Family",
+    "colors": "Colors",
+    "numbers": "Numbers",
+    "time": "Time",
+    "body": "Body",
+    "travel": "Travel",
+    "places": "Places",
+    "meals": "Meals"
+  },
+  "mastery": {
+    "title": "Mastery Status",
+    "new": "New",
+    "inProgress": "In Progress",
+    "mastered": "Mastered"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "noActivity": "No recent activity",
+    "practiceToday": "Practice today to get started!"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "startSession": "Start Session",
+    "reviewWords": "Review Words",
+    "viewStats": "View Statistics"
+  }
+}

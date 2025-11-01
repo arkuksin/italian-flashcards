@@ -129,27 +129,21 @@ test.describe('Statistics Consistency', () => {
     const profileButton = page.locator('[data-testid="user-profile-button"]')
     if (await profileButton.isVisible()) {
       await profileButton.click()
-      await page.waitForTimeout(500)
+
+      // Wait for dropdown to be fully visible
+      const dropdown = page.getByTestId('user-profile-dropdown')
+      await expect(dropdown).toBeVisible({ timeout: 10_000 })
     }
 
     const signOutButton = page.locator('[data-testid="logout-button"]')
     await expect(signOutButton).toBeVisible({ timeout: 10_000 })
-    await signOutButton.click()
 
-    // Wait for logout API call to complete
-    await page.waitForTimeout(2_000)
-
-    // Wait for redirect to login page with extended timeout
-    // Use try-catch with fallback check in case already on login page
-    try {
-      await page.waitForURL('**/login', { timeout: 60_000 })
-    } catch (e) {
-      // If timeout, check if we're already on login page
-      if (!page.url().includes('/login')) {
-        throw e // Re-throw if not on login page
-      }
-      console.log('⚠️ Already on login page after logout')
-    }
+    // Use Promise.all to click and wait for navigation simultaneously
+    // This prevents race conditions where navigation completes before we start waiting
+    await Promise.all([
+      page.waitForURL('**/login', { timeout: 60_000 }),
+      signOutButton.click({ force: true }),
+    ])
 
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')

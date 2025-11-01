@@ -1,0 +1,34 @@
+{
+  "title": "Settings",
+  "sections": {
+    "appearance": {
+      "title": "Appearance",
+      "darkMode": "Dark Mode",
+      "darkModeDescription": "Enable dark theme"
+    },
+    "learning": {
+      "title": "Learning Preferences",
+      "defaultDirection": "Default Learning Direction",
+      "shuffleMode": "Shuffle Mode",
+      "shuffleModeDescription": "Randomize card order",
+      "dailyGoal": "Daily Goal",
+      "dailyGoalDescription": "Number of words to learn per day"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enabled": "Enable Notifications",
+      "dailyReminder": "Daily Reminder"
+    },
+    "language": {
+      "title": "Interface Language",
+      "description": "Choose your preferred language",
+      "select": "Select Language"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "ru": "Russian",
+    "it": "Italian",
+    "de": "German"
+  }
+}

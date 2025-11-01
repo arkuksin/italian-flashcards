@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 import { User, LogOut, ChevronDown, Shield } from 'lucide-react'
@@ -14,6 +15,7 @@ import { User, LogOut, ChevronDown, Shield } from 'lucide-react'
  * Uses fixed positioning to ensure dropdown appears above all other elements.
  */
 export const UserProfile: React.FC = () => {
+  const { t } = useTranslation('common')
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
@@ -173,7 +175,7 @@ export const UserProfile: React.FC = () => {
               {user.app_metadata?.provider && (
                 <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Signed in with{' '}
+                    {t('userProfile.signedInWith')}{' '}
                     <span className="font-semibold capitalize">
                       {user.app_metadata.provider}
                     </span>
@@ -189,7 +191,7 @@ export const UserProfile: React.FC = () => {
                   className="w-full flex items-center space-x-2 px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >
                   <Shield className="w-4 h-4" />
-                  <span>Privacy Policy</span>
+                  <span>{t('userProfile.privacyPolicy')}</span>
                 </Link>
 
                 {/* Logout Button */}
@@ -200,7 +202,7 @@ export const UserProfile: React.FC = () => {
                   data-testid="logout-button"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>{isLoggingOut ? 'Signing out...' : 'Sign Out'}</span>
+                  <span>{isLoggingOut ? t('userProfile.signingOut') : t('userProfile.signOut')}</span>
                 </button>
               </div>
             </motion.div>

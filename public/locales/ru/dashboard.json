@@ -1,0 +1,52 @@
+{
+  "welcome": "С возвращением, {{name}}!",
+  "welcomeDefault": "С возвращением!",
+  "loading": "Загрузка прогресса...",
+  "overview": {
+    "title": "Обзор",
+    "totalWords": "Всего слов",
+    "wordsLearned": "Слов выучено",
+    "accuracy": "Точность",
+    "currentStreak": "Текущая серия"
+  },
+  "session": {
+    "active": "Активная сессия",
+    "ruToIt": "Итальянский с русского",
+    "itToRu": "Русский с итальянского"
+  },
+  "stats": {
+    "mastered": "Освоено",
+    "offlineMode": "Офлайн режим - Изменения синхронизируются при восстановлении соединения",
+    "totalAttempts": "Всего попыток",
+    "inProgress": "В процессе"
+  },
+  "categories": {
+    "title": "Категории",
+    "food": "Еда",
+    "family": "Семья",
+    "colors": "Цвета",
+    "numbers": "Числа",
+    "time": "Время",
+    "body": "Тело",
+    "travel": "Путешествия",
+    "places": "Места",
+    "meals": "Приемы пищи"
+  },
+  "mastery": {
+    "title": "Статус владения",
+    "new": "Новые",
+    "inProgress": "В процессе",
+    "mastered": "Освоено"
+  },
+  "recentActivity": {
+    "title": "Недавняя активность",
+    "noActivity": "Нет недавней активности",
+    "practiceToday": "Попрактикуйтесь сегодня, чтобы начать!"
+  },
+  "quickActions": {
+    "title": "Быстрые действия",
+    "startSession": "Начать сессию",
+    "reviewWords": "Повторить слова",
+    "viewStats": "Посмотреть статистику"
+  }
+}

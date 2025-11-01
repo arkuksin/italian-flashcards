@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
 import { Word, LearningDirection, WordProgress } from '../types';
 
@@ -32,6 +33,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   totalWords,
   wordProgress,
 }) => {
+  const { t, ready } = useTranslation('learning');
   const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
   const targetWord = learningDirection === 'ru-it' ? word.italian : word.russian;
   const canGoNext = currentIndex < totalWords - 1;
@@ -51,8 +53,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   }
 
   const getMasteryLabel = (level: number) => {
-    const labels = ['New', 'Beginner', 'Learning', 'Practicing', 'Advanced', 'Mastered']
-    return labels[Math.min(level, 5)]
+    return t(`flashcard.mastery.levels.${Math.min(level, 5)}`)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +81,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             className="mb-4"
           >
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-              {learningDirection === 'ru-it' ? 'Translate to Italian:' : 'Translate to Russian:'}
+              {learningDirection === 'ru-it' ? t('flashcard.translateToItalian') : t('flashcard.translateToRussian')}
             </p>
             <h2
               className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2"
@@ -107,7 +108,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                           ? getMasteryColor(wordProgress.mastery_level)
                           : 'bg-gray-200 dark:bg-gray-700'
                       }`}
-                      title={`Mastery Level: ${getMasteryLabel(wordProgress.mastery_level)}`}
+                      title={`${t('flashcard.mastery.title')}: ${getMasteryLabel(wordProgress.mastery_level)}`}
                     />
                   ))}
                 </div>
@@ -127,7 +128,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               value={userInput}
               onChange={(e) => onInputChange(e.target.value)}
               disabled={showAnswer}
-              placeholder="Type your translation..."
+              placeholder={t('flashcard.inputPlaceholder')}
               className="w-full px-6 py-4 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               autoFocus
             />
@@ -146,7 +147,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         </form>
 
         {/* Answer Display */}
-        {showAnswer && (
+        {showAnswer && ready && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -162,24 +163,24 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
                     <Check className="w-6 h-6 mr-2" />
-                    <span className="text-lg font-semibold">Correct!</span>
+                    <span className="text-lg font-semibold">{t('flashcard.feedback.correct')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center text-red-700 dark:text-red-300">
                     <X className="w-6 h-6 mr-2" />
-                    <span className="text-lg font-semibold">Not quite right</span>
+                    <span className="text-lg font-semibold">{t('flashcard.feedback.incorrect')}</span>
                   </div>
                 )}
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Correct answer:</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('flashcard.correctAnswer')}</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
                   {targetWord}
                 </p>
                 {!isCorrect && userInput.trim() && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Your answer: <span className="font-medium">{userInput}</span>
+                    {t('flashcard.yourAnswer')}: <span className="font-medium">{userInput}</span>
                   </p>
                 )}
               </div>
@@ -198,12 +199,12 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             data-testid="previous-button"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
-            Previous
+            {t('flashcard.navigation.previous')}
           </motion.button>
 
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {currentIndex + 1} of {totalWords}
+              {t('flashcard.navigation.progress', { current: currentIndex + 1, total: totalWords })}
             </p>
           </div>
 
@@ -215,7 +216,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             whileTap={canGoNext ? { scale: 0.95 } : {}}
             data-testid="next-button"
           >
-            Next
+            {t('flashcard.navigation.next')}
             <ChevronRight className="w-5 h-5 ml-2" />
           </motion.button>
         </div>
@@ -228,11 +229,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         transition={{ delay: 0.5 }}
         className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400"
       >
-        <p>
-          Use <kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">←</kbd> / 
-          <kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs mx-1">→</kbd> to navigate, 
-          <kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs ml-1">Enter</kbd> to submit
-        </p>
+        <p>{t('flashcard.shortcuts')}</p>
       </motion.div>
     </motion.div>
   );

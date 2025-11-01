@@ -1,0 +1,87 @@
+{
+  "modeSelection": {
+    "title": "Итальянские Карточки",
+    "subtitle": "Освойте 300 основных итальянских слов с интерактивными карточками",
+    "chooseDirection": "Выберите направление обучения:",
+    "modes": {
+      "ruToIt": {
+        "title": "Русский на Итальянский",
+        "description": "Изучайте итальянский с русского"
+      },
+      "itToRu": {
+        "title": "Итальянский на Русский",
+        "description": "Изучайте русский с итальянского"
+      }
+    },
+    "features": {
+      "keyboard": {
+        "title": "Полная поддержка клавиатуры",
+        "description": "Навигация стрелками, отправка Enter"
+      },
+      "progress": {
+        "title": "Отслеживание прогресса",
+        "description": "Контроль точности, серий и завершения"
+      },
+      "design": {
+        "title": "Красивый дизайн",
+        "description": "Темная тема, анимации и плавный UX"
+      }
+    }
+  },
+  "flashcard": {
+    "typeAnswer": "Введите ваш ответ...",
+    "checkAnswer": "Проверить ответ",
+    "showAnswer": "Показать ответ",
+    "nextCard": "Следующая карточка",
+    "translateToItalian": "Переведите на итальянский:",
+    "translateToRussian": "Переведите на русский:",
+    "inputPlaceholder": "Введите перевод...",
+    "correctAnswer": "Правильный ответ:",
+    "yourAnswer": "Ваш ответ",
+    "mastery": {
+      "title": "Уровень мастерства",
+      "levels": {
+        "0": "Новое",
+        "1": "Начинающий",
+        "2": "Изучение",
+        "3": "Практика",
+        "4": "Продвинутый",
+        "5": "Освоено"
+      }
+    },
+    "feedback": {
+      "correct": "Правильно!",
+      "incorrect": "Не совсем верно"
+    },
+    "navigation": {
+      "previous": "Предыдущее",
+      "next": "Следующее",
+      "progress": "{{current}} из {{total}}"
+    },
+    "shortcuts": "Используйте ← / → для навигации, Enter для отправки"
+  },
+  "feedback": {
+    "correct": "Правильно!",
+    "incorrect": "Неправильно",
+    "wellDone": "Отлично!",
+    "keepGoing": "Продолжайте!",
+    "almostThere": "Почти!"
+  },
+  "progress": {
+    "title": "Прогресс",
+    "wordsLearned": "Слов выучено",
+    "accuracy": "Точность",
+    "streak": "Серия",
+    "currentStreak": "Текущая серия",
+    "longestStreak": "Longest Streak",
+    "masteryLevel": "Уровень мастерства",
+    "totalWords": "Всего слов",
+    "completedWords": "Завершенных слов"
+  },
+  "session": {
+    "title": "Учебная сессия",
+    "cardsCompleted": "Карточек завершено",
+    "correctAnswers": "Правильных ответов",
+    "timeSpent": "Времени потрачено"
+  }
+}

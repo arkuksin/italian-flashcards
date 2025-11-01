@@ -1,0 +1,52 @@
+{
+  "welcome": "Bentornato, {{name}}!",
+  "welcomeDefault": "Bentornato!",
+  "loading": "Caricamento progresso...",
+  "overview": {
+    "title": "Panoramica",
+    "totalWords": "Parole totali",
+    "wordsLearned": "Parole imparate",
+    "accuracy": "Precisione",
+    "currentStreak": "Serie attuale"
+  },
+  "session": {
+    "active": "Sessione attiva",
+    "ruToIt": "Italiano dal russo",
+    "itToRu": "Russo dall'italiano"
+  },
+  "stats": {
+    "mastered": "Padroneggiato",
+    "offlineMode": "Modalità offline - Le modifiche verranno sincronizzate al ripristino della connessione",
+    "totalAttempts": "Tentativi totali",
+    "inProgress": "In corso"
+  },
+  "categories": {
+    "title": "Categorie",
+    "food": "Cibo",
+    "family": "Famiglia",
+    "colors": "Colori",
+    "numbers": "Numeri",
+    "time": "Tempo",
+    "body": "Corpo",
+    "travel": "Viaggi",
+    "places": "Luoghi",
+    "meals": "Pasti"
+  },
+  "mastery": {
+    "title": "Stato di padronanza",
+    "new": "Nuovo",
+    "inProgress": "In corso",
+    "mastered": "Padroneggiato"
+  },
+  "recentActivity": {
+    "title": "Attività recente",
+    "noActivity": "Nessuna attività recente",
+    "practiceToday": "Esercitati oggi per iniziare!"
+  },
+  "quickActions": {
+    "title": "Azioni rapide",
+    "startSession": "Inizia sessione",
+    "reviewWords": "Rivedi parole",
+    "viewStats": "Visualizza statistiche"
+  }
+}
