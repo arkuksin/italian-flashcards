@@ -9,4 +9,10 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  test: {
+    environment: 'node',
+    include: ['scripts/__tests__/**/*.test.ts'],
+    globals: true,
+    hookTimeout: 60000,
+  },
 }));

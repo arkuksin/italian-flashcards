@@ -22,6 +22,8 @@ Welcome to the Italian Flashcards project documentation. This index helps you qu
 - **[Test Database Setup](./TEST_DATABASE_SETUP.md)** - Test environment configuration
 - **[Manual Schema Setup](./MANUAL_SCHEMA_SETUP.md)** - Database schema details
 - **[Cleanup Procedures](./CLEANUP_PROCEDURES.md)** - Database maintenance and user cleanup
+- **[DB Versioning Plan](./DB_Versioning_Plan.md)** - Migration workflow and tooling overview
+- **[Migration Rollbacks](./db-migration-rollbacks.md)** - Recovery steps for failed migrations
 
 ### 🔐 Authentication & Security
 - **[Authentication Guide](./dev/AUTHENTICATION.md)** - OAuth flows, user management
@@ -164,5 +166,5 @@ When adding new documentation:
 
 ---
 
-**Last Updated**: 2025-10-30
+**Last Updated**: 2025-11-01
 **Maintained By**: Project team with Claude Code assistance

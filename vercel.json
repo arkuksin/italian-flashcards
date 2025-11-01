@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "node vercel-build-step.mjs && npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
   "env": {

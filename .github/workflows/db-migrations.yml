@@ -1,0 +1,29 @@
+name: Database migrations check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  migrate-check:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_DB_HOST: ${{ secrets.SUPABASE_DB_HOST }}
+      SUPABASE_DB_PORT: ${{ secrets.SUPABASE_DB_PORT }}
+      SUPABASE_DB_DATABASE: ${{ secrets.SUPABASE_DB_DATABASE }}
+      SUPABASE_DB_USER: ${{ secrets.SUPABASE_DB_USER }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_SSL: ${{ secrets.SUPABASE_DB_SSL }}
+      SUPABASE_DB_SSL_REJECT_UNAUTHORIZED: ${{ secrets.SUPABASE_DB_SSL_REJECT_UNAUTHORIZED }}
+      SUPABASE_DB_SSL_CA_CERT: ${{ secrets.SUPABASE_DB_SSL_CA_CERT }}
+      SUPABASE_DB_SSL_CA_CERT_PATH: ${{ secrets.SUPABASE_DB_SSL_CA_CERT_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run migrate -- --check
