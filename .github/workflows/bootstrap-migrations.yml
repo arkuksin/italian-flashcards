@@ -1,0 +1,27 @@
+name: Bootstrap Migration Tracking (One-Time)
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_DB_HOST: ${{ vars.SUPABASE_DB_HOST }}
+      SUPABASE_DB_PORT: ${{ vars.SUPABASE_DB_PORT }}
+      SUPABASE_DB_DATABASE: ${{ vars.SUPABASE_DB_DATABASE }}
+      SUPABASE_DB_USER: ${{ vars.SUPABASE_DB_USER }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_SSL: ${{ vars.SUPABASE_DB_SSL }}
+      SUPABASE_DB_SSL_REJECT_UNAUTHORIZED: ${{ vars.SUPABASE_DB_SSL_REJECT_UNAUTHORIZED }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - name: Bootstrap schema_version table
+        run: npm run bootstrap:migrations
+      - name: Verify migrations are tracked
+        run: npm run migrate -- --check
