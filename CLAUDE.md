@@ -21,12 +21,18 @@ Italian flashcards application for learning Russian-Italian word pairs. Built wi
 - `npm run test:create-user` - Create safe test user
 - `npm run test:cleanup-users` - Clean test database
 
+### Database Migrations
+- `npm run create:migration "description"` - Create new migration file
+- `npm run migrate` - Apply pending migrations
+- `npm run migrate -- --check` - Validate migrations without applying
+- `npm run bootstrap:migrations` - Track existing migrations
+
 ### Database & Security
 - `npm run setup:branch-protection` - Configure GitHub branch protection
 - `npm run prod:list-users` - Audit production users (read-only)
 - `npm run health:check` - Monitor email health
 
-**Details**: [docs/dev/TESTING.md](docs/dev/TESTING.md), [docs/dev/DATABASE.md](docs/dev/DATABASE.md)
+**Details**: [docs/dev/TESTING.md](docs/dev/TESTING.md), [docs/dev/DATABASE.md](docs/dev/DATABASE.md), [docs/DB_Versioning_Plan.md](docs/DB_Versioning_Plan.md)
 
 ## Specialized Agents
 
