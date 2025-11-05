@@ -90,3 +90,5 @@ scripts/monitor-email-health.js
 # Gemini cache directories
 .gemini/
 mcp-vercel-tools/.gemini/
+/db/migrations/.production.env
+/db/migrations/.test.env
