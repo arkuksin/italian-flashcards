@@ -190,36 +190,48 @@ async function bootstrapSchemaVersion(migrationsDir?: string): Promise<void> {
   await client.connect();
 
   try {
-    console.log('\nEnsuring schema_version table exists...');
-    await ensureSchemaVersionTable(client);
+    // Begin transaction - required for connection pooler in transaction mode
+    await client.query('BEGIN');
 
-    console.log('Checking for already-applied migrations...');
-    const appliedVersions = await fetchAppliedMigrations(client);
+    try {
+      console.log('\nEnsuring schema_version table exists...');
+      await ensureSchemaVersionTable(client);
 
-    let insertedCount = 0;
-    let skippedCount = 0;
+      console.log('Checking for already-applied migrations...');
+      const appliedVersions = await fetchAppliedMigrations(client);
 
-    for (const migration of migrations) {
-      if (appliedVersions.has(migration.version)) {
-        console.log(`  ⊘ Skipped ${migration.filename} (already recorded)`);
-        skippedCount += 1;
-        continue;
+      let insertedCount = 0;
+      let skippedCount = 0;
+
+      for (const migration of migrations) {
+        if (appliedVersions.has(migration.version)) {
+          console.log(`  ⊘ Skipped ${migration.filename} (already recorded)`);
+          skippedCount += 1;
+          continue;
+        }
+
+        // Insert the migration record with execution_time_ms = 0 since it was already applied manually
+        await client.query(
+          `INSERT INTO ${SCHEMA_VERSION_TABLE} (version, description, checksum, execution_time_ms, filename)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [migration.version, migration.description, migration.checksum, 0, migration.filename],
+        );
+        console.log(`  ✔ Inserted ${migration.filename}`);
+        insertedCount += 1;
       }
 
-      // Insert the migration record with execution_time_ms = 0 since it was already applied manually
-      await client.query(
-        `INSERT INTO ${SCHEMA_VERSION_TABLE} (version, description, checksum, execution_time_ms, filename)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [migration.version, migration.description, migration.checksum, 0, migration.filename],
-      );
-      console.log(`  ✔ Inserted ${migration.filename}`);
-      insertedCount += 1;
-    }
+      // Commit transaction
+      await client.query('COMMIT');
 
-    console.log(`\n✅ Bootstrap complete!`);
-    console.log(`   Inserted: ${insertedCount}`);
-    console.log(`   Skipped: ${skippedCount}`);
-    console.log(`   Total: ${migrations.length}`);
+      console.log(`\n✅ Bootstrap complete!`);
+      console.log(`   Inserted: ${insertedCount}`);
+      console.log(`   Skipped: ${skippedCount}`);
+      console.log(`   Total: ${migrations.length}`);
+    } catch (error) {
+      // Rollback on error
+      await client.query('ROLLBACK');
+      throw error;
+    }
   } finally {
     await client.end();
   }
