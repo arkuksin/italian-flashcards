@@ -30,7 +30,8 @@
     "prod:delete-users:dry-run": "node scripts/delete-invalid-users.js --dry-run",
     "prod:cleanup-users": "node scripts/cleanup-test-users.js --database=production --dry-run",
     "health:check": "node scripts/monitor-email-health.js",
-    "test": "node scripts/run-vitest.js"
+    "test": "node scripts/run-vitest.js",
+    "verify:vercel-env": "node scripts/verify-vercel-env.js"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",
