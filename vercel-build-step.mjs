@@ -1,9 +1,3 @@
-import { execSync } from 'node:child_process';
-
-function run(command) {
-  execSync(command, { stdio: 'inherit', env: process.env });
-}
-
 // Database migrations are skipped in Vercel build due to IPv6 connectivity limitations.
 // Both direct connections and connection pooler fail in the Vercel build environment.
 //
