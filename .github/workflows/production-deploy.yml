@@ -36,9 +36,8 @@ jobs:
         run: npm ci
 
       - name: Validate database migrations
-        run: npm run migrate -- --check
+        run: NODE_OPTIONS='--dns-result-order=ipv4first' npm run migrate -- --check
         env:
-          NODE_OPTIONS: --dns-result-order=ipv4first
           SUPABASE_DB_HOST: ${{ secrets.SUPABASE_PROD_DB_HOST }}
           SUPABASE_DB_PORT: ${{ secrets.SUPABASE_PROD_DB_PORT }}
           SUPABASE_DB_DATABASE: ${{ secrets.SUPABASE_PROD_DB_DATABASE }}
