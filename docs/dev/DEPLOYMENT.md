@@ -208,13 +208,31 @@ on:
 
 #### Production Environment
 
+**Application Variables:**
+
 | Variable | Value | Purpose |
 |----------|-------|---------|
 | `VITE_SUPABASE_URL` | `https://gjftooyqkmijlvqbkwdr.supabase.co` | Production database connection |
 | `VITE_SUPABASE_ANON_KEY` | `<production_anon_key>` | Production database authentication |
 | `NODE_ENV` | `production` | Node environment mode |
 
+**Migration Variables (for Vercel Build):**
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Production database host (pooler) |
+| `SUPABASE_DB_PORT` | `6543` | Connection pooler port |
+| `SUPABASE_DB_DATABASE` | `postgres` | Database name |
+| `SUPABASE_DB_USER` | `postgres` | Database user |
+| `SUPABASE_DB_PASSWORD` | `<prod_db_password>` | Production database password |
+| `SUPABASE_DB_SSL` | `true` | Enable SSL |
+| `SUPABASE_DB_SSL_REJECT_UNAUTHORIZED` | `false` | Allow Supabase SSL certificates |
+
+> **Note**: Migrations run automatically during Vercel build via `vercel-build-step.mjs`. See [DB Versioning Plan](../DB_Versioning_Plan.md) for details.
+
 #### Preview Environment (PRs)
+
+**Application Variables:**
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
@@ -222,6 +240,18 @@ on:
 | `VITE_SUPABASE_ANON_KEY` | `<test_anon_key>` | Test database authentication |
 | `NODE_ENV` | `test` | Node environment mode |
 | `VITE_TEST_MODE` | `true` | Enable test mode features |
+
+**Migration Variables (for Vercel Build):**
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Test database host (pooler) |
+| `SUPABASE_DB_PORT` | `6543` | Connection pooler port |
+| `SUPABASE_DB_DATABASE` | `postgres` | Database name |
+| `SUPABASE_DB_USER` | `postgres` | Database user |
+| `SUPABASE_DB_PASSWORD` | `<test_db_password>` | Test database password |
+| `SUPABASE_DB_SSL` | `true` | Enable SSL |
+| `SUPABASE_DB_SSL_REJECT_UNAUTHORIZED` | `false` | Allow Supabase SSL certificates |
 
 #### Development Environment (Optional)
 

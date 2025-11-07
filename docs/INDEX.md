@@ -22,8 +22,9 @@ Welcome to the Italian Flashcards project documentation. This index helps you qu
 - **[Test Database Setup](./TEST_DATABASE_SETUP.md)** - Test environment configuration
 - **[Manual Schema Setup](./MANUAL_SCHEMA_SETUP.md)** - Database schema details
 - **[Cleanup Procedures](./CLEANUP_PROCEDURES.md)** - Database maintenance and user cleanup
-- **[DB Versioning Plan](./DB_Versioning_Plan.md)** - Migration workflow and tooling overview
-- **[Migration Rollbacks](./db-migration-rollbacks.md)** - Recovery steps for failed migrations
+- **[DB Versioning Plan](./DB_Versioning_Plan.md)** - Complete migration system guide
+- **[Migration Credentials Setup](./MIGRATION_CREDENTIALS_SETUP.md)** - GitHub Secrets and Vercel configuration
+- **[Migration Rollbacks](./db-migration-rollbacks.md)** - Recovery steps and rollback patterns
 
 ### 🔐 Authentication & Security
 - **[Authentication Guide](./dev/AUTHENTICATION.md)** - OAuth flows, user management

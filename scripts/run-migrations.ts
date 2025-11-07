@@ -30,6 +30,7 @@ interface MigrationDefinition {
 
 interface RunMigrationsOptions {
   checkOnly?: boolean;
+  verbose?: boolean;
   migrationsDir?: string;
   connectionConfig?: ClientConfig;
   logger?: Logger;
@@ -202,8 +203,22 @@ async function applyMigration(
   client: Client,
   migration: MigrationDefinition,
   checkOnly: boolean,
+  verbose: boolean,
 ): Promise<'applied' | 'skipped'> {
   if (checkOnly) {
+    if (verbose) {
+      console.log(`\n📄 ${migration.filename}`);
+      console.log(`   Version: ${migration.version}`);
+      console.log(`   Description: ${migration.description}`);
+      console.log(`   Checksum: ${migration.checksum.substring(0, 16)}...`);
+      console.log(`\n   SQL Content:`);
+      console.log(`   ${'─'.repeat(80)}`);
+      const sqlLines = migration.sql.split('\n');
+      sqlLines.forEach((line, index) => {
+        console.log(`   ${String(index + 1).padStart(4)} │ ${line}`);
+      });
+      console.log(`   ${'─'.repeat(80)}\n`);
+    }
     return 'skipped';
   }
 
@@ -227,6 +242,7 @@ async function applyMigration(
 
 export async function runMigrations({
   checkOnly = false,
+  verbose = false,
   migrationsDir,
   connectionConfig,
   logger = console,
@@ -265,13 +281,15 @@ export async function runMigrations({
         continue;
       }
 
-      const status = await applyMigration(client, migration, checkOnly);
+      const status = await applyMigration(client, migration, checkOnly, verbose);
       if (status === 'applied') {
         applied.push(migration);
         logger.info(`✔ Applied ${migration.filename}`);
       } else {
         skipped.push(migration);
-        logger.info(`ℹ Would apply ${migration.filename}`);
+        if (!verbose) {
+          logger.info(`ℹ Would apply ${migration.filename}`);
+        }
       }
     }
 
@@ -288,17 +306,25 @@ export async function runMigrations({
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
   if (args.includes('--help') || args.includes('-h')) {
-    console.log(`Usage: tsx scripts/run-migrations.ts [--check] [--dir <path>]\n`);
+    console.log(`Usage: tsx scripts/run-migrations.ts [options]\n`);
+    console.log(`Options:`);
+    console.log(`  --check, --dry-run    Check for pending migrations without applying them`);
+    console.log(`  --verbose, -v         Show detailed SQL content during dry-run`);
+    console.log(`  --dir <path>          Custom migrations directory path`);
+    console.log(`  --help, -h            Show this help message\n`);
     process.exit(0);
   }
 
   let checkOnly = false;
+  let verbose = false;
   let migrationsDir: string | undefined;
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i];
     if (arg === '--check' || arg === '--dry-run') {
       checkOnly = true;
+    } else if (arg === '--verbose' || arg === '-v') {
+      verbose = true;
     } else if (arg === '--dir') {
       const next = args[i + 1];
       if (!next) {
@@ -311,9 +337,14 @@ async function cli(): Promise<void> {
   }
 
   try {
-    const result = await runMigrations({ checkOnly, migrationsDir });
+    const result = await runMigrations({ checkOnly, verbose, migrationsDir });
     if (checkOnly && result.skippedMigrations.length > 0) {
-      console.log(`Found ${result.skippedMigrations.length} pending migrations.`);
+      if (!verbose) {
+        console.log(`\nFound ${result.skippedMigrations.length} pending migrations.`);
+        console.log(`Use --verbose to see SQL content.\n`);
+      } else {
+        console.log(`\n✅ Found ${result.skippedMigrations.length} pending migrations (SQL content shown above).\n`);
+      }
     }
   } catch (error) {
     if (error instanceof MigrationError) {

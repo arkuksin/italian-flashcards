@@ -2,12 +2,18 @@
   "mcpServers": {
     "vercel": {
       "command": "node",
-      "args": ["mcp-vercel-tools/dist/index.js"],
+      "args": [
+        "mcp-vercel-tools/dist/index.js"
+      ],
       "env": {
-        "VERCEL_TOKEN": "${VERCEL_TOKEN}",
-        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}",
-        "VERCEL_PROJECT_ID": "${VERCEL_PROJECT_ID}"
+        "VERCEL_TOKEN": "ufjRDdqAeoxJF5U6r57qxb0F",
+        "VERCEL_TEAM_ID": "team_u6SeJMdPvkQRESdCl2eN7f2F",
+        "VERCEL_PROJECT_ID": "prj_MF9abEzyIQBMVraPsD3K81CXm3o6"
       }
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp"
     }
   }
 }

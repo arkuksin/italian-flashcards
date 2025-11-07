@@ -34,6 +34,107 @@ The migration system uses:
 
 3. **Database Access** - Verify you can connect to the target database
 
+## Connection Pooler Considerations
+
+### Understanding Supabase Connection Options
+
+Supabase offers two ways to connect to your PostgreSQL database:
+
+1. **Direct Connection** - `db.<project-ref>.supabase.co:5432`
+   - Direct TCP connection to PostgreSQL
+   - Full session support
+   - Suitable for long-running operations
+
+2. **Connection Pooler** - `<region>.pooler.supabase.com:6543`
+   - PgBouncer connection pooling
+   - Two modes: **Transaction** and **Session**
+   - Reduces connection overhead
+
+### Transaction Mode vs Session Mode
+
+**Transaction Mode** (Default for Supabase pooler):
+- Each transaction gets a dedicated connection from the pool
+- Connection is released after transaction completes
+- ✅ **Safe for migrations** when transactions are properly wrapped
+- Supports all DDL operations (CREATE, ALTER, DROP)
+- Current project setup uses this mode
+
+**Session Mode**:
+- Connection persists for the entire client session
+- Mimics direct connection behavior
+- May cause issues with PgBouncer in some scenarios
+
+### Migration Runner and Pooler Compatibility
+
+The migration runner is **fully compatible with transaction mode poolers** because:
+
+1. Each migration is wrapped in a `BEGIN...COMMIT` transaction (see `scripts/run-migrations.ts:211-225`)
+2. Connection is held for the entire migration execution
+3. Rollback occurs automatically on failure
+4. `schema_version` tracking is part of the same transaction
+
+**Example from the codebase:**
+```typescript
+// scripts/run-migrations.ts
+await client.query('BEGIN');
+try {
+  await client.query(sql);  // Migration SQL
+  await client.query(trackingSQL);  // Insert into schema_version
+  await client.query('COMMIT');
+} catch (error) {
+  await client.query('ROLLBACK');
+}
+```
+
+### When to Use Direct Connection vs Pooler
+
+**Use Connection Pooler (Transaction Mode):** ✅ Recommended
+- CI/CD environments (GitHub Actions, Vercel)
+- Standard migrations with DDL changes
+- When you need better connection management
+- Current project configuration
+
+**Use Direct Connection:**
+- Very long-running migrations (>5 minutes)
+- Complex administrative operations
+- Troubleshooting connection pooler issues
+- When PgBouncer transaction mode isn't available
+
+### Current Project Configuration
+
+The project is configured to use the **connection pooler in transaction mode**:
+
+```bash
+# .env.local
+SUPABASE_DB_HOST=aws-1-eu-central-1.pooler.supabase.com
+SUPABASE_DB_PORT=6543
+```
+
+This configuration is safe because:
+- Bootstrap script wraps operations in transactions (commit ac1c6bb)
+- Migration runner has transaction support built-in
+- Connection pooler reduces overhead in CI/CD environments
+
+### Troubleshooting Pooler Issues
+
+If you encounter issues with the connection pooler:
+
+1. **Check transaction mode is enabled:**
+   - Supabase Dashboard → Database → Connection Pooling
+   - Verify "Transaction mode" is selected
+
+2. **Test with direct connection:**
+   ```bash
+   # Temporarily use direct connection for debugging
+   SUPABASE_DB_HOST=db.slhyzoupwluxgasvapoc.supabase.co
+   SUPABASE_DB_PORT=5432
+   ```
+
+3. **Common pooler error messages:**
+   - `"prepared statement already exists"` - Use direct connection or ensure proper cleanup
+   - `"server conn crashed?"` - Migration may have timed out, check logs
+   - `"no more connections allowed"` - Connection pool exhausted, retry or increase pool size
+
 ## How Migration Tracking Works
 
 ### The `schema_version` Table
@@ -199,7 +300,7 @@ Vercel builds execute `node vercel-build-step.mjs` before `npm run build`, which
 3. **Get your database credentials:**
    - Go to Supabase Dashboard → Project Settings → Database
    - Copy the connection string details
-   - **Use the direct database connection, not the pooler URL**
+   - **Either direct connection or connection pooler (transaction mode) works** - see [Connection Pooler Considerations](#connection-pooler-considerations) for details
 
 4. **Important Notes:**
    - Preview deployments should connect to a test/staging database
@@ -277,6 +378,269 @@ Before merging a migration PR:
 - [ ] CI validation passes (GitHub Actions)
 - [ ] No checksum mismatches
 - [ ] Rollback procedure documented (if needed)
+
+## Migration Testing Strategy
+
+### Testing Workflow
+
+Follow this workflow when creating and testing migrations:
+
+#### 1. Development Phase
+
+**Before writing SQL:**
+- Understand the current schema state
+- Design the migration approach
+- Consider rollback strategy
+- Document assumptions
+
+**Writing the migration:**
+```bash
+# Create migration file
+npm run create:migration "add user preferences table"
+
+# Write idempotent SQL
+# Add clear comments
+# Include rollback notes
+```
+
+#### 2. Local Testing
+
+**Test on local database:**
+```bash
+# Step 1: Lint for common issues
+npm run migrate:lint
+
+# Step 2: Dry-run validation
+npm run migrate -- --check --verbose
+
+# Step 3: Backup current state (optional)
+# pg_dump $DATABASE_URL > backup_before_migration.sql
+
+# Step 4: Apply migration
+npm run migrate
+
+# Step 5: Test application functionality
+npm run dev
+# Manually test affected features
+
+# Step 6: Verify schema changes
+# psql $DATABASE_URL -c "\d table_name"
+
+# Step 7: Test rollback (if applicable)
+# Create and apply rollback migration
+```
+
+#### 3. Unit Testing
+
+**Run automated migration tests:**
+```bash
+# The project includes unit tests for migrations
+# Located in: scripts/__tests__/run-migrations.test.ts
+
+# Run migration unit tests
+npm test -- scripts/__tests__/run-migrations.test.ts
+
+# Tests validate:
+# - Migration file naming
+# - Checksum generation and validation
+# - Transaction rollback on failure
+# - Migration ordering
+# - Duplicate version detection
+```
+
+#### 4. Integration Testing
+
+**Test with application E2E tests:**
+```bash
+# Run E2E tests against test database with new schema
+npm run test:e2e
+
+# Common test scenarios:
+# - User authentication flows
+# - Data creation and retrieval
+# - Feature-specific functionality
+# - Permission and RLS policies
+```
+
+#### 5. CI/CD Validation
+
+**Automated checks in GitHub Actions:**
+- Migration validation runs on every PR
+- Linting checks for common issues
+- Dry-run ensures migrations can apply
+- Tests run against test database
+
+**What CI validates:**
+```yaml
+# .github/workflows/db-migrations.yml
+- Naming convention compliance
+- SQL syntax validity
+- Idempotency (migrations can be checked multiple times)
+- No checksum conflicts
+- Clean application of pending migrations
+```
+
+#### 6. Staging Deployment
+
+**Test in staging environment:**
+```bash
+# Deploy to Vercel preview
+git push origin feature/add-preferences-table
+
+# Vercel automatically:
+# 1. Runs migrations against staging database
+# 2. Builds application
+# 3. Deploys preview
+
+# Manual verification:
+# - Visit preview URL
+# - Test affected features
+# - Check database schema in Supabase dashboard
+# - Monitor for errors in logs
+```
+
+#### 7. Production Deployment
+
+**Final validation before production:**
+- [ ] All tests pass in staging
+- [ ] Features work as expected
+- [ ] Performance is acceptable
+- [ ] Rollback plan documented
+- [ ] Team notified of deployment
+
+```bash
+# Merge to main triggers production deployment
+git checkout main
+git merge feature/add-preferences-table
+git push origin main
+
+# Monitor deployment:
+# - Watch GitHub Actions workflow
+# - Check Vercel deployment logs
+# - Monitor Supabase database performance
+# - Test critical user flows
+```
+
+### Testing Best Practices
+
+#### Data-Dependent Tests
+
+For migrations that transform data:
+
+```sql
+-- Add test data verification
+DO $$
+DECLARE
+    record_count INT;
+    invalid_count INT;
+BEGIN
+    -- Count total records
+    SELECT COUNT(*) INTO record_count FROM users;
+
+    -- Count records that don't meet expectations
+    SELECT COUNT(*) INTO invalid_count
+    FROM users
+    WHERE email IS NULL OR email = '';
+
+    IF invalid_count > 0 THEN
+        RAISE EXCEPTION 'Found % users with invalid emails', invalid_count;
+    END IF;
+
+    RAISE NOTICE 'Migration validated: % users processed, 0 invalid', record_count;
+END $$;
+```
+
+#### Performance Testing
+
+For large table migrations:
+
+```bash
+# 1. Test with production-like data volume
+# Import production data to staging
+
+# 2. Measure migration time
+time npm run migrate
+
+# 3. Monitor resource usage
+# Check CPU, memory, and IOPS in Supabase dashboard
+
+# 4. Test under load
+# Run migration while simulating application traffic
+```
+
+#### Rollback Testing
+
+Practice rollback procedures:
+
+```bash
+# 1. Apply migration
+npm run migrate
+
+# 2. Create rollback migration
+npm run migrate:create-revert V20250115120000
+
+# 3. Write rollback SQL
+
+# 4. Test rollback on test database
+npm run migrate  # Apply rollback
+
+# 5. Verify state matches pre-migration
+
+# 6. Re-apply original migration
+npm run migrate  # Should work idempotently
+```
+
+### Testing Tools Reference
+
+**Available commands:**
+```bash
+# Linting and validation
+npm run migrate:lint              # Check for common issues
+npm run migrate -- --check        # Dry-run validation
+npm run migrate -- --check --verbose  # Show SQL content
+
+# Execution
+npm run migrate                   # Apply pending migrations
+npm run migrate -- --dir path/to/migrations  # Custom directory
+
+# Testing helpers
+npm run test:create-user          # Create test user
+npm run test:cleanup-users        # Clean test data
+
+# Rollback helpers
+npm run migrate:create-revert V20250115120000  # Generate rollback
+```
+
+**Test databases:**
+```bash
+# Test database (safe for experiments)
+SUPABASE_DB_HOST=aws-1-eu-central-1.pooler.supabase.com
+SUPABASE_PROJECT_REF=slhyzoupwluxgasvapoc
+
+# Production database (never test here!)
+SUPABASE_PROJECT_REF=gjftooyqkmijlvqbkwdr
+```
+
+### When Tests Fail
+
+**Migration validation fails:**
+1. Review error message carefully
+2. Check migration SQL for syntax errors
+3. Verify idempotency (IF EXISTS clauses)
+4. Run linting: `npm run migrate:lint`
+5. Test locally with verbose output
+
+**Application tests fail after migration:**
+1. Check application code uses new schema
+2. Verify RLS policies grant necessary access
+3. Check indexes support required queries
+4. Review error logs for specific issues
+
+**Performance degradation:**
+1. Check for missing indexes
+2. Verify queries are optimized
+3. Consider breaking into smaller migrations
+4. Use EXPLAIN ANALYZE to identify slow queries
 
 ## Troubleshooting
 
@@ -382,6 +746,155 @@ Duplicate migration version detected: V20251105123045
 - Ensure the database is accessible from Vercel (not IP-restricted)
 - Test the migration locally first
 - Check if the database has pending migrations that conflict
+
+#### 9. "Too many connections" error
+
+**Error:**
+```
+Error: too many connections for role "postgres"
+```
+
+**Solution:**
+- Supabase free tier has connection limits (typically 60 connections)
+- Check for connection leaks in application code
+- Use connection pooler instead of direct connection
+- Close connections properly after migration runs
+- Consider upgrading Supabase plan for more connections
+- Check for stuck/idle connections in Supabase dashboard
+
+#### 10. Migration slow performance / timeout
+
+**Issue:** Migration takes minutes to complete or times out
+
+**Solution:**
+- **For large table operations:**
+  - Add indexes after data is loaded, not before
+  - Use batching for UPDATE/INSERT operations (process 1000 rows at a time)
+  - Consider using temporary tables for complex transformations
+
+- **For index creation:**
+  ```sql
+  -- Use CONCURRENTLY to avoid locking
+  CREATE INDEX CONCURRENTLY idx_name ON table_name(column);
+  ```
+
+- **For data migrations:**
+  ```sql
+  -- Batch updates with LIMIT
+  DO $$
+  DECLARE
+    batch_size INT := 1000;
+    rows_affected INT;
+  BEGIN
+    LOOP
+      UPDATE table_name
+      SET column = new_value
+      WHERE id IN (
+        SELECT id FROM table_name
+        WHERE column IS NULL
+        LIMIT batch_size
+      );
+
+      GET DIAGNOSTICS rows_affected = ROW_COUNT;
+      EXIT WHEN rows_affected = 0;
+
+      COMMIT; -- In pl/pgsql block
+      RAISE NOTICE 'Processed % rows', rows_affected;
+    END LOOP;
+  END $$;
+  ```
+
+- **Increase timeout for long migrations:**
+  - Vercel: Build timeout is 15 minutes by default
+  - Local: No timeout, but should complete in reasonable time
+  - Consider splitting into multiple smaller migrations
+
+#### 11. Deadlock detected
+
+**Error:**
+```
+ERROR: deadlock detected
+DETAIL: Process 12345 waits for ShareLock on transaction 67890
+```
+
+**Solution:**
+- Multiple transactions trying to lock same resources
+- Ensure migrations run serially, not in parallel
+- Avoid mixing DDL (ALTER TABLE) with DML (INSERT/UPDATE) in same transaction
+- Order operations consistently: schema changes first, then data
+- If unavoidable, implement retry logic for deadlock-prone operations
+
+#### 12. Connection pooler transaction mode errors
+
+**Error:**
+```
+ERROR: prepared statement "..." already exists
+ERROR: server conn crashed?
+```
+
+**Solution:**
+- These indicate issues with connection pooler in transaction mode
+- **Temporary workaround:** Switch to direct connection:
+  ```bash
+  SUPABASE_DB_HOST=db.slhyzoupwluxgasvapoc.supabase.co
+  SUPABASE_DB_PORT=5432
+  ```
+- Ensure migrations are wrapped in transactions (already done by runner)
+- Avoid prepared statements in migration SQL
+- See [Connection Pooler Considerations](#connection-pooler-considerations) for details
+
+#### 13. Vercel build timeout during migrations
+
+**Issue:** Vercel build fails after 15 minutes due to long-running migration
+
+**Solution:**
+- **Split large migrations:** Break into multiple smaller migrations
+- **Optimize slow operations:**
+  - Create indexes CONCURRENTLY
+  - Batch large data transformations
+  - Remove unnecessary operations
+- **Run manually first:** For very large migrations:
+  1. Apply migration manually to production database
+  2. Commit migration file to git
+  3. Bootstrap tracking: `npm run bootstrap:migrations`
+  4. Deploy application (migration already applied, will be skipped)
+
+#### 14. Migration works locally but fails in CI/CD
+
+**Issue:** Migration passes locally but fails in GitHub Actions or Vercel
+
+**Solution:**
+- **Environment mismatch:**
+  - Verify CI/CD is using same database as local (test vs production)
+  - Check environment variables are correctly set in GitHub Secrets/Vercel
+  - Ensure database schema state is identical
+
+- **Network/connectivity:**
+  - Verify CI/CD can reach Supabase (no IP restrictions)
+  - Check SSL configuration matches
+  - Test connection with verbose logging
+
+- **Timing/concurrency:**
+  - CI may run migrations in different order than expected
+  - Ensure migrations are independent and idempotent
+  - Check for race conditions with parallel deployments
+
+#### 15. Cannot connect with connection pooler port 6543
+
+**Error:**
+```
+ECONNREFUSED to xxx.pooler.supabase.com:6543
+```
+
+**Solution:**
+- Connection pooler may not be enabled for your Supabase project
+- Check Supabase Dashboard → Database → Connection Pooling
+- Enable connection pooling if not already enabled
+- Alternatively, use direct connection on port 5432:
+  ```bash
+  SUPABASE_DB_HOST=db.<project-ref>.supabase.co
+  SUPABASE_DB_PORT=5432
+  ```
 
 ## Bootstrap Existing Migrations
 

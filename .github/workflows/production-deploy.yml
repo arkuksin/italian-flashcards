@@ -35,6 +35,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate database migrations
+        run: npm run migrate -- --check
+        env:
+          SUPABASE_DB_HOST: ${{ secrets.SUPABASE_PROD_DB_HOST }}
+          SUPABASE_DB_PORT: ${{ secrets.SUPABASE_PROD_DB_PORT }}
+          SUPABASE_DB_DATABASE: ${{ secrets.SUPABASE_PROD_DB_DATABASE }}
+          SUPABASE_DB_USER: ${{ secrets.SUPABASE_PROD_DB_USER }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
+          SUPABASE_DB_SSL: ${{ secrets.SUPABASE_PROD_DB_SSL }}
+          SUPABASE_DB_SSL_REJECT_UNAUTHORIZED: ${{ secrets.SUPABASE_PROD_DB_SSL_REJECT_UNAUTHORIZED }}
+
       - name: Build application
         run: npm run build
         env:

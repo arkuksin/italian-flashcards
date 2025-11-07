@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "migrate": "tsx scripts/run-migrations.ts",
+    "migrate:lint": "tsx scripts/lint-migrations.ts",
+    "migrate:create-revert": "tsx scripts/create-revert-migration.ts",
     "create:migration": "tsx scripts/create-migration.ts",
     "bootstrap:migrations": "tsx scripts/bootstrap-schema-version.ts",
     "predev": "npm run migrate",
