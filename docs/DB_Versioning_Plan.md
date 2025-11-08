@@ -289,18 +289,20 @@ Vercel builds execute `node vercel-build-step.mjs` before `npm run build`, which
 
    | Variable Name | Value | Environments |
    |--------------|-------|--------------|
-   | `SUPABASE_DB_HOST` | `db.<project-ref>.supabase.co` | Production, Preview |
-   | `SUPABASE_DB_PORT` | `5432` | Production, Preview |
+   | `SUPABASE_DB_HOST` | `aws-0-eu-central-1.pooler.supabase.com` (or your region) | Production, Preview |
+   | `SUPABASE_DB_PORT` | `6543` | Production, Preview |
    | `SUPABASE_DB_DATABASE` | `postgres` | Production, Preview |
-   | `SUPABASE_DB_USER` | `postgres` | Production, Preview |
+   | `SUPABASE_DB_USER` | `postgres.<project-ref>` | Production, Preview |
    | `SUPABASE_DB_PASSWORD` | Your DB password | Production, Preview |
    | `SUPABASE_DB_SSL` | `true` | Production, Preview |
    | `SUPABASE_DB_SSL_REJECT_UNAUTHORIZED` | `false` | Production, Preview |
+   | `NODE_OPTIONS` | `--dns-result-order=ipv4first` | Production, Preview |
 
 3. **Get your database credentials:**
    - Go to Supabase Dashboard → Project Settings → Database
-   - Copy the connection string details
-   - **Either direct connection or connection pooler (transaction mode) works** - see [Connection Pooler Considerations](#connection-pooler-considerations) for details
+   - Under "Connection Pooling", copy the transaction mode pooler URL (port 6543)
+   - **Important:** Use the pooler hostname format and project-qualified username (`postgres.<project-ref>`)
+   - See [Connection Pooler Considerations](#connection-pooler-considerations) for details
 
 4. **Important Notes:**
    - Preview deployments should connect to a test/staging database

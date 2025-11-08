@@ -6,8 +6,8 @@
     "NODE_ENV": "production"
   },
   "github": {
-    "enabled": false,
-    "autoAlias": false
+    "enabled": true,
+    "autoAlias": true
   },
   "rewrites": [
     {

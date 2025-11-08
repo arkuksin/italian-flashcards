@@ -220,15 +220,16 @@ on:
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Production database host (pooler) |
-| `SUPABASE_DB_PORT` | `6543` | Connection pooler port |
+| `SUPABASE_DB_HOST` | `aws-0-eu-central-1.pooler.supabase.com` | Production database pooler host |
+| `SUPABASE_DB_PORT` | `6543` | Transaction mode pooler port (required for migrations) |
 | `SUPABASE_DB_DATABASE` | `postgres` | Database name |
-| `SUPABASE_DB_USER` | `postgres` | Database user |
+| `SUPABASE_DB_USER` | `postgres.gjftooyqkmijlvqbkwdr` | Project-qualified database user (pooler format) |
 | `SUPABASE_DB_PASSWORD` | `<prod_db_password>` | Production database password |
-| `SUPABASE_DB_SSL` | `true` | Enable SSL |
+| `SUPABASE_DB_SSL` | `true` | Enable SSL connection |
 | `SUPABASE_DB_SSL_REJECT_UNAUTHORIZED` | `false` | Allow Supabase SSL certificates |
+| `NODE_OPTIONS` | `--dns-result-order=ipv4first` | Force IPv4 DNS resolution for connectivity |
 
-> **Note**: Migrations run automatically during Vercel build via `vercel-build-step.mjs`. See [DB Versioning Plan](../DB_Versioning_Plan.md) for details.
+> **Note**: Migrations run automatically during Vercel build via `vercel-build-step.mjs`. The build will abort if migrations fail, preventing broken deployments. See [DB Versioning Plan](../DB_Versioning_Plan.md) for details.
 
 #### Preview Environment (PRs)
 
@@ -245,13 +246,14 @@ on:
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Test database host (pooler) |
-| `SUPABASE_DB_PORT` | `6543` | Connection pooler port |
+| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Test database pooler host |
+| `SUPABASE_DB_PORT` | `6543` | Transaction mode pooler port (required for migrations) |
 | `SUPABASE_DB_DATABASE` | `postgres` | Database name |
-| `SUPABASE_DB_USER` | `postgres` | Database user |
+| `SUPABASE_DB_USER` | `postgres.slhyzoupwluxgasvapoc` | Project-qualified database user (pooler format) |
 | `SUPABASE_DB_PASSWORD` | `<test_db_password>` | Test database password |
-| `SUPABASE_DB_SSL` | `true` | Enable SSL |
+| `SUPABASE_DB_SSL` | `true` | Enable SSL connection |
 | `SUPABASE_DB_SSL_REJECT_UNAUTHORIZED` | `false` | Allow Supabase SSL certificates |
+| `NODE_OPTIONS` | `--dns-result-order=ipv4first` | Force IPv4 DNS resolution for connectivity |
 
 #### Development Environment (Optional)
 
