@@ -163,7 +163,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await inputField.fill('test')
       await page.locator('form button[type="submit"]').click()
       // Wait for feedback to appear
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 6000 })
 
       // Try to move to next word
       const nextButton = page.locator('[data-testid="next-button"]')

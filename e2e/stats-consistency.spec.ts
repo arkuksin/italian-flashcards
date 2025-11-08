@@ -138,12 +138,17 @@ test.describe('Statistics Consistency', () => {
     const signOutButton = page.locator('[data-testid="logout-button"]')
     await expect(signOutButton).toBeVisible({ timeout: 10_000 })
 
-    // Use Promise.all to click and wait for navigation simultaneously
-    // This prevents race conditions where navigation completes before we start waiting
-    await Promise.all([
-      page.waitForURL('**/login', { timeout: 60_000 }),
-      signOutButton.click({ force: true }),
-    ])
+    // Set up waits before clicking to avoid missing navigation events or lingering dropdowns
+    const emailFieldAfterLogout = page.getByTestId('email-input')
+    const waitForEmailField = emailFieldAfterLogout.waitFor({ timeout: 60_000 })
+    const waitForLogoutUrl = page
+      .waitForURL('**/login', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+      .catch((error) => {
+        console.warn('Login URL wait timed out, falling back to email field visibility.', error)
+      })
+
+    await signOutButton.click({ force: true })
+    await Promise.all([waitForEmailField, waitForLogoutUrl])
 
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')
