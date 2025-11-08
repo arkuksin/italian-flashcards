@@ -53,7 +53,7 @@ graph TD
 
 1. **Vercel Account** - Set up a Vercel account and project
 2. **GitHub Repository** - Connected to Vercel with appropriate permissions
-3. **Node.js 18+** - For running tests and build processes
+3. **Node.js 20+** - For running tests and build processes
 
 ### Environment Variables
 
