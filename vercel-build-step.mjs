@@ -32,6 +32,11 @@ console.log('\n📦 Vercel Build - Pre-build Database Migration\n');
 console.log('📋 Environment Configuration:');
 console.log(`   - Database Host: ${process.env.SUPABASE_DB_HOST || 'not set'}`);
 console.log(`   - Database Port: ${process.env.SUPABASE_DB_PORT || 'not set'}`);
+console.log(`   - Database Name: ${process.env.SUPABASE_DB_DATABASE || 'not set'}`);
+console.log(`   - Database User: ${process.env.SUPABASE_DB_USER ? `${process.env.SUPABASE_DB_USER.substring(0, 8)}...` : 'not set'}`);
+console.log(`   - Database Password: ${process.env.SUPABASE_DB_PASSWORD ? '[SET]' : 'NOT SET'}`);
+console.log(`   - SSL Enabled: ${process.env.SUPABASE_DB_SSL || 'not set'}`);
+console.log(`   - SSL Reject Unauthorized: ${process.env.SUPABASE_DB_SSL_REJECT_UNAUTHORIZED || 'not set'}`);
 console.log(`   - NODE_OPTIONS: ${process.env.NODE_OPTIONS || 'not set'}`);
 
 try {
