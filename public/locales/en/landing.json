@@ -1,0 +1,174 @@
+{
+  "hero": {
+    "badge": "Built for Italian mastery",
+    "headline": "Master Italian faster with smart flashcards",
+    "subheadline": "AI-assisted spaced repetition, delightful progress moments, and decks handcrafted with Italian educators. Finish a high-impact session in under five minutes.",
+    "primaryCta": "Create free account",
+    "secondaryCta": "Explore demo deck",
+    "checklist": {
+      "ai": "AI-tuned spaced repetition",
+      "sessions": "Bite-sized daily sessions",
+      "progress": "Delightful progress tracking"
+    },
+    "pills": {
+      "studyPlans": "Weekly study plans",
+      "nativeAudio": "Native audio coming soon",
+      "offline": "Works offline as a PWA"
+    },
+    "ariaBenefits": "Key benefits"
+  },
+  "authPanel": {
+    "kicker": "Secure access",
+    "heading": "Log in or get started",
+    "body": "Bring your decks with you. Supabase keeps auth safe."
+  },
+  "features": {
+    "kicker": "Why learners stay",
+    "heading": "Designed for busy Italian learners",
+    "description": "Everything is tuned for the quirks of Italian grammar so you glide from presente to congiuntivo without friction.",
+    "cards": [
+      {
+        "title": "Spaced repetition, tuned for verbs",
+        "description": "Adaptive Leitner buckets prioritize irregolari and reflexive verbs exactly when you start to forget them."
+      },
+      {
+        "title": "Motivating progress heatmaps",
+        "description": "Weekly streaks, celebratory confetti, and a gentle nudge when your cadence slows down."
+      },
+      {
+        "title": "Great on mobile & offline",
+        "description": "Install it as a PWA, sync decks before flights, and keep practicing even on spotty Wi-Fi."
+      }
+    ]
+  },
+  "learning": {
+    "kicker": "Learning science snapshot",
+    "heading": "Built with educators, powered by evidence",
+    "body": "We partnered with language coaches to apply the Leitner system, but layered in AI difficulty detection so the content you nearly forget resurfaces before it fades.",
+    "statsAria": "Key product stats",
+    "stats": [
+      { "label": "Curated verbs", "value": "+320" },
+      { "label": "Avg retention lift", "value": "+42%" },
+      { "label": "Median active streak", "value": "21 days" }
+    ],
+    "timelineBadge": "Leitner + AI blend",
+    "timelineAria": "Preview, practice, review workflow",
+    "timeline": [
+      {
+        "title": "Preview",
+        "description": "Prime your brain with light exposure and friendly mnemonics."
+      },
+      {
+        "title": "Practice",
+        "description": "Short bursts of production + recognition to cement the pattern."
+      },
+      {
+        "title": "Review",
+        "description": "AI difficulty detection slots repeats right before decay begins."
+      }
+    ]
+  },
+  "social": {
+    "kicker": "Social proof",
+    "trustTitle": "Trust badges",
+    "testimonials": [
+      {
+        "quote": "I finally remember subjunctive endings—daily streaks keep me honest.",
+        "author": "Martina · LUISS student"
+      },
+      {
+        "quote": "Better than any deck I cobbled together. Everything is contextual and mobile friendly.",
+        "author": "Adrian · Solo traveler"
+      }
+    ],
+    "badges": [
+      "Loved by 1,200+ self-learners",
+      "Featured in Polyglot Weekly",
+      "Transparently open-source"
+    ]
+  },
+  "ctaBand": {
+    "kicker": "Still curious?",
+    "heading": "Ready to sound more Italian?",
+    "body": "Jump back into your decks or skim the guided demo to see how we scaffold tricky conjugations.",
+    "primaryCta": "Sign in",
+    "secondaryCta": "Try demo deck"
+  },
+  "footer": {
+    "tagline": "Italian Flashcards",
+    "powered": "Built in Rome · Powered by Supabase",
+    "links": {
+      "privacy": "Privacy",
+      "imprint": "Imprint",
+      "contact": "Contact",
+      "status": "Status"
+    },
+    "languageLabel": "Language"
+  },
+  "demo": {
+    "hero": {
+      "kicker": "Guided demo",
+      "heading": "See how a five-minute review feels",
+      "body": "Step through a mini deck featuring high-impact verbs. Each card shows how we combine context, nuance, and confidence tracking."
+    },
+    "cardsTitle": "Sample smart cards",
+    "cardsCaption": "Each preview pairs an Italian verb with the scenario you will actually face.",
+    "labels": {
+      "context": "Context",
+      "tip": "Tip"
+    },
+    "cards": [
+      {
+        "term": "parlare",
+        "translation": "to speak",
+        "context": "Ordering espresso, chatting with classmates",
+        "tip": "Focus on the -are endings: parlo, parli, parla. We color-code endings so you spot the pattern fast."
+      },
+      {
+        "term": "andare",
+        "translation": "to go",
+        "context": "Transit updates, inviting friends out",
+        "tip": "Notice the irregular io vado / noi andiamo pair. The deck surfaces this every few sessions."
+      },
+      {
+        "term": "volere",
+        "translation": "to want",
+        "context": "Making polite requests when traveling",
+        "tip": "Pair volere with conditional phrases (vorrei un biglietto). Shadow native audio to nail intonation."
+      },
+      {
+        "term": "sapere",
+        "translation": "to know",
+        "context": "Sharing knowledge or clarifying info",
+        "tip": "We contrast sapere vs. conoscere so you stop second-guessing yourself mid-sentence."
+      }
+    ],
+    "cardNav": {
+      "previous": "Previous card",
+      "next": "Next card"
+    },
+    "highlightsTitle": "What this demo shows",
+    "highlights": [
+      "Confidence tracking nudges tougher cards sooner.",
+      "Context sentences keep vocabulary grounded in real life.",
+      "Micro reflections after each card reinforce the why."
+    ],
+    "timelineTitle": "Micro session flow",
+    "timeline": [
+      {
+        "title": "Prime",
+        "description": "Glance at the scenario, listen once, and predict the response."
+      },
+      {
+        "title": "Produce",
+        "description": "Answer aloud, flip the card, and compare to the model response."
+      },
+      {
+        "title": "Reflect",
+        "description": "Log how confident you felt so the algorithm adapts."
+      }
+    ],
+    "ctaPrimary": "Sign up to study",
+    "backLink": "Back to landing"
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "hero": {
+    "badge": "Für italienische Meisterschaft gebaut",
+    "headline": "Lerne Italienisch schneller mit smarten Karteikarten",
+    "subheadline": "KI-gestützte Spaced-Repetition, motivierende Fortschrittsmomente und Decks, die wir mit italienischen Lehrkräften kuratiert haben. Schließe eine intensive Session in unter fünf Minuten ab.",
+    "primaryCta": "Kostenlosen Account erstellen",
+    "secondaryCta": "Demo-Deck ansehen",
+    "checklist": {
+      "ai": "Spaced-Repetition mit KI-Feintuning",
+      "sessions": "Kompakte tägliche Sessions",
+      "progress": "Fortschritt mit Wow-Effekt"
+    },
+    "pills": {
+      "studyPlans": "Wöchentliche Lernpläne",
+      "nativeAudio": "Bald: Audio von Muttersprachlern",
+      "offline": "Offline nutzbar als PWA"
+    },
+    "ariaBenefits": "Wichtigste Vorteile"
+  },
+  "authPanel": {
+    "kicker": "Sicherer Zugriff",
+    "heading": "Einloggen oder starten",
+    "body": "Nimm deine Decks überall hin mit. Supabase schützt den Login."
+  },
+  "features": {
+    "kicker": "Warum Lernende bleiben",
+    "heading": "Gemacht für beschäftigte Italienisch-Lernende",
+    "description": "Alles ist auf die Eigenheiten der italienischen Grammatik abgestimmt, damit du mühelos vom Presente zum Congiuntivo gleitest.",
+    "cards": [
+      {
+        "title": "Spaced-Repetition, abgestimmt auf Verben",
+        "description": "Adaptive Leitner-Boxen priorisieren irregolari und reflexive Verben genau dann, wenn du sie zu vergessen drohst."
+      },
+      {
+        "title": "Motivierende Fortschritts-Heatmaps",
+        "description": "Wöchentliche Serien, Konfetti und ein sanfter Stups, wenn das Tempo sinkt."
+      },
+      {
+        "title": "Stark auf Mobilgeräten & offline",
+        "description": "Installiere die PWA, synchronisiere Decks vor dem Flug und übe weiter – selbst bei schwachem WLAN."
+      }
+    ]
+  },
+  "learning": {
+    "kicker": "Lernwissenschaft auf einen Blick",
+    "heading": "Mit Lehrkräften entwickelt, mit Daten belegt",
+    "body": "Wir kombinieren das Leitner-System mit KI-basierter Schwierigkeitsanalyse, damit Karten kurz vor dem Vergessen erneut auftauchen.",
+    "statsAria": "Zentrale Produktkennzahlen",
+    "stats": [
+      { "label": "Kurierte Verben", "value": "+320" },
+      { "label": "Ø Steigerung Behaltensquote", "value": "+42%" },
+      { "label": "Median der aktiven Serie", "value": "21 Tage" }
+    ],
+    "timelineBadge": "Leitner + KI",
+    "timelineAria": "Ablauf: Vorschau – Üben – Wiederholen",
+    "timeline": [
+      {
+        "title": "Vorschau",
+        "description": "Stimme dein Gehirn mit leichter Exposition und Eselsbrücken ein."
+      },
+      {
+        "title": "Üben",
+        "description": "Kurze Phasen aus Produktion und Erkennung verankern das Muster."
+      },
+      {
+        "title": "Wiederholen",
+        "description": "Die KI legt Wiederholungen kurz vor dem Vergessen fest."
+      }
+    ]
+  },
+  "social": {
+    "kicker": "Social Proof",
+    "trustTitle": "Vertrauenselemente",
+    "testimonials": [
+      {
+        "quote": "Ich erinnere mich endlich an die Konjunktiv-Endungen – die täglichen Serien halten mich dran.",
+        "author": "Martina · LUISS-Studentin"
+      },
+      {
+        "quote": "Besser als jedes Deck, das ich selbst gebastelt habe. Alles ist kontextbezogen und mobilfreundlich.",
+        "author": "Adrian · Solo-Reisender"
+      }
+    ],
+    "badges": [
+      "Geliebt von 1.200+ Autodidakten",
+      "Vorgestellt im Polyglot Weekly",
+      "Radikal offen als Open Source"
+    ]
+  },
+  "ctaBand": {
+    "kicker": "Noch Fragen?",
+    "heading": "Bereit, mehr nach Italien zu klingen?",
+    "body": "Spring zurück in deine Decks oder sieh dir das geführte Demo an, um unsere Strategie für knifflige Konjugationen zu erleben.",
+    "primaryCta": "Anmelden",
+    "secondaryCta": "Demo-Deck testen"
+  },
+  "footer": {
+    "tagline": "Italian Flashcards",
+    "powered": "In Rom gebaut · mit Supabase betrieben",
+    "links": {
+      "privacy": "Datenschutz",
+      "imprint": "Impressum",
+      "contact": "Kontakt",
+      "status": "Status"
+    },
+    "languageLabel": "Sprache"
+  },
+  "demo": {
+    "hero": {
+      "kicker": "Geführtes Demo",
+      "heading": "Erlebe eine Fünf-Minuten-Review",
+      "body": "Schreite durch ein Mini-Deck mit besonders wichtigen Verben. Jede Karte zeigt, wie wir Kontext, Nuance und Selbstvertrauen kombinieren."
+    },
+    "cardsTitle": "Beispielhafte Smart Cards",
+    "cardsCaption": "Jede Vorschau verbindet ein italienisches Verb mit einer echten Situation.",
+    "labels": {
+      "context": "Kontext",
+      "tip": "Tipp"
+    },
+    "cards": [
+      {
+        "term": "parlare",
+        "translation": "sprechen",
+        "context": "Espresso bestellen, mit Mitstudierenden sprechen",
+        "tip": "Fokussiere die -are-Endungen: parlo, parli, parla. Farben markieren die Muster."
+      },
+      {
+        "term": "andare",
+        "translation": "gehen/fahren",
+        "context": "ÖPNV-Updates, Freunde einladen",
+        "tip": "Merke dir die unregelmäßige Kombi io vado / noi andiamo. Das Deck bringt sie regelmäßig zurück."
+      },
+      {
+        "term": "volere",
+        "translation": "wollen",
+        "context": "Höfliche Bitten auf Reisen",
+        "tip": "Kopple volere mit dem Konditional (vorrei un biglietto). Imitiere Native Audio für die Betonung."
+      },
+      {
+        "term": "sapere",
+        "translation": "wissen",
+        "context": "Wissen teilen oder Infos klären",
+        "tip": "Wir stellen sapere und conoscere gegenüber, damit du nicht mehr ins Stocken gerätst."
+      }
+    ],
+    "cardNav": {
+      "previous": "Vorherige Karte",
+      "next": "Nächste Karte"
+    },
+    "highlightsTitle": "Was das Demo zeigt",
+    "highlights": [
+      "Confidence-Tracking holt schwierige Karten früher hervor.",
+      "Kontextsätze verankern den Wortschatz im Alltag.",
+      "Mikro-Reflexionen nach jeder Karte stärken das Warum."
+    ],
+    "timelineTitle": "Ablauf der Mikro-Session",
+    "timeline": [
+      {
+        "title": "Vorbereiten",
+        "description": "Schau dir das Szenario an, höre einmal zu und prognostiziere die Antwort."
+      },
+      {
+        "title": "Produzieren",
+        "description": "Antwort laut, drehe die Karte um und vergleiche mit dem Modell."
+      },
+      {
+        "title": "Reflektieren",
+        "description": "Notiere dein Sicherheitsgefühl, damit sich der Algorithmus anpasst."
+      }
+    ],
+    "ctaPrimary": "Registrieren und lernen",
+    "backLink": "Zurück zur Landingpage"
+  }
+}

@@ -1,6 +1,6 @@
-import { chromium, FullConfig } from '@playwright/test';
+import { chromium } from '@playwright/test';
 
-async function globalSetup(config: FullConfig) {
+async function globalSetup() {
   const baseURL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:5173';
   const bypassToken = process.env.VERCEL_BYPASS_TOKEN;
   const testEmail = process.env.TEST_USER_EMAIL || 'test-e2e@example.com';

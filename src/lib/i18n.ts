@@ -10,6 +10,7 @@ const resources = {
     learning: () => import('../../public/locales/en/learning.json'),
     dashboard: () => import('../../public/locales/en/dashboard.json'),
     settings: () => import('../../public/locales/en/settings.json'),
+    landing: () => import('../../public/locales/en/landing.json'),
   },
   ru: {
     common: () => import('../../public/locales/ru/common.json'),
@@ -17,6 +18,7 @@ const resources = {
     learning: () => import('../../public/locales/ru/learning.json'),
     dashboard: () => import('../../public/locales/ru/dashboard.json'),
     settings: () => import('../../public/locales/ru/settings.json'),
+    landing: () => import('../../public/locales/ru/landing.json'),
   },
   it: {
     common: () => import('../../public/locales/it/common.json'),
@@ -24,6 +26,7 @@ const resources = {
     learning: () => import('../../public/locales/it/learning.json'),
     dashboard: () => import('../../public/locales/it/dashboard.json'),
     settings: () => import('../../public/locales/it/settings.json'),
+    landing: () => import('../../public/locales/it/landing.json'),
   },
   de: {
     common: () => import('../../public/locales/de/common.json'),
@@ -31,6 +34,7 @@ const resources = {
     learning: () => import('../../public/locales/de/learning.json'),
     dashboard: () => import('../../public/locales/de/dashboard.json'),
     settings: () => import('../../public/locales/de/settings.json'),
+    landing: () => import('../../public/locales/de/landing.json'),
   },
 };
 
@@ -39,12 +43,13 @@ async function loadLanguageResources(language: string) {
   const langResources = resources[language as keyof typeof resources];
   if (!langResources) return {};
 
-  const loadedResources: Record<string, any> = {};
+  const loadedResources: Record<string, unknown> = {};
 
   for (const [namespace, loader] of Object.entries(langResources)) {
     try {
-      const module = await loader();
-      loadedResources[namespace] = module.default || module;
+      const mod = await loader();
+      const messages = (mod as { default?: unknown }).default ?? mod;
+      loadedResources[namespace] = messages;
     } catch (error) {
       console.error(`Failed to load ${language}/${namespace}:`, error);
     }
@@ -67,7 +72,7 @@ export async function initI18n() {
       },
       fallbackLng: 'en',
       defaultNS: 'common',
-      ns: ['common', 'auth', 'learning', 'dashboard', 'settings'],
+      ns: ['common', 'auth', 'learning', 'dashboard', 'settings', 'landing'],
 
       // Language detection options
       detection: {
