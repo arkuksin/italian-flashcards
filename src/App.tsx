@@ -37,7 +37,7 @@ function App() {
         className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800"
         data-testid="app-loading"
       >
-        <LoadingSpinner size="large" message="Loading..." />
+        <LoadingSpinner size="large" message="Loading your study plan..." />
       </div>
     )
   }
