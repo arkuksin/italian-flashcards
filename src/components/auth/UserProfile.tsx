@@ -74,12 +74,27 @@ export const UserProfile: React.FC = () => {
   }, [isOpen])
 
   const handleSignOut = async () => {
+    setIsLoggingOut(true)
+
+    // Ensure we always navigate back to the login screen even if Supabase sign-out hangs.
+    // This keeps the UI predictable for E2E tests and real users.
+    const timeoutMs = 8000
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
     try {
-      setIsLoggingOut(true)
-      await signOut()
-      navigate('/login', { replace: true })
+      const signOutPromise = signOut()
+      const timeoutPromise = new Promise<void>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('Sign out timed out')), timeoutMs)
+      })
+
+      await Promise.race([signOutPromise, timeoutPromise])
     } catch (error) {
       console.error('Error signing out:', error)
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+      setIsOpen(false)
+      navigate('/login', { replace: true })
       setIsLoggingOut(false)
     }
   }

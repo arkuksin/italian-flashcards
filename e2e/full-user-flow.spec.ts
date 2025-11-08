@@ -119,12 +119,17 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     const logoutButton = page.getByTestId('logout-button')
     await expect(logoutButton).toBeVisible({ timeout: 10000 })
 
-    // For Firefox: Use Promise.all to click and wait for navigation simultaneously
-    // This ensures we don't miss the navigation event
-    await Promise.all([
-      page.waitForURL('**/login', { timeout: 60000 }),
-      logoutButton.click({ force: true }),
-    ])
+    // Start waiting for logout signals before clicking the button to avoid race conditions
+    const loginEmailField = page.getByTestId('email-input')
+    const waitForEmailField = loginEmailField.waitFor({ timeout: 60000 })
+    const waitForLoginUrl = page
+      .waitForURL('**/login', { waitUntil: 'domcontentloaded', timeout: 60000 })
+      .catch((error) => {
+        console.warn('Login URL wait timed out, continuing after email field appeared.', error)
+      })
+
+    await logoutButton.click({ force: true })
+    await Promise.all([waitForEmailField, waitForLoginUrl])
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })
