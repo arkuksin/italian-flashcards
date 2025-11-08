@@ -2,6 +2,8 @@
 
 A lightweight collection of tools and data for learning Italian vocabulary using flashcards. This repository contains study decks and a small set of utilities (scripts and/or web UI) to practice, review, and track progress. Use this project to quickly create, import, and practice Italian flashcards locally or as part of a learning workflow.
 
+<!-- Deployment test: Verifying automatic deployment pipeline with corrected database credentials -->
+
 > Note: This README is a starter — update the sections below to reflect the actual structure of your repository (folders, commands, and technologies used).
 
 ## Features
