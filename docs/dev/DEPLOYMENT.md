@@ -79,7 +79,7 @@ GitHub Repository
 
 **Build Configuration**:
 - **Framework**: Vite
-- **Node Version**: 18.x
+- **Node Version**: 20.x
 - **Package Manager**: npm
 - **Output Directory**: `dist/`
 - **Build Command**: `npm run build`
@@ -113,7 +113,7 @@ on:
 
 1. **Checkout Code**
    - Clone repository
-   - Setup Node.js 18
+   - Setup Node.js 20
 
 2. **Deploy to Vercel Preview**
    ```bash
@@ -176,7 +176,7 @@ on:
 
 1. **Checkout Code**
    - Clone main branch
-   - Setup Node.js 18
+   - Setup Node.js 20
 
 2. **Build Application**
    ```bash
@@ -220,7 +220,7 @@ on:
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `SUPABASE_DB_HOST` | `aws-0-eu-central-1.pooler.supabase.com` | Production database pooler host |
+| `SUPABASE_DB_HOST` | `aws-1-eu-central-1.pooler.supabase.com` | Production database pooler host |
 | `SUPABASE_DB_PORT` | `6543` | Transaction mode pooler port (required for migrations) |
 | `SUPABASE_DB_DATABASE` | `postgres` | Database name |
 | `SUPABASE_DB_USER` | `postgres.gjftooyqkmijlvqbkwdr` | Project-qualified database user (pooler format) |
