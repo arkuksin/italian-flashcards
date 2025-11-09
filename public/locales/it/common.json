@@ -34,11 +34,16 @@
     "itToRu": "Italiano → Russo",
     "toggle": "Cambia direzione di apprendimento"
   },
+  "labels": {
+    "accentCheckOn": "Controllo accenti attivo",
+    "accentCheckOff": "Controllo accenti disattivo"
+  },
   "tooltips": {
     "toggleDirection": "Cambia direzione di apprendimento (Ctrl+T)",
     "toggleShuffle": "Attiva/disattiva modalità casuale (Ctrl+S)",
     "restartSession": "Ricomincia sessione (Ctrl+R)",
-    "toggleDarkMode": "Attiva/disattiva tema scuro"
+    "toggleDarkMode": "Attiva/disattiva tema scuro",
+    "toggleAccentCheck": "Attiva/disattiva sensibilità agli accenti italiani (Ctrl/Cmd + A)"
   },
   "userProfile": {
     "signedInWith": "Accesso effettuato con",

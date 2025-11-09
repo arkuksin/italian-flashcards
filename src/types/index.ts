@@ -36,6 +36,7 @@ export interface AppState {
   learningDirection: LearningDirection;
   darkMode: boolean;
   shuffleMode: boolean;
+  accentSensitive: boolean;
 }
 
 // Progress tracking types for database integration

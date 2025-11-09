@@ -34,11 +34,16 @@
     "itToRu": "Italian → Russian",
     "toggle": "Toggle learning direction"
   },
+  "labels": {
+    "accentCheckOn": "Accent check on",
+    "accentCheckOff": "Accent check off"
+  },
   "tooltips": {
     "toggleDirection": "Toggle learning direction (Ctrl+T)",
     "toggleShuffle": "Toggle shuffle mode (Ctrl+S)",
     "restartSession": "Restart session (Ctrl+R)",
-    "toggleDarkMode": "Toggle dark mode"
+    "toggleDarkMode": "Toggle dark mode",
+    "toggleAccentCheck": "Toggle Italian accent sensitivity (Ctrl/Cmd + A)"
   },
   "userProfile": {
     "signedInWith": "Signed in with",

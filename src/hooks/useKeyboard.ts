@@ -7,6 +7,7 @@ interface UseKeyboardProps {
   onToggleMode: () => void;
   onRestart: () => void;
   onShuffle: () => void;
+  onToggleAccent?: () => void;
 }
 
 export const useKeyboard = ({
@@ -16,6 +17,7 @@ export const useKeyboard = ({
   onToggleMode,
   onRestart,
   onShuffle,
+  onToggleAccent,
 }: UseKeyboardProps) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -55,10 +57,17 @@ export const useKeyboard = ({
             onShuffle();
           }
           break;
+        case 'a':
+        case 'A':
+          if ((event.ctrlKey || event.metaKey) && onToggleAccent) {
+            event.preventDefault();
+            onToggleAccent();
+          }
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onNext, onPrevious, onSubmit, onToggleMode, onRestart, onShuffle]);
+  }, [onNext, onPrevious, onSubmit, onToggleMode, onRestart, onShuffle, onToggleAccent]);
 };
