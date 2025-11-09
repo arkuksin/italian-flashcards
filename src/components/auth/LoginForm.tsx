@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next';
@@ -21,11 +21,17 @@ import { isValidProductionEmail } from '../../lib/emailValidator'
 
 interface LoginFormProps {
   message?: string
+  initialMode?: 'login' | 'signup'
+  variant?: 'standalone' | 'embedded'
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({
+  message,
+  initialMode = 'login',
+  variant = 'standalone'
+}) => {
   const { t } = useTranslation('auth');
-  const [isSignUp, setIsSignUp] = useState(false)
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -34,6 +40,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
   const [successMessage, setSuccessMessage] = useState('')
 
   const { signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithGitHub } = useAuth()
+
+  useEffect(() => {
+    setIsSignUp(initialMode === 'signup')
+  }, [initialMode])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,7 +74,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
         setEmail('')
         setPassword('')
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Email auth failed', error)
       setError(t('messages.loginFailed'))
     } finally {
       setLoading(false)
@@ -83,22 +94,27 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       if (result.error) {
         setError(result.error.message)
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Social login failed', error)
       setError(t('messages.socialLoginFailed'))
     } finally {
       setLoading(false)
     }
   }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full"
+  const card = (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`w-full ${variant === 'standalone' ? 'max-w-md' : ''}`}
+    >
+      <div
+        className={`rounded-2xl p-8 ${
+          variant === 'embedded'
+            ? 'bg-white/90 dark:bg-gray-900/80 backdrop-blur-xl border border-white/60 dark:border-gray-700 shadow-2xl'
+            : 'bg-white dark:bg-gray-800 shadow-xl'
+        }`}
       >
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -254,13 +270,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
               {isSignUp ? t('toggle.toSignIn') : t('toggle.toSignUp')}
             </button>
           </div>
-        </div>
+      </div>
+      {variant === 'standalone' && (
         <div className="text-center mt-4">
           <Link to="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:underline">
             {t('privacyPolicy')}
           </Link>
         </div>
-      </motion.div>
+      )}
+    </motion.div>
+  )
+
+  if (variant === 'embedded') {
+    return card
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
+      {card}
     </div>
   )
 }

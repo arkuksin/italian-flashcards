@@ -39,9 +39,9 @@ export interface VercelDeployment {
     username: string;
   };
   inspectorUrl: string;
-  meta: Record<string, any>;
+  meta: Record<string, unknown>;
   target?: string;
-  aliasError?: any;
+  aliasError?: unknown;
   aliasAssigned?: number;
   isRollbackCandidate?: boolean;
   createdAt: number;

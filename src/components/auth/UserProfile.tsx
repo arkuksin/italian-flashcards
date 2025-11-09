@@ -24,17 +24,6 @@ export const UserProfile: React.FC = () => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  if (!user) return null
-
-  // Get user display name (prefer full_name, fallback to email username)
-  const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User'
-
-  // Get user avatar (from Google/GitHub OAuth)
-  const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture
-
-  // Get user email
-  const email = user.email
-
   // Calculate dropdown position when opened
   useEffect(() => {
     if (isOpen && buttonRef.current) {
@@ -72,6 +61,19 @@ export const UserProfile: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isOpen])
+
+  if (!user) {
+    return null
+  }
+
+  // Get user display name (prefer full_name, fallback to email username)
+  const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User'
+
+  // Get user avatar (from Google/GitHub OAuth)
+  const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture
+
+  // Get user email
+  const email = user.email
 
   const handleSignOut = async () => {
     setIsLoggingOut(true)

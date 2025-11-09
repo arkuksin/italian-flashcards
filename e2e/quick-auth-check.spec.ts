@@ -93,9 +93,14 @@ test.describe('Quick Auth Check', () => {
 
     // Check if Supabase client initializes
     const supabaseConfig = await page.evaluate(() => {
+      type EnvWindow = typeof window & {
+        import?: { meta?: { env?: Record<string, string | undefined> } };
+      };
+      const envWindow = window as EnvWindow;
+      const env = envWindow.import?.meta?.env ?? {};
       return {
-        hasSupabaseUrl: !!(window as any).import?.meta?.env?.VITE_SUPABASE_URL,
-        hasSupabaseKey: !!(window as any).import?.meta?.env?.VITE_SUPABASE_ANON_KEY,
+        hasSupabaseUrl: Boolean(env.VITE_SUPABASE_URL),
+        hasSupabaseKey: Boolean(env.VITE_SUPABASE_ANON_KEY),
       };
     });
 

@@ -6,7 +6,6 @@ import {
   VercelEnvironmentVariable,
   ListProjectsResponse,
   ListDeploymentsResponse,
-  ListDomainsResponse,
   ListEnvironmentVariablesResponse,
   CreateProjectRequest,
   CreateDeploymentRequest,

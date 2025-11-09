@@ -1,0 +1,174 @@
+{
+  "hero": {
+    "badge": "Pensato per padroneggiare l'italiano",
+    "headline": "Impara l'italiano più velocemente con flashcard smart",
+    "subheadline": "Ripetizione spaziata assistita dall'IA, momenti di progresso gratificanti e mazzi creati insieme a docenti italiani. Concludi una sessione ad alto impatto in meno di cinque minuti.",
+    "primaryCta": "Crea un account gratuito",
+    "secondaryCta": "Scopri il mazzo demo",
+    "checklist": {
+      "ai": "Ripetizione spaziata ottimizzata dall'IA",
+      "sessions": "Sessioni giornaliere tascabili",
+      "progress": "Tracciamento del progresso motivante"
+    },
+    "pills": {
+      "studyPlans": "Piani di studio settimanali",
+      "nativeAudio": "Audio di madrelingua in arrivo",
+      "offline": "Funziona offline come PWA"
+    },
+    "ariaBenefits": "Vantaggi principali"
+  },
+  "authPanel": {
+    "kicker": "Accesso sicuro",
+    "heading": "Accedi o inizia ora",
+    "body": "Porta i tuoi mazzi con te. Supabase protegge l'autenticazione."
+  },
+  "features": {
+    "kicker": "Perché gli studenti restano",
+    "heading": "Creato per chi studia italiano con poco tempo",
+    "description": "Ogni dettaglio è calibrato sulle particolarità della grammatica italiana, così passi dal presente al congiuntivo senza intoppi.",
+    "cards": [
+      {
+        "title": "Ripetizione spaziata su misura per i verbi",
+        "description": "Leitner adattivo che privilegia verbi irregolari e riflessivi proprio quando rischi di dimenticarli."
+      },
+      {
+        "title": "Heatmap di progresso motivanti",
+        "description": "Serie settimanali, coriandoli celebrativi e un promemoria gentile quando il ritmo rallenta."
+      },
+      {
+        "title": "Perfetto su mobile e offline",
+        "description": "Installa la PWA, sincronizza i mazzi prima di un volo e continua ad allenarti anche con Wi‑Fi instabile."
+      }
+    ]
+  },
+  "learning": {
+    "kicker": "Istante di scienza dell'apprendimento",
+    "heading": "Costruito con docenti, sostenuto dai dati",
+    "body": "Abbiamo collaborato con coach linguistici per applicare il sistema Leitner, aggiungendo il rilevamento di difficoltà tramite IA così i contenuti quasi dimenticati riemergono subito.",
+    "statsAria": "Statistiche chiave del prodotto",
+    "stats": [
+      { "label": "Verbi curati", "value": "+320" },
+      { "label": "Aumento medio di ritenzione", "value": "+42%" },
+      { "label": "Serie attiva mediana", "value": "21 giorni" }
+    ],
+    "timelineBadge": "Blend Leitner + IA",
+    "timelineAria": "Flusso anteprima - pratica - ripasso",
+    "timeline": [
+      {
+        "title": "Anteprima",
+        "description": "Prepara il cervello con un'esposizione leggera e mnemonici amichevoli."
+      },
+      {
+        "title": "Pratica",
+        "description": "Brevi esplosioni di produzione e riconoscimento per fissare lo schema."
+      },
+      {
+        "title": "Ripasso",
+        "description": "L'IA programma i richiami poco prima che la memoria cali."
+      }
+    ]
+  },
+  "social": {
+    "kicker": "Prova sociale",
+    "trustTitle": "Badge di fiducia",
+    "testimonials": [
+      {
+        "quote": "Finalmente ricordo le desinenze del congiuntivo: le serie quotidiane mi tengono disciplinata.",
+        "author": "Martina · studentessa LUISS"
+      },
+      {
+        "quote": "Meglio di qualsiasi mazzo che abbia mai assemblato. Tutto è contestuale e comodissimo su mobile.",
+        "author": "Adrian · viaggiatore in solitaria"
+      }
+    ],
+    "badges": [
+      "Amato da oltre 1.200 autodidatti",
+      "In primo piano su Polyglot Weekly",
+      "Open source in totale trasparenza"
+    ]
+  },
+  "ctaBand": {
+    "kicker": "Ancora curiosi?",
+    "heading": "Pronti a suonare più italiani?",
+    "body": "Rientra nei tuoi mazzi oppure guarda il demo guidato per capire come gestiamo le coniugazioni complicate.",
+    "primaryCta": "Accedi",
+    "secondaryCta": "Prova il mazzo demo"
+  },
+  "footer": {
+    "tagline": "Italian Flashcards",
+    "powered": "Creato a Roma · alimentato da Supabase",
+    "links": {
+      "privacy": "Politica sulla privacy",
+      "imprint": "Imprint",
+      "contact": "Contatto",
+      "status": "Stato"
+    },
+    "languageLabel": "Lingua"
+  },
+  "demo": {
+    "hero": {
+      "kicker": "Demo guidata",
+      "heading": "Scopri com'è una revisione da cinque minuti",
+      "body": "Percorri un mini mazzo con verbi ad alto impatto. Ogni carta mostra come combiniamo contesto, sfumature e tracking della sicurezza."
+    },
+    "cardsTitle": "Carte smart di esempio",
+    "cardsCaption": "Ogni anteprima abbina un verbo italiano allo scenario reale che affronterai.",
+    "labels": {
+      "context": "Contesto",
+      "tip": "Suggerimento"
+    },
+    "cards": [
+      {
+        "term": "parlare",
+        "translation": "parlare",
+        "context": "Ordinare un espresso, chiacchierare con i compagni",
+        "tip": "Concentrati sulle desinenze in -are: parlo, parli, parla. Coloriamo le terminazioni per farti vedere subito il pattern."
+      },
+      {
+        "term": "andare",
+        "translation": "andare",
+        "context": "Aggiornamenti sui trasporti, invitare gli amici",
+        "tip": "Nota l'irregolarità io vado / noi andiamo. Il mazzo lo ripropone ogni poche sessioni."
+      },
+      {
+        "term": "volere",
+        "translation": "volere",
+        "context": "Richieste cortesi in viaggio",
+        "tip": "Abbina volere a frasi al condizionale (vorrei un biglietto). Imita l'audio dei madrelingua per l'intonazione."
+      },
+      {
+        "term": "sapere",
+        "translation": "sapere",
+        "context": "Condividere informazioni o chiarire dubbi",
+        "tip": "Mettiamo a confronto sapere e conoscere così non esiti più a metà frase."
+      }
+    ],
+    "cardNav": {
+      "previous": "Carta precedente",
+      "next": "Carta successiva"
+    },
+    "highlightsTitle": "Cosa mostra questo demo",
+    "highlights": [
+      "Il tracking della sicurezza riporta prima le carte difficili.",
+      "Le frasi di contesto mantengono il lessico legato alla vita reale.",
+      "Micro riflessioni dopo ogni carta rafforzano il perché."
+    ],
+    "timelineTitle": "Flusso di micro-sessione",
+    "timeline": [
+      {
+        "title": "Preparati",
+        "description": "Osserva lo scenario, ascolta una volta e prevedi la risposta."
+      },
+      {
+        "title": "Produci",
+        "description": "Rispondi ad alta voce, gira la carta e confronta con il modello."
+      },
+      {
+        "title": "Rifletti",
+        "description": "Registra quanto ti sei sentito sicuro così l'algoritmo si adatta."
+      }
+    ],
+    "ctaPrimary": "Iscriviti per studiare",
+    "backLink": "Torna al landing"
+  }
+}

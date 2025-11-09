@@ -177,7 +177,9 @@ export async function verifyTestAuthenticationActive(page: Page) {
 
   // Check for test mode indicator in console (optional)
   const logs = await page.evaluate(() => {
-    return (window as any).__testLogs || [];
+    type TestWindow = typeof window & { __testLogs?: string[] };
+    const testWindow = window as TestWindow;
+    return testWindow.__testLogs ?? [];
   });
 
   // If test mode logs are available, verify them

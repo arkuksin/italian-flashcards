@@ -10,6 +10,11 @@ import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 // import dotenv from 'dotenv';
 import { VercelClient } from './vercel-client.js';
+import type {
+  CreateDeploymentRequest,
+  CreateProjectRequest,
+  UpsertEnvironmentVariableRequest,
+} from './types.js';
 
 // Load environment variables from .env file
 // dotenv.config();
@@ -62,8 +67,12 @@ const server = new Server(
   }
 );
 
+type ToolArgs = Record<string, unknown> | undefined;
+
 // Helper function to safely get argument values
-function getArg(args: any, key: string, required = false): any {
+function getArg<T>(args: ToolArgs, key: string, required: true): T;
+function getArg<T>(args: ToolArgs, key: string, required?: false): T | undefined;
+function getArg<T>(args: ToolArgs, key: string, required = false): T | undefined {
   if (!args || typeof args !== 'object') {
     if (required) {
       throw new McpError(ErrorCode.InvalidParams, `Missing required argument: ${key}`);
@@ -71,12 +80,12 @@ function getArg(args: any, key: string, required = false): any {
     return undefined;
   }
 
-  const value = args[key];
+  const value = (args as Record<string, unknown>)[key];
   if (required && (value === undefined || value === null)) {
     throw new McpError(ErrorCode.InvalidParams, `Missing required argument: ${key}`);
   }
 
-  return value;
+  return value as T;
 }
 
 // Tool schemas
@@ -504,8 +513,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (name) {
       // Project Management
       case 'vercel_list_projects': {
-        const limit = getArg(args, 'limit') as number | undefined;
-        const since = getArg(args, 'since') as number | undefined;
+        const limit = getArg<number>(args, 'limit');
+        const since = getArg<number>(args, 'since');
         const result = await vercelClient.listProjects(limit, since);
         return {
           content: [
@@ -517,7 +526,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_get_project': {
-        const projectId = getArg(args, 'projectId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
         const result = await vercelClient.getProject(projectId);
         return {
           content: [
@@ -529,12 +538,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_create_project': {
-        const name = getArg(args, 'name', true) as string;
-        const framework = getArg(args, 'framework') as string | undefined;
-        const gitRepository = getArg(args, 'gitRepository') as any;
-        const buildCommand = getArg(args, 'buildCommand') as string | undefined;
-        const outputDirectory = getArg(args, 'outputDirectory') as string | undefined;
-        const rootDirectory = getArg(args, 'rootDirectory') as string | undefined;
+        const name = getArg<string>(args, 'name', true);
+        const framework = getArg<string>(args, 'framework');
+        const gitRepository = getArg<CreateProjectRequest['gitRepository']>(args, 'gitRepository');
+        const buildCommand = getArg<string>(args, 'buildCommand');
+        const outputDirectory = getArg<string>(args, 'outputDirectory');
+        const rootDirectory = getArg<string>(args, 'rootDirectory');
 
         const createRequest = {
           name,
@@ -556,7 +565,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_delete_project': {
-        const projectId = getArg(args, 'projectId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
         await vercelClient.deleteProject(projectId);
         return {
           content: [
@@ -570,9 +579,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       // Deployment Management
       case 'vercel_list_deployments': {
-        const projectId = getArg(args, 'projectId') as string | undefined;
-        const limit = getArg(args, 'limit') as number | undefined;
-        const since = getArg(args, 'since') as number | undefined;
+        const projectId = getArg<string>(args, 'projectId');
+        const limit = getArg<number>(args, 'limit');
+        const since = getArg<number>(args, 'since');
         const result = await vercelClient.listDeployments(projectId, limit, since);
         return {
           content: [
@@ -584,7 +593,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_get_deployment': {
-        const deploymentId = getArg(args, 'deploymentId', true) as string;
+        const deploymentId = getArg<string>(args, 'deploymentId', true);
         const result = await vercelClient.getDeployment(deploymentId);
         return {
           content: [
@@ -596,10 +605,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_create_deployment': {
-        const name = getArg(args, 'name', true) as string;
-        const gitSource = getArg(args, 'gitSource') as any;
-        const target = getArg(args, 'target') as 'production' | 'staging' | undefined;
-        const meta = getArg(args, 'meta') as Record<string, string> | undefined;
+        const name = getArg<string>(args, 'name', true);
+        const gitSource = getArg<CreateDeploymentRequest['gitSource']>(args, 'gitSource');
+        const target = getArg<'production' | 'staging'>(args, 'target');
+        const meta = getArg<Record<string, string>>(args, 'meta');
 
         const deploymentRequest = {
           name,
@@ -619,7 +628,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_cancel_deployment': {
-        const deploymentId = getArg(args, 'deploymentId', true) as string;
+        const deploymentId = getArg<string>(args, 'deploymentId', true);
         const result = await vercelClient.cancelDeployment(deploymentId);
         return {
           content: [
@@ -631,7 +640,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_get_deployment_logs': {
-        const deploymentId = getArg(args, 'deploymentId', true) as string;
+        const deploymentId = getArg<string>(args, 'deploymentId', true);
         const result = await vercelClient.getDeploymentLogs(deploymentId);
         return {
           content: [
@@ -645,7 +654,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       // Domain Management
       case 'vercel_list_domains': {
-        const projectId = getArg(args, 'projectId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
         const result = await vercelClient.listDomains(projectId);
         return {
           content: [
@@ -657,11 +666,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_add_domain': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const name = getArg(args, 'name', true) as string;
-        const gitBranch = getArg(args, 'gitBranch') as string | undefined;
-        const redirect = getArg(args, 'redirect') as string | undefined;
-        const redirectStatusCode = getArg(args, 'redirectStatusCode') as number | undefined;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const name = getArg<string>(args, 'name', true);
+        const gitBranch = getArg<string>(args, 'gitBranch');
+        const redirect = getArg<string>(args, 'redirect');
+        const redirectStatusCode = getArg<number>(args, 'redirectStatusCode');
 
         const domainRequest = {
           name,
@@ -681,8 +690,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_remove_domain': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const domain = getArg(args, 'domain', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const domain = getArg<string>(args, 'domain', true);
         await vercelClient.removeDomain(projectId, domain);
         return {
           content: [
@@ -694,8 +703,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_verify_domain': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const domain = getArg(args, 'domain', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const domain = getArg<string>(args, 'domain', true);
         const result = await vercelClient.verifyDomain(projectId, domain);
         return {
           content: [
@@ -709,7 +718,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       // Environment Variables
       case 'vercel_list_env_vars': {
-        const projectId = getArg(args, 'projectId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
         const result = await vercelClient.listEnvironmentVariables(projectId);
         return {
           content: [
@@ -721,8 +730,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_get_env_var': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const envId = getArg(args, 'envId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const envId = getArg<string>(args, 'envId', true);
         const result = await vercelClient.getEnvironmentVariable(projectId, envId);
         return {
           content: [
@@ -734,12 +743,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_create_env_var': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const key = getArg(args, 'key', true) as string;
-        const value = getArg(args, 'value', true) as string;
-        const type = getArg(args, 'type') as 'plain' | 'secret' | 'encrypted' | 'system' | undefined;
-        const target = getArg(args, 'target') as string[] | undefined;
-        const gitBranch = getArg(args, 'gitBranch') as string | undefined;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const key = getArg<string>(args, 'key', true);
+        const value = getArg<string>(args, 'value', true);
+        const type = getArg<'plain' | 'secret' | 'encrypted' | 'system'>(args, 'type');
+        const target = getArg<string[]>(args, 'target');
+        const gitBranch = getArg<string>(args, 'gitBranch');
 
         const envRequest = {
           key,
@@ -760,14 +769,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_update_env_var': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const envId = getArg(args, 'envId', true) as string;
-        const key = getArg(args, 'key') as string | undefined;
-        const value = getArg(args, 'value') as string | undefined;
-        const type = getArg(args, 'type') as 'plain' | 'secret' | 'encrypted' | 'system' | undefined;
-        const target = getArg(args, 'target') as string[] | undefined;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const envId = getArg<string>(args, 'envId', true);
+        const key = getArg<string>(args, 'key');
+        const value = getArg<string>(args, 'value');
+        const type = getArg<'plain' | 'secret' | 'encrypted' | 'system'>(args, 'type');
+        const target = getArg<string[]>(args, 'target');
 
-        const updateData: any = {};
+        const updateData: Partial<UpsertEnvironmentVariableRequest> = {};
         if (key) updateData.key = key;
         if (value) updateData.value = value;
         if (type) updateData.type = type;
@@ -784,8 +793,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       case 'vercel_delete_env_var': {
-        const projectId = getArg(args, 'projectId', true) as string;
-        const envId = getArg(args, 'envId', true) as string;
+        const projectId = getArg<string>(args, 'projectId', true);
+        const envId = getArg<string>(args, 'envId', true);
         await vercelClient.deleteEnvironmentVariable(projectId, envId);
         return {
           content: [
