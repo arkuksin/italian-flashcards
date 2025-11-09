@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight } from 'lucide-react';
+import { Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight, Check, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { UserProfile } from './auth/UserProfile';
@@ -10,9 +10,11 @@ interface HeaderProps {
   darkMode: boolean;
   shuffleMode: boolean;
   learningDirection: LearningDirection;
+  accentSensitive: boolean;
   onToggleDarkMode: () => void;
   onToggleShuffle: () => void;
   onToggleDirection: () => void;
+  onToggleAccent: () => void;
   onRestart: () => void;
 }
 
@@ -20,13 +22,16 @@ export const Header: React.FC<HeaderProps> = ({
   darkMode,
   shuffleMode,
   learningDirection,
+  accentSensitive,
   onToggleDarkMode,
   onToggleShuffle,
   onToggleDirection,
+  onToggleAccent,
   onRestart,
 }) => {
   const { t } = useTranslation('common');
   const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
+  const accentLabel = accentSensitive ? t('labels.accentCheckOn') : t('labels.accentCheckOff');
 
   return (
     <motion.header
@@ -74,6 +79,22 @@ export const Header: React.FC<HeaderProps> = ({
           title={t('tooltips.toggleShuffle')}
         >
           <Shuffle className="w-5 h-5" />
+        </motion.button>
+
+        <motion.button
+          onClick={onToggleAccent}
+          className={`p-2 rounded-lg transition-colors ${
+            accentSensitive
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+          }`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          title={`${t('tooltips.toggleAccentCheck')} - ${accentLabel}`}
+          aria-pressed={accentSensitive}
+          aria-label={`${t('tooltips.toggleAccentCheck')} - ${accentLabel}`}
+        >
+          {accentSensitive ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
         </motion.button>
 
         <motion.button

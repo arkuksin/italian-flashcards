@@ -34,11 +34,16 @@
     "itToRu": "Итальянский → Русский",
     "toggle": "Изменить направление обучения"
   },
+  "labels": {
+    "accentCheckOn": "Проверка акцентов включена",
+    "accentCheckOff": "Проверка акцентов выключена"
+  },
   "tooltips": {
     "toggleDirection": "Изменить направление обучения (Ctrl+T)",
     "toggleShuffle": "Переключить режим перемешивания (Ctrl+S)",
     "restartSession": "Начать сессию заново (Ctrl+R)",
-    "toggleDarkMode": "Переключить темную тему"
+    "toggleDarkMode": "Переключить темную тему",
+    "toggleAccentCheck": "Включить или выключить учет итальянских акцентов (Ctrl/Cmd + A)"
   },
   "userProfile": {
     "signedInWith": "Вход выполнен через",

@@ -34,11 +34,16 @@
     "itToRu": "Italienisch → Russisch",
     "toggle": "Lernrichtung wechseln"
   },
+  "labels": {
+    "accentCheckOn": "Akzentprüfung aktiv",
+    "accentCheckOff": "Akzentprüfung inaktiv"
+  },
   "tooltips": {
     "toggleDirection": "Lernrichtung wechseln (Strg+T)",
     "toggleShuffle": "Zufallsmodus umschalten (Strg+S)",
     "restartSession": "Sitzung neu starten (Strg+R)",
-    "toggleDarkMode": "Dunkelmodus umschalten"
+    "toggleDarkMode": "Dunkelmodus umschalten",
+    "toggleAccentCheck": "Italienische Akzentempfindlichkeit umschalten (Strg/Cmd + A)"
   },
   "userProfile": {
     "signedInWith": "Angemeldet mit",

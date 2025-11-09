@@ -44,17 +44,35 @@ export const Dashboard: React.FC = () => {
     learningDirection: 'ru-it',
     darkMode: false,
     shuffleMode: false,
+    accentSensitive: true,
   })
 
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
 
-  // Initialize dark mode from localStorage
+  // Initialize persisted preferences from localStorage
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-    setState(prev => ({ ...prev, darkMode: savedDarkMode }))
-    if (savedDarkMode) {
-      document.documentElement.classList.add('dark')
-    }
+    const savedDarkMode = localStorage.getItem('darkMode')
+    const savedAccentSensitivity = localStorage.getItem('accentSensitive')
+
+    setState(prev => {
+      const nextState = { ...prev }
+
+      if (savedDarkMode !== null) {
+        const isDarkMode = savedDarkMode === 'true'
+        nextState.darkMode = isDarkMode
+        if (isDarkMode) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+
+      if (savedAccentSensitivity !== null) {
+        nextState.accentSensitive = savedAccentSensitivity === 'true'
+      }
+
+      return nextState
+    })
   }, [])
 
   const currentWord = words[state.currentWordIndex]
@@ -90,14 +108,22 @@ export const Dashboard: React.FC = () => {
     }
   }
 
+  const stripDiacritics = (value: string) =>
+    value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
   const handleSubmit = async () => {
     if (!state.userInput.trim() || state.showAnswer) return
 
-    const targetWord = state.learningDirection === 'ru-it'
+    let targetWord = state.learningDirection === 'ru-it'
       ? currentWord.italian.toLowerCase()
       : currentWord.russian.toLowerCase()
 
-    const userAnswer = state.userInput.toLowerCase().trim()
+    let userAnswer = state.userInput.toLowerCase().trim()
+
+    if (!state.accentSensitive && state.learningDirection === 'ru-it') {
+      targetWord = stripDiacritics(targetWord)
+      userAnswer = stripDiacritics(userAnswer)
+    }
     const correct = userAnswer === targetWord
 
     setIsCorrect(correct)
@@ -146,6 +172,17 @@ export const Dashboard: React.FC = () => {
     setIsCorrect(null)
   }
 
+  const handleToggleAccentSensitivity = () => {
+    setState(prev => {
+      const nextAccentSensitivity = !prev.accentSensitive
+      localStorage.setItem('accentSensitive', nextAccentSensitivity.toString())
+      return {
+        ...prev,
+        accentSensitive: nextAccentSensitivity,
+      }
+    })
+  }
+
   const handleRestart = async () => {
     // End current session
     if (currentSession) {
@@ -177,6 +214,7 @@ export const Dashboard: React.FC = () => {
     onToggleMode: handleToggleDirection,
     onRestart: handleRestart,
     onShuffle: handleToggleShuffle,
+    onToggleAccent: handleToggleAccentSensitivity,
   })
 
   if (progressLoading) {
@@ -225,9 +263,11 @@ export const Dashboard: React.FC = () => {
               darkMode={state.darkMode}
               shuffleMode={state.shuffleMode}
               learningDirection={state.learningDirection}
+              accentSensitive={state.accentSensitive}
               onToggleDarkMode={handleToggleDarkMode}
               onToggleShuffle={handleToggleShuffle}
               onToggleDirection={handleToggleDirection}
+              onToggleAccent={handleToggleAccentSensitivity}
               onRestart={handleRestart}
             />
 
