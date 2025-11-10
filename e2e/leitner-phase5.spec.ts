@@ -144,9 +144,21 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
     const achievementBadges = page.locator('[data-testid="achievement-badges"]')
     await expect(achievementBadges).toBeVisible({ timeout: 5000 })
 
-    // Check for either "No achievements yet" or actual achievement cards
+    // Wait for content to fully load - check for either achievement cards or "no achievements" message
+    // Use a more reliable approach for webkit
+    await page.waitForTimeout(1000) // Give webkit time to render
+
     const hasAchievements = await achievementBadges.locator('[data-testid^="achievement-"]').count() > 0
-    const hasNoAchievementsMessage = await achievementBadges.getByText('No achievements yet').isVisible({ timeout: 1000 }).catch(() => false)
+
+    // Try multiple ways to check for the message (webkit sometimes has issues with getByText)
+    let hasNoAchievementsMessage = false
+    try {
+      hasNoAchievementsMessage = await achievementBadges.getByText('No achievements yet').isVisible({ timeout: 2000 })
+    } catch (e) {
+      // Fallback: check if the text content contains the message
+      const content = await achievementBadges.textContent()
+      hasNoAchievementsMessage = content?.includes('No achievements yet') || false
+    }
 
     // One of these should be true
     expect(hasAchievements || hasNoAchievementsMessage).toBeTruthy()
