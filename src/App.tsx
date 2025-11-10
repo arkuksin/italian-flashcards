@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import { useAuth } from './contexts/AuthContext'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
+import { Analytics } from './pages/Analytics'
 import { Callback } from './pages/Callback'
 import { PrivacyPolicy } from './pages/PrivacyPolicy'
 import { DemoDeck } from './pages/DemoDeck'
@@ -57,6 +58,16 @@ function App() {
         element={
           user ? (
             <Dashboard />
+          ) : (
+            <Navigate to="/login" replace state={{ from: location }} />
+          )
+        }
+      />
+      <Route
+        path="/analytics"
+        element={
+          user ? (
+            <Analytics />
           ) : (
             <Navigate to="/login" replace state={{ from: location }} />
           )

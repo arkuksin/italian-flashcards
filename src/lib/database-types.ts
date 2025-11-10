@@ -121,6 +121,41 @@ export type Database = {
           updated_at?: string
         }
       }
+      review_history: {
+        Row: {
+          id: string
+          user_id: string
+          word_id: number
+          review_date: string
+          correct: boolean
+          response_time_ms: number | null
+          difficulty_rating: number | null
+          previous_level: number
+          new_level: number
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          word_id: number
+          review_date?: string
+          correct: boolean
+          response_time_ms?: number | null
+          difficulty_rating?: number | null
+          previous_level: number
+          new_level: number
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          word_id?: number
+          review_date?: string
+          correct?: boolean
+          response_time_ms?: number | null
+          difficulty_rating?: number | null
+          previous_level?: number
+          new_level?: number
+        }
+      }
     }
   }
 }

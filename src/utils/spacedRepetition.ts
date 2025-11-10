@@ -26,7 +26,7 @@ export const getAdaptiveReviewDate = (
 ): Date => {
   // Base intervals in days for each mastery level
   const baseIntervals = [1, 3, 7, 14, 30, 90]
-  let baseInterval = baseIntervals[Math.min(masteryLevel, baseIntervals.length - 1)]
+  const baseInterval = baseIntervals[Math.min(masteryLevel, baseIntervals.length - 1)]
 
   // If no difficulty rating provided, use base interval
   if (!difficultyRating) {

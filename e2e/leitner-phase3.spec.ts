@@ -28,7 +28,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should display difficulty rating buttons after answering', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -46,7 +49,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should show all four difficulty rating buttons', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -66,7 +72,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should allow clicking "Again" difficulty button', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -87,7 +96,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should allow clicking "Hard" difficulty button', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -108,7 +120,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should allow clicking "Good" difficulty button', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -129,7 +144,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should allow clicking "Easy" difficulty button', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -150,7 +168,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should disable all difficulty buttons after selecting one', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')
@@ -173,7 +194,10 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test('should reset difficulty rating for next word', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer first flashcard
     const inputField = page.getByRole('textbox')
@@ -212,7 +236,10 @@ test.describe('Leitner System - Phase 3: Response Time Tracking', () => {
   test('should track response time for answers', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Record start time
     const startTime = Date.now()
@@ -251,7 +278,10 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
   test('should complete full Phase 3 workflow: answer -> rate difficulty -> next word', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer 3 flashcards with different difficulty ratings
     const ratings = ['difficulty-easy', 'difficulty-good', 'difficulty-hard']
@@ -290,7 +320,10 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
   test('should work with both correct and incorrect answers', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer with wrong answer
     const inputField = page.getByRole('textbox')
@@ -311,7 +344,10 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
   test('should maintain Phase 3 features with Phase 1 mastery level behavior', async ({ page }) => {
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Check if mastery level indicator exists (Phase 1 feature)
     const masteryIndicator = page.locator('[data-testid="mastery-indicator"]')
@@ -358,7 +394,10 @@ test.describe('Leitner System - Phase 3: Mobile Responsiveness', () => {
 
     // Start learning session
     await page.getByText('Learn Italian from Russian').click()
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
+
+    // Wait for page to transition to flashcard view (Firefox needs more time)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Answer the flashcard
     const inputField = page.getByRole('textbox')

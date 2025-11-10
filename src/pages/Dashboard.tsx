@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { BarChart3 } from 'lucide-react'
 import { ModeSelection } from '../components/ModeSelection'
 import { Header } from '../components/Header'
 import { FlashCard } from '../components/FlashCard'
@@ -27,6 +29,7 @@ import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation('dashboard')
   const { user } = useAuth()
+  const navigate = useNavigate()
   const {
     progress: dbProgress,
     loading: progressLoading,
@@ -256,7 +259,15 @@ export const Dashboard: React.FC = () => {
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
-          <div className="flex justify-end items-center p-6">
+          <div className="flex justify-between items-center p-6">
+            <button
+              onClick={() => navigate('/analytics')}
+              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg shadow-md transition-colors"
+              data-testid="analytics-button"
+            >
+              <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <span className="font-medium text-gray-900 dark:text-white">Analytics</span>
+            </button>
             <UserProfile />
           </div>
 
