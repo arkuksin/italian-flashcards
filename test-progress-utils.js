@@ -12,33 +12,47 @@ const mockProgress = new Map([
 ])
 
 console.log('🧪 Testing Progress Tracking Utilities\n')
+console.log('⚠️  NOTE: Tests updated for Phase 1 Leitner System (2025-11-10)\n')
 
-// Test 1: Calculate Mastery Level
-console.log('Test 1: calculateMasteryLevel()')
+// Phase 1 Leitner System Implementation
+function calculateMasteryLevel(currentLevel, correct) {
+  if (correct) {
+    return Math.min(currentLevel + 1, 5) // Move up one level
+  } else {
+    return Math.max(currentLevel - 2, 0) // Move down two levels
+  }
+}
+
+// Test 1: Calculate Mastery Level (Phase 1 - Incremental Movement)
+console.log('Test 1: calculateMasteryLevel() - Phase 1 Leitner Boxes')
 const testCases = [
-  { correct: 9, wrong: 1, expected: 5, desc: '90% success, 10 attempts → Level 5' },
-  { correct: 4, wrong: 1, expected: 4, desc: '80% success, 5 attempts → Level 4' },
-  { correct: 7, wrong: 3, expected: 3, desc: '70% success, 10 attempts → Level 3' },
-  { correct: 3, wrong: 2, expected: 2, desc: '60% success, 5 attempts → Level 2' },
-  { correct: 1, wrong: 0, expected: 1, desc: 'Any attempts → Level 1' },
-  { correct: 0, wrong: 0, expected: 0, desc: 'No attempts → Level 0' },
+  // Correct answers - level up
+  { currentLevel: 0, correct: true, expected: 1, desc: 'New word + correct → Level 1' },
+  { currentLevel: 2, correct: true, expected: 3, desc: 'Level 2 + correct → Level 3' },
+  { currentLevel: 4, correct: true, expected: 5, desc: 'Level 4 + correct → Level 5' },
+  { currentLevel: 5, correct: true, expected: 5, desc: 'Level 5 + correct → Level 5 (max)' },
+
+  // Wrong answers - level down
+  { currentLevel: 5, correct: false, expected: 3, desc: 'Level 5 + wrong → Level 3' },
+  { currentLevel: 3, correct: false, expected: 1, desc: 'Level 3 + wrong → Level 1' },
+  { currentLevel: 1, correct: false, expected: 0, desc: 'Level 1 + wrong → Level 0' },
+  { currentLevel: 0, correct: false, expected: 0, desc: 'Level 0 + wrong → Level 0 (min)' },
 ]
 
-testCases.forEach(({ correct, wrong, expected, desc }) => {
-  const successRate = correct + wrong > 0 ? correct / (correct + wrong) : 0
-  let level = 0
-  if (successRate >= 0.9 && correct + wrong >= 5) level = 5
-  else if (successRate >= 0.8 && correct + wrong >= 4) level = 4
-  else if (successRate >= 0.7 && correct + wrong >= 3) level = 3
-  else if (successRate >= 0.6 && correct + wrong >= 2) level = 2
-  else if (correct + wrong >= 1) level = 1
-
+testCases.forEach(({ currentLevel, correct, expected, desc }) => {
+  const level = calculateMasteryLevel(currentLevel, correct)
   const passed = level === expected ? '✅' : '❌'
   console.log(`  ${passed} ${desc}`)
   if (level !== expected) {
     console.log(`     Expected: ${expected}, Got: ${level}`)
   }
 })
+
+console.log('\n📝 Key Changes in Phase 1:')
+console.log('  • Correct answer: +1 level (was: success rate based)')
+console.log('  • Wrong answer: -2 levels (was: recalculate from scratch)')
+console.log('  • More responsive to recent performance')
+console.log('  • Aligns with traditional Leitner box system')
 
 // Test 2: Due Words
 console.log('\nTest 2: getDueWords()')
