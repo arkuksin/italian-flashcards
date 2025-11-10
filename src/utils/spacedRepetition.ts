@@ -46,17 +46,45 @@ export const sortWordsByPriority = (
 }
 
 /**
- * Calculates mastery level based on performance using Leitner system
+ * Calculates mastery level based on performance using TRUE Leitner system
+ *
+ * Phase 1 Implementation (2025-11-10):
+ * - Correct answer: Move UP one level (max 5)
+ * - Wrong answer: Move DOWN two levels (min 0)
+ *
+ * This replaces the old success-rate-based approach with incremental box movement,
+ * which is more aligned with the traditional Leitner spaced repetition method.
+ *
+ * @param currentLevel - Current mastery level (0-5)
+ * @param correct - Whether the answer was correct
+ * @returns New mastery level (0-5)
+ */
+export const calculateMasteryLevel = (currentLevel: number, correct: boolean): number => {
+  if (correct) {
+    // Correct answer: move up one level (max 5)
+    return Math.min(currentLevel + 1, 5)
+  } else {
+    // Wrong answer: move down two levels (min 0)
+    // This ensures forgotten words get more frequent review
+    return Math.max(currentLevel - 2, 0)
+  }
+}
+
+/**
+ * Legacy function for backward compatibility
+ * Calculates initial mastery level based on success rate
+ * Used only for migrating old data or initializing from statistics
  *
  * @param correctCount - Number of correct answers
  * @param wrongCount - Number of wrong answers
  * @returns Mastery level (0-5)
+ * @deprecated Use calculateMasteryLevel(currentLevel, correct) instead
  */
-export const calculateMasteryLevel = (correctCount: number, wrongCount: number): number => {
+export const calculateMasteryLevelFromStats = (correctCount: number, wrongCount: number): number => {
   const totalAttempts = correctCount + wrongCount
   const successRate = totalAttempts > 0 ? correctCount / totalAttempts : 0
 
-  // Leitner system mastery thresholds
+  // Legacy success rate thresholds
   if (successRate >= 0.9 && totalAttempts >= 5) return 5
   if (successRate >= 0.8 && totalAttempts >= 4) return 4
   if (successRate >= 0.7 && totalAttempts >= 3) return 3

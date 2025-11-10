@@ -208,7 +208,9 @@ const useProvideProgress = (): ProgressContextValue => {
           ? 1
           : 0
 
-      const masteryLevel = calculateMasteryLevel(newCorrectCount, newWrongCount)
+      // Phase 1 Leitner System: Use current level and answer to calculate new level
+      const currentLevel = currentProgress?.mastery_level ?? 0
+      const masteryLevel = calculateMasteryLevel(currentLevel, correct)
 
       const updatedProgress: Partial<WordProgress> = {
         id: currentProgress?.id,

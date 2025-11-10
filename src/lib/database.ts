@@ -1,6 +1,7 @@
 // src/lib/database.ts
 import { supabase } from './supabase'
 import { DbWord, DbUserProgress, DbLearningSession } from '../types'
+import { calculateMasteryLevel as calculateMasteryLevelNew } from '../utils/spacedRepetition'
 
 // Words operations
 export const getAllWords = async (): Promise<DbWord[]> => {
@@ -67,7 +68,10 @@ export const updateUserProgress = async (
   const currentProgress = await getUserProgress(userId, wordId)
 
   if (currentProgress) {
-    // Update existing progress
+    // Update existing progress using new Leitner system (Phase 1)
+    const currentLevel = currentProgress.mastery_level ?? 0
+    const newMasteryLevel = calculateMasteryLevelNew(currentLevel, isCorrect)
+
     const updates = {
       correct_count: isCorrect
         ? currentProgress.correct_count + 1
@@ -76,10 +80,7 @@ export const updateUserProgress = async (
         ? currentProgress.wrong_count
         : currentProgress.wrong_count + 1,
       last_practiced: new Date().toISOString(),
-      mastery_level: calculateMasteryLevel(
-        isCorrect ? currentProgress.correct_count + 1 : currentProgress.correct_count,
-        isCorrect ? currentProgress.wrong_count : currentProgress.wrong_count + 1
-      )
+      mastery_level: newMasteryLevel
     }
 
     const { data, error } = await supabase
@@ -93,13 +94,16 @@ export const updateUserProgress = async (
     return data
   } else {
     // Create new progress entry
+    // New word starts at level 0, then moves to 1 on first correct or stays at 0 on wrong
+    const initialLevel = calculateMasteryLevelNew(0, isCorrect)
+
     const newProgress = {
       user_id: userId,
       word_id: wordId,
       correct_count: isCorrect ? 1 : 0,
       wrong_count: isCorrect ? 0 : 1,
       last_practiced: new Date().toISOString(),
-      mastery_level: calculateMasteryLevel(isCorrect ? 1 : 0, isCorrect ? 0 : 1)
+      mastery_level: initialLevel
     }
 
     const { data, error } = await supabase
@@ -165,20 +169,4 @@ export const getUserLearningHistory = async (userId: string): Promise<DbLearning
 
   if (error) throw error
   return data || []
-}
-
-// Utility functions
-function calculateMasteryLevel(correctCount: number, wrongCount: number): number {
-  const total = correctCount + wrongCount
-  if (total === 0) return 0
-
-  const accuracy = correctCount / total
-
-  // Mastery level from 0 to 5 based on accuracy and practice count
-  if (total < 3) return 1 // Beginner
-  if (accuracy >= 0.9 && total >= 10) return 5 // Master
-  if (accuracy >= 0.8 && total >= 7) return 4 // Advanced
-  if (accuracy >= 0.7 && total >= 5) return 3 // Intermediate
-  if (accuracy >= 0.5) return 2 // Learning
-  return 1 // Struggling
 }
