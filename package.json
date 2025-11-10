@@ -30,6 +30,7 @@
     "prod:delete-users:dry-run": "node scripts/delete-invalid-users.js --dry-run",
     "prod:cleanup-users": "node scripts/cleanup-test-users.js --database=production --dry-run",
     "health:check": "node scripts/monitor-email-health.js",
+    "check:analytics": "node scripts/check-review-history.js",
     "test": "node scripts/run-vitest.js"
   },
   "dependencies": {
