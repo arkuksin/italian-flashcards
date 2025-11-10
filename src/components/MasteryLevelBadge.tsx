@@ -97,6 +97,7 @@ export const MasteryLevelBadge: React.FC<MasteryLevelBadgeProps> = ({
         ${config.bg} ${config.text} ${config.border} ${sizeClasses[size]}
       `}
       title={config.description}
+      data-testid={`mastery-badge-level-${level}`}
     >
       <span className="font-bold">L{level}</span>
       {showLabel && size !== 'sm' && (
