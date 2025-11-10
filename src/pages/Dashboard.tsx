@@ -6,6 +6,7 @@ import { Header } from '../components/Header'
 import { FlashCard } from '../components/FlashCard'
 import { ProgressBar } from '../components/ProgressBar'
 import { Statistics } from '../components/Statistics'
+import { LeitnerBoxVisualizer } from '../components/LeitnerBoxVisualizer'
 import { UserProfile } from '../components/auth/UserProfile'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
@@ -248,6 +249,11 @@ export const Dashboard: React.FC = () => {
                 </h1>
                 <Statistics />
               </div>
+            </div>
+
+            {/* Phase 2: Leitner Box Visualizer */}
+            <div className="max-w-4xl mx-auto mb-8">
+              <LeitnerBoxVisualizer />
             </div>
 
             {/* Mode Selection */}
