@@ -9,8 +9,9 @@ import {
 } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { WordProgress, ProgressStats } from '../types'
+import { WordProgress, ProgressStats, DifficultyRating } from '../types'
 import { calculateMasteryLevel, getDueWords as getDueWordsUtil } from '../utils/spacedRepetition'
+import { reviewHistoryService } from '../services/reviewHistoryService'
 
 type OfflineQueueItem = {
   type: 'progress' | 'session'
@@ -28,7 +29,12 @@ interface ProgressContextValue {
     correctAnswers: number
   }
   loadProgress: () => Promise<void>
-  updateProgress: (wordId: number, correct: boolean) => Promise<void>
+  updateProgress: (
+    wordId: number,
+    correct: boolean,
+    responseTimeMs?: number,
+    difficultyRating?: DifficultyRating
+  ) => Promise<void>
   startSession: (learningDirection: 'ru-it' | 'it-ru') => Promise<string | null>
   endSession: () => Promise<void>
   getStats: () => ProgressStats
@@ -188,7 +194,12 @@ const useProvideProgress = (): ProgressContextValue => {
   }, [currentSession, sessionStats, user])
 
   const updateProgress = useCallback(
-    async (wordId: number, correct: boolean) => {
+    async (
+      wordId: number,
+      correct: boolean,
+      responseTimeMs?: number,
+      difficultyRating?: DifficultyRating
+    ) => {
       if (!user) return
 
       const currentProgress = progress.get(wordId)
@@ -254,6 +265,17 @@ const useProvideProgress = (): ProgressContextValue => {
           const next = new Map(prev)
           next.set(wordId, data)
           return next
+        })
+
+        // Phase 3: Log review history with response time and difficulty rating
+        await reviewHistoryService.logReview({
+          userId: user.id,
+          wordId,
+          correct,
+          responseTimeMs,
+          difficultyRating,
+          previousLevel: currentLevel,
+          newLevel: masteryLevel,
         })
       } catch (updateError) {
         const errorMessage = updateError instanceof Error ? updateError.message : 'Failed to update progress'

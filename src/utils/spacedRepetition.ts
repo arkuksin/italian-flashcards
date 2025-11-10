@@ -1,4 +1,4 @@
-import { WordProgress } from '../types'
+import { WordProgress, DifficultyRating } from '../types'
 
 export const getNextReviewDate = (masteryLevel: number, lastReviewed: Date): Date => {
   const intervals = [1, 3, 7, 14, 30, 90] // days
@@ -6,6 +6,57 @@ export const getNextReviewDate = (masteryLevel: number, lastReviewed: Date): Dat
 
   const nextReview = new Date(lastReviewed)
   nextReview.setDate(nextReview.getDate() + interval)
+
+  return nextReview
+}
+
+/**
+ * Phase 3: Get adaptive review date based on difficulty rating
+ * Adjusts intervals based on how easily the user remembered the word
+ *
+ * @param masteryLevel - Current mastery level (0-5)
+ * @param lastReviewed - Date of last review
+ * @param difficultyRating - User's difficulty rating (1=Again, 2=Hard, 3=Good, 4=Easy)
+ * @returns Next review date
+ */
+export const getAdaptiveReviewDate = (
+  masteryLevel: number,
+  lastReviewed: Date,
+  difficultyRating?: DifficultyRating
+): Date => {
+  // Base intervals in days for each mastery level
+  const baseIntervals = [1, 3, 7, 14, 30, 90]
+  let baseInterval = baseIntervals[Math.min(masteryLevel, baseIntervals.length - 1)]
+
+  // If no difficulty rating provided, use base interval
+  if (!difficultyRating) {
+    const nextReview = new Date(lastReviewed)
+    nextReview.setDate(nextReview.getDate() + baseInterval)
+    return nextReview
+  }
+
+  // Adjust interval based on difficulty rating
+  let adjustedInterval: number
+
+  switch (difficultyRating) {
+    case 1: // Again - forgot completely, very short interval
+      adjustedInterval = Math.max(1, Math.floor(baseInterval * 0.5))
+      break
+    case 2: // Hard - difficult to remember, shorter interval
+      adjustedInterval = Math.max(1, Math.floor(baseInterval * 0.7))
+      break
+    case 3: // Good - normal interval
+      adjustedInterval = baseInterval
+      break
+    case 4: // Easy - remembered easily, longer interval
+      adjustedInterval = Math.floor(baseInterval * 1.5)
+      break
+    default:
+      adjustedInterval = baseInterval
+  }
+
+  const nextReview = new Date(lastReviewed)
+  nextReview.setDate(nextReview.getDate() + adjustedInterval)
 
   return nextReview
 }
