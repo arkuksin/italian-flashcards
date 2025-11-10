@@ -2,6 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TrendingUp, Target, Award, Zap } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
+import { BoxDistributionChart } from './BoxDistributionChart'
 
 /**
  * Statistics Component
@@ -110,6 +111,11 @@ export const Statistics: React.FC = () => {
             {stats.wordsInProgress}
           </div>
         </div>
+      </div>
+
+      {/* Phase 2: Leitner Box Distribution Chart */}
+      <div className="mt-6">
+        <BoxDistributionChart />
       </div>
     </div>
   )
