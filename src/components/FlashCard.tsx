@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
-import { Word, LearningDirection, WordProgress } from '../types';
+import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 
 interface FlashCardProps {
   word: Word;
@@ -17,6 +17,8 @@ interface FlashCardProps {
   currentIndex: number;
   totalWords: number;
   wordProgress?: WordProgress;
+  onDifficultyRating?: (rating: DifficultyRating) => void;
+  difficultyRating?: DifficultyRating;
 }
 
 export const FlashCard: React.FC<FlashCardProps> = ({
@@ -32,6 +34,8 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   currentIndex,
   totalWords,
   wordProgress,
+  onDifficultyRating,
+  difficultyRating,
 }) => {
   const { t, ready } = useTranslation('learning');
   const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
@@ -172,7 +176,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                   </div>
                 )}
               </div>
-              
+
               <div className="text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('flashcard.correctAnswer')}</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
@@ -184,6 +188,82 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                   </p>
                 )}
               </div>
+
+              {/* Phase 3: Difficulty Rating Buttons */}
+              {onDifficultyRating && (
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">
+                    {t('flashcard.difficulty.prompt', 'How well did you know this?')}
+                  </p>
+                  <div className="grid grid-cols-4 gap-2" data-testid="difficulty-buttons">
+                    <motion.button
+                      onClick={() => onDifficultyRating(1)}
+                      disabled={difficultyRating !== undefined}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        difficultyRating === 1
+                          ? 'bg-red-500 text-white ring-2 ring-red-400'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
+                      } disabled:opacity-50`}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      data-testid="difficulty-again"
+                    >
+                      {t('flashcard.difficulty.again', 'Again')}
+                    </motion.button>
+                    <motion.button
+                      onClick={() => onDifficultyRating(2)}
+                      disabled={difficultyRating !== undefined}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        difficultyRating === 2
+                          ? 'bg-orange-500 text-white ring-2 ring-orange-400'
+                          : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50'
+                      } disabled:opacity-50`}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      data-testid="difficulty-hard"
+                    >
+                      {t('flashcard.difficulty.hard', 'Hard')}
+                    </motion.button>
+                    <motion.button
+                      onClick={() => onDifficultyRating(3)}
+                      disabled={difficultyRating !== undefined}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        difficultyRating === 3
+                          ? 'bg-blue-500 text-white ring-2 ring-blue-400'
+                          : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
+                      } disabled:opacity-50`}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      data-testid="difficulty-good"
+                    >
+                      {t('flashcard.difficulty.good', 'Good')}
+                    </motion.button>
+                    <motion.button
+                      onClick={() => onDifficultyRating(4)}
+                      disabled={difficultyRating !== undefined}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        difficultyRating === 4
+                          ? 'bg-green-500 text-white ring-2 ring-green-400'
+                          : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+                      } disabled:opacity-50`}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      data-testid="difficulty-easy"
+                    >
+                      {t('flashcard.difficulty.easy', 'Easy')}
+                    </motion.button>
+                  </div>
+                  {difficultyRating && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2"
+                    >
+                      {t('flashcard.difficulty.saved', 'Rating saved! You can continue to the next word.')}
+                    </motion.p>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         )}

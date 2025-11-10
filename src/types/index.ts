@@ -70,3 +70,30 @@ export interface ProgressStats {
   masteredWords: number
   wordsInProgress: number
 }
+
+// Phase 3: Advanced Spaced Repetition Types
+
+/**
+ * Difficulty rating for answer feedback
+ * 1 = Again (forgot completely)
+ * 2 = Hard (difficult to remember)
+ * 3 = Good (remembered correctly)
+ * 4 = Easy (remembered easily)
+ */
+export type DifficultyRating = 1 | 2 | 3 | 4
+
+export interface ReviewHistory {
+  id: string
+  user_id: string
+  word_id: number
+  review_date: string
+  correct: boolean
+  response_time_ms?: number
+  difficulty_rating?: DifficultyRating
+  previous_level: number
+  new_level: number
+}
+
+export type DbReviewHistory = Database['public']['Tables']['review_history']['Row']
+export type DbReviewHistoryInsert = Database['public']['Tables']['review_history']['Insert']
+export type DbReviewHistoryUpdate = Database['public']['Tables']['review_history']['Update']

@@ -12,7 +12,7 @@ import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
 import { useAuth } from '../contexts/AuthContext'
 import { WORDS, getShuffledWords } from '../data/words'
-import { AppState, LearningDirection, Word } from '../types'
+import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
 
 /**
  * Dashboard Page
@@ -49,6 +49,9 @@ export const Dashboard: React.FC = () => {
   })
 
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now())
+  const [responseTimeMs, setResponseTimeMs] = useState<number | undefined>(undefined)
+  const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(undefined)
 
   // Initialize persisted preferences from localStorage
   useEffect(() => {
@@ -94,6 +97,9 @@ export const Dashboard: React.FC = () => {
         showAnswer: false,
       }))
       setIsCorrect(null)
+      setQuestionStartTime(Date.now())
+      setResponseTimeMs(undefined)
+      setDifficultyRating(undefined)
     }
   }
 
@@ -106,6 +112,9 @@ export const Dashboard: React.FC = () => {
         showAnswer: false,
       }))
       setIsCorrect(null)
+      setQuestionStartTime(Date.now())
+      setResponseTimeMs(undefined)
+      setDifficultyRating(undefined)
     }
   }
 
@@ -114,6 +123,10 @@ export const Dashboard: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!state.userInput.trim() || state.showAnswer) return
+
+    // Calculate response time
+    const responseTime = Date.now() - questionStartTime
+    setResponseTimeMs(responseTime)
 
     let targetWord = state.learningDirection === 'ru-it'
       ? currentWord.italian.toLowerCase()
@@ -129,13 +142,17 @@ export const Dashboard: React.FC = () => {
 
     setIsCorrect(correct)
 
-    // Update progress in database
-    await updateProgress(currentWord.id, correct)
-
     setState(prev => ({
       ...prev,
       showAnswer: true,
     }))
+  }
+
+  const handleDifficultyRating = async (rating: DifficultyRating) => {
+    setDifficultyRating(rating)
+
+    // Update progress in database with response time and difficulty rating
+    await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating)
   }
 
   const handleToggleDarkMode = () => {
@@ -197,6 +214,9 @@ export const Dashboard: React.FC = () => {
       showAnswer: false,
     }))
     setIsCorrect(null)
+    setQuestionStartTime(Date.now())
+    setResponseTimeMs(undefined)
+    setDifficultyRating(undefined)
     setHasSelectedMode(false)
 
     if (state.shuffleMode) {
@@ -321,6 +341,8 @@ export const Dashboard: React.FC = () => {
                         currentIndex={state.currentWordIndex}
                         totalWords={words.length}
                         wordProgress={currentWordProgress}
+                        onDifficultyRating={handleDifficultyRating}
+                        difficultyRating={difficultyRating}
                       />
                     </motion.div>
                   </AnimatePresence>
