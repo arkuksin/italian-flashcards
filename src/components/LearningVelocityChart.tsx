@@ -99,7 +99,7 @@ export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ da
 
       {/* Bar Chart */}
       <div className="space-y-3">
-        {data.map((week, index) => (
+        {data.map((week) => (
           <div key={week.weekStart} className="group">
             <div className="flex items-center gap-2 mb-1">
               <div className="text-xs text-gray-500 dark:text-gray-400 w-16">

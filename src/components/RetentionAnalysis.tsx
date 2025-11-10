@@ -66,12 +66,6 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
     return 'text-red-600 dark:text-red-400'
   }
 
-  const getRetentionBgColor = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 dark:bg-green-900/30'
-    if (rate >= 60) return 'bg-yellow-100 dark:bg-yellow-900/30'
-    return 'bg-red-100 dark:bg-red-900/30'
-  }
-
   const maxRetentionRate = Math.max(...data.retentionByLevel.map(l => l.retentionRate), 100)
 
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, BarChart3, TrendingUp, Brain, Calendar } from 'lucide-react'
+import { ArrowLeft, BarChart3, TrendingUp, Brain } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { UserProfile } from '../components/auth/UserProfile'
 import { LearningVelocityChart } from '../components/LearningVelocityChart'

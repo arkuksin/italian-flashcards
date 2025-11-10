@@ -170,7 +170,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
 
     // Record initial total words count
     const totalWordsCount = page.locator('[data-testid="total-words-count"]')
-    const initialTotal = await totalWordsCount.textContent().catch(() => '0')
+    await totalWordsCount.textContent().catch(() => '0')
 
     // Start a learning session
     await page.getByText('Learn Italian from Russian').click()
@@ -276,7 +276,7 @@ test.describe('Leitner System - Phase 2: MasteryLevelBadge', () => {
       { level: 5, label: 'Mastered' }
     ]
 
-    for (const { level, label } of expectedLabels) {
+    for (const { level } of expectedLabels) {
       const badge = page.locator(`[data-testid="mastery-badge-level-${level}"]`)
       await expect(badge).toBeVisible({ timeout: 3000 })
 
@@ -336,7 +336,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
     await expect(visualizer).toBeVisible()
 
     const totalWordsCount = page.locator('[data-testid="total-words-count"]')
-    const initialTotal = await totalWordsCount.textContent().catch(() => '0')
+    await totalWordsCount.textContent().catch(() => '0')
 
     // Answer multiple flashcards
     await page.getByText('Learn Italian from Russian').click()
