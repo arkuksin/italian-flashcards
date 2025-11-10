@@ -97,3 +97,63 @@ export interface ReviewHistory {
 export type DbReviewHistory = Database['public']['Tables']['review_history']['Row']
 export type DbReviewHistoryInsert = Database['public']['Tables']['review_history']['Insert']
 export type DbReviewHistoryUpdate = Database['public']['Tables']['review_history']['Update']
+
+export type DbAchievement = Database['public']['Tables']['achievements']['Row']
+export type DbAchievementInsert = Database['public']['Tables']['achievements']['Insert']
+export type DbAchievementUpdate = Database['public']['Tables']['achievements']['Update']
+
+export type DbDailyGoals = Database['public']['Tables']['daily_goals']['Row']
+export type DbDailyGoalsInsert = Database['public']['Tables']['daily_goals']['Insert']
+export type DbDailyGoalsUpdate = Database['public']['Tables']['daily_goals']['Update']
+
+// Phase 5: Gamification Types
+
+/**
+ * Achievement types for badges and milestones
+ */
+export type AchievementType =
+  | 'FIRST_WORD'           // Studied first word
+  | 'STREAK_3'             // 3-day streak
+  | 'STREAK_7'             // 7-day streak
+  | 'STREAK_30'            // 30-day streak
+  | 'STREAK_100'           // 100-day streak
+  | 'MASTER_10'            // Mastered 10 words
+  | 'MASTER_50'            // Mastered 50 words
+  | 'MASTER_100'           // Mastered 100 words
+  | 'MASTER_500'           // Mastered 500 words
+  | 'SPEED_DEMON'          // 100 reviews in one session
+  | 'PERFECTIONIST'        // 50 correct answers in a row
+  | 'CATEGORY_MASTER'      // Mastered all words in a category
+  | 'EARLY_BIRD'           // Practice before 8 AM
+  | 'NIGHT_OWL'            // Practice after 10 PM
+  | 'DEDICATED'            // 1000 total reviews
+  | 'CHAMPION'             // Reached level 10
+
+export interface Achievement {
+  id: string
+  user_id: string
+  achievement_type: AchievementType
+  unlocked_at: string
+  metadata?: Record<string, unknown>
+  created_at: string
+}
+
+export interface DailyGoals {
+  user_id: string
+  target_words_per_day: number
+  current_streak: number
+  longest_streak: number
+  last_practice_date: string | null
+  total_xp: number
+  level: number
+  created_at: string
+  updated_at: string
+}
+
+export interface AchievementDefinition {
+  type: AchievementType
+  name: string
+  description: string
+  icon: string
+  xp_reward: number
+}

@@ -156,6 +156,67 @@ export type Database = {
           new_level?: number
         }
       }
+      achievements: {
+        Row: {
+          id: string
+          user_id: string
+          achievement_type: string
+          unlocked_at: string
+          metadata: Record<string, unknown>
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          achievement_type: string
+          unlocked_at?: string
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          achievement_type?: string
+          unlocked_at?: string
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+      }
+      daily_goals: {
+        Row: {
+          user_id: string
+          target_words_per_day: number
+          current_streak: number
+          longest_streak: number
+          last_practice_date: string | null
+          total_xp: number
+          level: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          target_words_per_day?: number
+          current_streak?: number
+          longest_streak?: number
+          last_practice_date?: string | null
+          total_xp?: number
+          level?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          user_id?: string
+          target_words_per_day?: number
+          current_streak?: number
+          longest_streak?: number
+          last_practice_date?: string | null
+          total_xp?: number
+          level?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

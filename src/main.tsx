@@ -6,6 +6,7 @@ import './index.css';
 import './lib/env';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProgressProvider } from './hooks/useProgress';
+import { GamificationProvider } from './hooks/useGamification';
 import { initI18n } from './lib/i18n';
 
 // Initialize i18n before rendering the app
@@ -15,7 +16,9 @@ initI18n().then(() => {
       <BrowserRouter>
         <AuthProvider>
           <ProgressProvider>
-            <App />
+            <GamificationProvider>
+              <App />
+            </GamificationProvider>
           </ProgressProvider>
         </AuthProvider>
       </BrowserRouter>
@@ -29,7 +32,9 @@ initI18n().then(() => {
       <BrowserRouter>
         <AuthProvider>
           <ProgressProvider>
-            <App />
+            <GamificationProvider>
+              <App />
+            </GamificationProvider>
           </ProgressProvider>
         </AuthProvider>
       </BrowserRouter>
