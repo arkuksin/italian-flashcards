@@ -41,8 +41,8 @@ export const LeitnerBoxVisualizer: React.FC = () => {
   ]
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="leitner-box-visualizer">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4" data-testid="leitner-box-heading">
         Leitner Box System
       </h2>
 
@@ -53,7 +53,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
       </div>
 
       {totalWords === 0 ? (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400" data-testid="leitner-empty-state">
           <p>Start learning to see your progress!</p>
         </div>
       ) : (
@@ -69,6 +69,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className="relative"
+                data-testid={`leitner-level-${box.level}`}
               >
                 <div className="flex items-center gap-4">
                   {/* Box Level Badge */}
@@ -94,10 +95,10 @@ export const LeitnerBoxVisualizer: React.FC = () => {
                         `}
                       />
                       <div className="relative h-full flex items-center justify-between px-4">
-                        <span className="text-sm font-medium text-gray-900 dark:text-white z-10">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white z-10" data-testid={`level-${box.level}-count`}>
                           {count} {count === 1 ? 'word' : 'words'}
                         </span>
-                        <span className="text-xs text-gray-600 dark:text-gray-300 z-10">
+                        <span className="text-xs text-gray-600 dark:text-gray-300 z-10" data-testid={`level-${box.level}-interval`}>
                           Review: {box.interval}
                         </span>
                       </div>
@@ -106,7 +107,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
 
                   {/* Percentage */}
                   <div className="flex-shrink-0 w-12 text-right">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300" data-testid={`level-${box.level}-percentage`}>
                       {percentage.toFixed(0)}%
                     </span>
                   </div>
@@ -117,10 +118,10 @@ export const LeitnerBoxVisualizer: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700" data-testid="leitner-total-words">
         <div className="flex justify-between items-center text-sm">
           <span className="text-gray-600 dark:text-gray-400">Total Words Studied</span>
-          <span className="font-bold text-gray-900 dark:text-white text-lg">{totalWords}</span>
+          <span className="font-bold text-gray-900 dark:text-white text-lg" data-testid="total-words-count">{totalWords}</span>
         </div>
       </div>
     </div>
