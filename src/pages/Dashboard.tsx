@@ -10,8 +10,13 @@ import { ProgressBar } from '../components/ProgressBar'
 import { Statistics } from '../components/Statistics'
 import { LeitnerBoxVisualizer } from '../components/LeitnerBoxVisualizer'
 import { UserProfile } from '../components/auth/UserProfile'
+import { DailyStreakWidget } from '../components/DailyStreakWidget'
+import { XPProgressBar } from '../components/XPProgressBar'
+import { AchievementBadges } from '../components/AchievementBadges'
+import { DailyGoalProgress } from '../components/DailyGoalProgress'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
+import { useGamification } from '../hooks/useGamification'
 import { useAuth } from '../contexts/AuthContext'
 import { WORDS, getShuffledWords } from '../data/words'
 import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
@@ -38,6 +43,7 @@ export const Dashboard: React.FC = () => {
     endSession,
     currentSession,
   } = useProgress()
+  const { updateDailyProgress } = useGamification()
 
   const [hasSelectedMode, setHasSelectedMode] = useState(false)
   const [words, setWords] = useState<Word[]>(WORDS)
@@ -156,6 +162,9 @@ export const Dashboard: React.FC = () => {
 
     // Update progress in database with response time and difficulty rating
     await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating)
+
+    // Update gamification (XP, streaks, achievements)
+    await updateDailyProgress(isCorrect ?? false)
   }
 
   const handleToggleDarkMode = () => {
@@ -279,6 +288,18 @@ export const Dashboard: React.FC = () => {
                   {t('welcome', { name: user?.email?.split('@')[0] || '' })}
                 </h1>
                 <Statistics />
+              </div>
+            </div>
+
+            {/* Phase 5: Gamification Section */}
+            <div className="max-w-4xl mx-auto mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <DailyStreakWidget />
+                <XPProgressBar />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DailyGoalProgress />
+                <AchievementBadges maxDisplay={3} />
               </div>
             </div>
 
