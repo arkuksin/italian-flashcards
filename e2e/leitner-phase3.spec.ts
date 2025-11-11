@@ -30,9 +30,9 @@ async function startLearningSession(page: Page, browserName: string) {
     await page.waitForTimeout(1000)
   }
 
-  // Wait for flashcard to appear using multiple selectors
-  const flashcardQuestion = page.locator('[data-testid="flashcard-question"], text=/Translate to Italian:/i').first()
-  await flashcardQuestion.waitFor({ state: 'visible', timeout: 15000 })
+  // Wait for flashcard to appear using data-testid or text fallback
+  const flashcardQuestion = page.getByTestId('flashcard-question').or(page.getByText(/Translate to Italian:/i))
+  await flashcardQuestion.first().waitFor({ state: 'visible', timeout: 15000 })
 }
 
 test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
@@ -191,7 +191,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     const nextButton = page.locator('[data-testid="next-button"]')
     if (await nextButton.isVisible()) {
       await nextButton.click()
-      const flashcardQuestion = page.locator('[data-testid="flashcard-question"], text=/Translate to Italian:/i').first()
+      const flashcardQuestion = page.getByTestId('flashcard-question').or(page.getByText(/Translate to Italian:/i)).first()
       await flashcardQuestion.waitFor({ state: 'visible', timeout: 5000 })
 
       // Answer second flashcard
@@ -278,7 +278,7 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
         const nextButton = page.locator('[data-testid="next-button"]')
         if (await nextButton.isVisible()) {
           await nextButton.click()
-          const flashcardQuestion = page.locator('[data-testid="flashcard-question"], text=/Translate to Italian:/i').first()
+          const flashcardQuestion = page.getByTestId('flashcard-question').or(page.getByText(/Translate to Italian:/i)).first()
           await flashcardQuestion.waitFor({ state: 'visible', timeout: 5000 })
         }
       }
@@ -309,7 +309,7 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
     const nextButton = page.locator('[data-testid="next-button"]')
     if (await nextButton.isVisible()) {
       await nextButton.click()
-      const flashcardQuestion = page.locator('[data-testid="flashcard-question"], text=/Translate to Italian:/i').first()
+      const flashcardQuestion = page.getByTestId('flashcard-question').or(page.getByText(/Translate to Italian:/i)).first()
       await flashcardQuestion.waitFor({ state: 'visible', timeout: 5000 })
     }
 
