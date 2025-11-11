@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Tag, Check, AlertCircle, Loader2 } from 'lucide-react'
 import { categoryService } from '../services/categoryService'
@@ -21,38 +21,47 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
-
-  const loadCategories = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      const [stats, savedSelection, suggested] = await Promise.all([
-        categoryService.getCategoryStatistics(),
-        categoryService.getSelectedCategories(userId),
-        categoryService.getSuggestedCategory()
-      ])
-
-      setCategories(stats)
-
-      // Use initial selection if provided, otherwise use saved selection
-      const categoriesToSelect = initialSelection.length > 0 ? initialSelection : savedSelection
-      setSelected(new Set(categoriesToSelect))
-      setSuggestion(suggested)
-
-      // Notify parent of initial selection
-      onSelectionChange(categoriesToSelect)
-    } catch (err) {
-      console.error('Error loading categories:', err)
-      setError('Failed to load categories. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }, [userId, initialSelection, onSelectionChange])
+  const [retryKey, setRetryKey] = useState(0)
+  const hasNotifiedRef = useRef(false)
 
   useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const [stats, savedSelection, suggested] = await Promise.all([
+          categoryService.getCategoryStatistics(),
+          categoryService.getSelectedCategories(userId),
+          categoryService.getSuggestedCategory()
+        ])
+
+        setCategories(stats)
+
+        // Use initial selection if provided, otherwise use saved selection
+        const categoriesToSelect = initialSelection.length > 0 ? initialSelection : savedSelection
+        setSelected(new Set(categoriesToSelect))
+        setSuggestion(suggested)
+
+        // Only notify parent once on initial load
+        if (!hasNotifiedRef.current) {
+          hasNotifiedRef.current = true
+          onSelectionChange(categoriesToSelect)
+        }
+      } catch (err) {
+        console.error('Error loading categories:', err)
+        setError('Failed to load categories. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     loadCategories()
-  }, [loadCategories])
+  }, [userId, initialSelection, onSelectionChange, retryKey])
+
+  const handleRetry = () => {
+    setRetryKey(prev => prev + 1)
+  }
 
   const handleToggle = (category: string) => {
     const newSelected = new Set(selected)
@@ -106,7 +115,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
         <p className="text-sm text-red-800">{error}</p>
         <button
-          onClick={loadCategories}
+          onClick={handleRetry}
           className="mt-2 text-xs text-red-600 hover:text-red-800 font-medium underline"
         >
           Erneut versuchen
