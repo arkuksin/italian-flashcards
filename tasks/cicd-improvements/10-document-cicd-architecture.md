@@ -151,8 +151,9 @@ Required status checks on main branch:
 - Avoids Supabase email bounce limits
 - Allows safe data manipulation in tests
 
-### Why both Claude and Gemini? (TO BE UPDATED)
-- Currently redundant, see task 08 for consolidation plan
+### Why Claude (and not Gemini)?
+- As of 2025-11-11 the repository standardized on Claude; Gemini workflows were deleted to reduce cost and complexity.
+- Document Claude as the sole on-demand AI assistant and remove/annotate any legacy Gemini references.
 
 ## Performance Benchmarks
 
@@ -174,7 +175,6 @@ See `tasks/cicd-improvements/` for planned enhancements:
 - Add basic CI checks (lint, build)
 - Production smoke tests
 - Performance monitoring
-- Consolidate AI systems
 
 ## Diagrams
 

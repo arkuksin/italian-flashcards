@@ -8,7 +8,9 @@
 
 ## Executive Summary
 
-This CI/CD setup is **over-engineered** for a flashcard learning app. You have ~2,144 lines of workflow YAML maintaining **two separate AI automation systems** (Claude + Gemini), where one would suffice. The core CI/CD (E2E testing, migrations) is solid, but it's buried under operational overhead.
+This CI/CD setup is **over-engineered** for a flashcard learning app. Until 2025-11-11 it maintained ~2,144 lines of workflow YAML across **two separate AI automation systems** (Claude + Gemini). Task 08 removed the Gemini workflows so Claude is now the single assistant, but the analysis below keeps the historical findings for context. The core CI/CD (E2E testing, migrations) is solid, but it's buried under operational overhead.
+
+> 📌 **Update (2025-11-11):** Gemini workflows were deleted per Task 08, leaving Claude as the only AI automation path. Any Gemini-specific action items below are archival unless you decide to reintroduce that stack.
 
 ---
 
@@ -46,7 +48,7 @@ This CI/CD setup is **over-engineered** for a flashcard learning app. You have ~
 
 ## Critical Weaknesses
 
-### 1. **AI Automation Redundancy - Biggest Issue** 🔴
+### 1. **AI Automation Redundancy - Biggest Issue** 🔴 *(Resolved 2025-11-11)*
 
 You're running **TWO** separate AI automation systems:
 

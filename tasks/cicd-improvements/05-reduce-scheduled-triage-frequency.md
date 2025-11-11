@@ -3,6 +3,15 @@
 **Priority:** 🟠 High (Short-term)
 **Effort:** 5 minutes
 **Type:** Optimization
+**Status:** ➖ Superseded on 2025-11-11 (Gemini workflows removed via Task 08)
+
+## Current Status (2025-11-11)
+
+- `gemini-scheduled-triage.yml` was deleted along with the other Gemini workflows when Task 08 standardized on Claude.
+- No scheduled triage workflow exists today, so runner-minute savings are already realized.
+- Keep this task file for historical context; no engineering work remains unless Gemini automation is reintroduced.
+
+---
 
 ## Problem
 
@@ -43,10 +52,12 @@ on:
 
 ## Acceptance Criteria
 
-- [ ] Cron schedule changed from hourly to weekly (or removed)
-- [ ] Manual trigger via `workflow_dispatch` still works
-- [ ] On-demand triage via `@gemini-cli /triage` still functional
-- [ ] Commit message explains the change
+> Superseded: the workflow was deleted entirely. Historical criteria retained below in case Gemini is ever reintroduced.
+
+- [x] Cron schedule changed from hourly to weekly (or removed) – achieved by deleting `gemini-scheduled-triage.yml`.
+- [ ] Manual trigger via `workflow_dispatch` still works (not applicable; workflow removed).
+- [ ] On-demand triage via `@gemini-cli /triage` still functional (not applicable; command retired).
+- [x] Commit message explains the change – covered by the Task 08 implementation notes.
 
 ## Benefits
 

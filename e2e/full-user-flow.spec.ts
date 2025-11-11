@@ -54,12 +54,12 @@ test.describe('Complete User Flow with Progress Tracking', () => {
       const { answer } = answersToSubmit[i]
 
       // Wait for input to be ready
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await expect(inputField).toBeVisible({ timeout: 5000 })
 
       // Fill and submit answer
       await inputField.fill(answer)
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
 
       // Wait for answer feedback
       await page.waitForTimeout(1500)
@@ -184,9 +184,9 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10000 })
 
     // Answer one question to create progress
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     await page.waitForTimeout(2000)
 
     // Go back and start again
@@ -281,9 +281,9 @@ test.describe('Complete User Flow with Progress Tracking', () => {
 
     // Answer 2 questions
     for (let i = 0; i < 2; i++) {
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill(`answer${i}`)
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       await page.waitForTimeout(1500)
 
       if (i < 1) {

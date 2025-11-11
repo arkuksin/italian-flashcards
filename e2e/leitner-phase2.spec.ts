@@ -180,9 +180,9 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Answer a flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Go back to dashboard
@@ -357,9 +357,9 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
 
     // Answer 3 flashcards
     for (let i = 0; i < 3; i++) {
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill('test')
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
       const nextButton = page.locator('[data-testid="next-button"]')

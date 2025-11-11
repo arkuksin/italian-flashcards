@@ -51,8 +51,8 @@ export async function startLearningSession(page: Page, mode: 'ru-it' | 'it-ru' =
  */
 export async function waitForFlashcard(page: Page) {
   // Wait for the input field to be visible and enabled
-  await expect(page.getByRole('textbox')).toBeVisible();
-  await expect(page.getByRole('textbox')).toBeEnabled();
+  await expect(page.getByTestId('answer-input')).toBeVisible();
+  await expect(page.getByTestId('answer-input')).toBeEnabled();
 
   // Wait for card counter to be visible
   await expect(page.getByText(/\d+ of \d+/)).toBeVisible();
@@ -64,9 +64,9 @@ export async function waitForFlashcard(page: Page) {
  * @param answer - The answer to submit
  */
 export async function submitAnswer(page: Page, answer: string) {
-  const input = page.getByRole('textbox');
+  const input = page.getByTestId('answer-input');
   await input.fill(answer);
-  await page.locator('form button[type="submit"]').click();
+  await page.getByTestId('answer-submit-button').click();
 
   // Wait for result to appear
   const resultMessage = page.locator('span.text-lg.font-semibold, p.text-xs').first();
@@ -160,7 +160,7 @@ export async function expectFlashcardInterface(page: Page, mode: 'ru-it' | 'it-r
     : /Translate to Russian:/i;
 
   await expect(page.getByText(expectText)).toBeVisible();
-  await expect(page.getByRole('textbox')).toBeVisible();
+  await expect(page.getByTestId('answer-input')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Next' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Previous' })).toBeVisible();
 }

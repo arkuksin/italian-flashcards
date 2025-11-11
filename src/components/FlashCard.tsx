@@ -135,6 +135,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               placeholder={t('flashcard.inputPlaceholder')}
               className="w-full px-6 py-4 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               autoFocus
+              data-testid="answer-input"
             />
             {!showAnswer && (
               <motion.button
@@ -143,6 +144,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                data-testid="answer-submit-button"
               >
                 <Send className="w-5 h-5" />
               </motion.button>

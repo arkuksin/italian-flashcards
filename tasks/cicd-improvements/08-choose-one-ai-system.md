@@ -3,6 +3,23 @@
 **Priority:** 🔴 Critical (Long-term)
 **Effort:** 2-3 hours
 **Type:** Architecture Decision
+**Status:** ✅ Completed on 2025-11-11 (Claude retained, Gemini removed)
+
+## Decision Summary (2025-11-11)
+
+- Standardized on **Claude** as the single AI integration.
+- Deleted all Gemini GitHub Actions workflows: `.github/workflows/gemini-dispatch.yml`, `gemini-triage.yml`, `gemini-invoke.yml`, and `gemini-scheduled-triage.yml`.
+- Removed `GEMINI.md` to avoid confusing contributors about the supported system.
+- Updated CI/CD documentation (task index, task 05, task 10) to reflect the Claude-only model and to note that the Gemini triage task is obsolete.
+- Preserved Claude workflows (`claude.yml`, `claude-code-review.yml`) for on-demand assistance.
+
+## Follow-up Actions
+
+1. **Clean up GitHub secrets**: remove `GEMINI_API_KEY`, `GOOGLE_API_KEY`, and any workflow-specific Gemini secrets from the repository settings (requires repo-admin access; could not run `gh secret remove` from the sandbox because approvals are disabled).
+2. **Communicate the change**: notify contributors that only `@claude` automation remains; remove instructions that reference `@gemini-cli` commands in any external docs or playbooks.
+3. **Monitor Claude workflows**: run a smoke invocation (e.g., mention `@claude`) to ensure no references to deleted Gemini configuration remain in dependent scripts. `claude.yml` does not expose `workflow_dispatch`, so testing must happen via an issue/PR comment rather than `gh workflow run`.
+
+---
 
 ## Problem
 
@@ -140,12 +157,12 @@ git commit -m "refactor: consolidate to Gemini AI system, remove Claude"
 
 ## Acceptance Criteria
 
-- [ ] Decision documented (choose A or B)
-- [ ] Unused workflows deleted
-- [ ] Unused secrets removed
-- [ ] Documentation updated (CLAUDE.md, README)
-- [ ] Team informed of which AI to use
-- [ ] Remaining system tested and working
+- [x] Decision documented – Option A (Claude) recorded in this task on 2025-11-11.
+- [x] Unused workflows deleted – removed all `.github/workflows/gemini-*.yml` files.
+- [ ] Unused secrets removed – run `gh secret remove GEMINI_API_KEY`, `gh secret remove GOOGLE_API_KEY`, etc. (requires repo admin permissions).
+- [x] Documentation updated – CI/CD task README and related docs now describe the Claude-only setup; `GEMINI.md` deleted.
+- [ ] Team informed of which AI to use – announce via Slack/issue for transparency.
+- [ ] Remaining system tested and working – trigger `claude.yml` manually to confirm no hidden dependencies on Gemini remain.
 
 ## Benefits
 
@@ -158,11 +175,11 @@ git commit -m "refactor: consolidate to Gemini AI system, remove Claude"
 ## Migration Checklist
 
 After choosing, verify:
-- [ ] All mentions of removed AI in docs are updated
+- [x] All mentions of removed AI in docs are updated (Task README, Task 05, Task 10, this file)
 - [ ] Secrets for removed AI are deleted
 - [ ] Team knows which AI to invoke
 - [ ] Remaining workflows tested
-- [ ] Related tasks updated (05, 01, 02)
+- [x] Related tasks updated (Task 05 marked obsolete, dependencies clarified)
 
 ## Timeline
 

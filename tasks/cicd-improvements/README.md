@@ -8,12 +8,12 @@ This directory contains individual task files for improving the CI/CD setup base
 |---|------|----------|--------|------|--------|
 | 01 | [Delete Disabled Claude Review](./01-delete-disabled-claude-review.md) | 🔴 High | 5 min | Cleanup | |
 | 02 | [Delete Disabled Gemini Review](./02-delete-disabled-gemini-review.md) | 🔴 High | 5 min | Cleanup | ✅ Done |
-| 03 | [Move Vercel Env Check to Script](./03-move-vercel-env-check-to-script.md) | 🟡 Medium | 15 min | Refactoring | |
-| 04 | [Add Basic CI Checks](./04-add-basic-ci-checks.md) | 🔴 High | 20 min | Feature | |
-| 05 | [Reduce Scheduled Triage Frequency](./05-reduce-scheduled-triage-frequency.md) | 🟠 High | 5 min | Optimization | |
+| 03 | [Move Vercel Env Check to Script](./03-move-vercel-env-check-to-script.md) | 🟡 Medium | 15 min | Refactoring |✅ Done |
+| 04 | [Add Basic CI Checks](./04-add-basic-ci-checks.md) | 🔴 High | 20 min | Feature |✅ Done |
+| 05 | [Reduce Scheduled Triage Frequency](./05-reduce-scheduled-triage-frequency.md) | 🟠 High | 5 min | Optimization | ➖ Superseded (Gemini removed) |
 | 06 | [Consolidate Database Secrets](./06-consolidate-database-secrets.md) | 🟡 Medium | 30 min | Refactoring | |
 | 07 | [Add Production Smoke Tests](./07-add-production-smoke-tests.md) | 🟠 High | 45 min | Feature | |
-| 08 | [Choose One AI System](./08-choose-one-ai-system.md) | 🔴 Critical | 2-3 hrs | Architecture | |
+| 08 | [Choose One AI System](./08-choose-one-ai-system.md) | 🔴 Critical | 2-3 hrs | Architecture | ✅ Done |
 | 09 | [Add Production Monitoring](./09-add-monitoring.md) | 🟡 Medium | 3-4 hrs | Infrastructure | |
 | 10 | [Document CI/CD Architecture](./10-document-cicd-architecture.md) | 🟡 Medium | 2-3 hrs | Documentation | |
 
@@ -24,7 +24,7 @@ This directory contains individual task files for improving the CI/CD setup base
 
 1. **Task 01** - Delete disabled Claude review workflow (5 min)
 2. **Task 02** - Delete disabled Gemini review workflow (5 min)
-3. **Task 05** - Reduce scheduled triage frequency (5 min)
+3. **Task 05** - Reduce scheduled triage frequency (5 min) *(superseded – Gemini workflows deleted in Task 08)*
 
 **Impact:** Saves ~2,100 runner minutes/month, removes 339 lines of dead code
 
@@ -51,11 +51,11 @@ This directory contains individual task files for improving the CI/CD setup base
 ---
 
 ### Phase 4: Strategic Decision (Week 4)
-**Goal:** Eliminate AI system redundancy
+**Goal:** Eliminate AI system redundancy *(Completed 2025-11-11)*
 
-8. **Task 08** - Choose Claude OR Gemini, remove the other (2-3 hrs)
+8. **Task 08** - Choose Claude OR Gemini, remove the other (2-3 hrs) ✅ Completed – Claude retained, Gemini removed
 
-**Impact:** Removes 5 workflows, ~1,000 lines of YAML, 50% reduction in AI workflows
+**Impact:** Removes 4 Gemini workflows (~1,000 lines of YAML) and leaves Claude as the sole AI integration
 
 ---
 
@@ -94,7 +94,7 @@ This directory contains individual task files for improving the CI/CD setup base
 - 6-7 workflows
 - ~1,200 lines of YAML
 - ~1,000 runner minutes/month
-- 1 AI system
+- 1 AI system (Claude) ✅
 - Full CI coverage (lint, build, test)
 - Production smoke tests
 - Monitoring in place
@@ -132,6 +132,8 @@ graph TD
 **Legend:**
 - Solid line: Hard dependency (must complete first)
 - Dotted line: Soft dependency (helpful but not required)
+
+> ℹ️ Task 05 remains in the dependency diagram for historical context but no longer requires work after removing the Gemini workflows.
 
 ## Usage
 

@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 concurrency:
   group: e2e-${{ github.event.pull_request.number }}
@@ -95,7 +96,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Chromium runs the full suite; WebKit only runs @smoke coverage
+        # Chromium runs the full suite; WebKit only executes @smoke coverage (Firefox stays disabled in CI for now)
         browser: [chromium, webkit]
     steps:
       - name: Checkout code
@@ -134,12 +135,7 @@ jobs:
           VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        run: |
-          if [ "${{ matrix.browser }}" = "chromium" ]; then
-            npx playwright test --project=chromium --reporter=github
-          else
-            npm run test:e2e:smoke -- --reporter=github
-          fi
+        run: npx playwright test --project=${{ matrix.browser }} --reporter=github
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
