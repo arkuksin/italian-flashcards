@@ -13,10 +13,13 @@ if (!process.env.CI && existsSync(envPath)) {
   dotenv.config({ path: envPath });
 }
 
+const includeFirefox = process.env.PLAYWRIGHT_INCLUDE_FIREFOX === 'true';
+const smokeTag = /@smoke/;
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-export default defineConfig({
+const config = defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -60,11 +63,8 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
       name: 'webkit',
+      grep: smokeTag,
       use: { ...devices['Desktop Safari'] },
     },
   ],
@@ -77,3 +77,12 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI, // Reuse in dev for speed, fresh in CI for test env vars
   },
 });
+
+if (includeFirefox) {
+  config.projects?.push({
+    name: 'firefox',
+    use: { ...devices['Desktop Firefox'] },
+  });
+}
+
+export default config;

@@ -71,7 +71,7 @@ test.describe('Statistics Consistency', () => {
     // Ensure manual login flow runs even when shared auth state exists
     storageState: { cookies: [], origins: [] },
   })
-  test('Dashboard and Flashcards view should show identical statistics', async ({ page }) => {
+  test('@smoke Dashboard and Flashcards view should show identical statistics', async ({ page }) => {
     await login(page)
 
     const dashboardStats = await getDashboardStats(page)

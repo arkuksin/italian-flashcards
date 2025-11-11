@@ -96,7 +96,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Firefox disabled temporarily due to flaky runs consuming excess Actions minutes
+        # Chromium runs the full suite; WebKit only executes @smoke coverage (Firefox stays disabled in CI for now)
         browser: [chromium, webkit]
     steps:
       - name: Checkout code

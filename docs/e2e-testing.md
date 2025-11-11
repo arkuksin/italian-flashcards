@@ -65,6 +65,13 @@ VERCEL_ORG_ID=your_org_id_here
 VERCEL_PROJECT_ID=your_project_id_here
 ```
 
+Optional (used locally only):
+
+```bash
+# Include Firefox in Playwright runs when needed
+PLAYWRIGHT_INCLUDE_FIREFOX=true
+```
+
 #### Getting the Values
 
 1. **VERCEL_TOKEN**: Go to [Vercel Account Tokens](https://vercel.com/account/tokens) and create a new token
@@ -107,6 +114,9 @@ npm run dev
 # Run E2E tests against local server
 npm run test:e2e
 
+# Run only the @smoke subset (Safari/WebKit project)
+npm run test:e2e:smoke
+
 # Run tests with interactive UI
 npm run test:e2e:ui
 
@@ -128,10 +138,17 @@ npm run test:e2e
 
 ### Browser Matrix
 
-Tests run against multiple browsers and viewports:
+Tests run against multiple browsers:
 
-- **Desktop**: Chrome, Firefox, Safari
-- **Mobile**: Chrome (Pixel 5), Safari (iPhone 12)
+- **Chromium (Desktop Chrome)**: executes the full `./e2e` suite.
+- **WebKit (Desktop Safari)**: limited to scenarios tagged with `@smoke` to keep CI fast.
+- **Firefox (Desktop)**: opt-in for local validation by exporting `PLAYWRIGHT_INCLUDE_FIREFOX=true` before running Playwright.
+
+### Smoke Suite Tagging
+
+- Add the literal string `@smoke` to high-signal tests or `test.describe` titles you want Safari to exercise.
+- Keep the smoke list lean (≈10 scenarios) and focused on “app boots, auth works, key nav flows available”.
+- When adding a new smoke test, confirm it finishes quickly (under ~30 seconds) and document the reason in the PR description so future contributors understand the coverage balance.
 
 ### Test Features
 

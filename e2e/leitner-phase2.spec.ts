@@ -25,7 +25,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
   })
 
-  test('should display LeitnerBoxVisualizer on Dashboard', async ({ page }) => {
+  test('@smoke should display LeitnerBoxVisualizer on Dashboard', async ({ page }) => {
     // Verify user is on the mode selection/dashboard view
     await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
 
