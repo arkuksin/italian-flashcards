@@ -8,20 +8,23 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProgressProvider } from './hooks/useProgress';
 import { GamificationProvider } from './hooks/useGamification';
 import { initI18n } from './lib/i18n';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Initialize i18n before rendering the app
 initI18n().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <BrowserRouter>
-        <AuthProvider>
-          <ProgressProvider>
-            <GamificationProvider>
-              <App />
-            </GamificationProvider>
-          </ProgressProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <AuthProvider>
+            <ProgressProvider>
+              <GamificationProvider>
+                <App />
+              </GamificationProvider>
+            </ProgressProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </ErrorBoundary>
     </StrictMode>
   );
 }).catch((error) => {
@@ -29,15 +32,17 @@ initI18n().then(() => {
   // Render app anyway with fallback language
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <BrowserRouter>
-        <AuthProvider>
-          <ProgressProvider>
-            <GamificationProvider>
-              <App />
-            </GamificationProvider>
-          </ProgressProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <AuthProvider>
+            <ProgressProvider>
+              <GamificationProvider>
+                <App />
+              </GamificationProvider>
+            </ProgressProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </ErrorBoundary>
     </StrictMode>
   );
 });

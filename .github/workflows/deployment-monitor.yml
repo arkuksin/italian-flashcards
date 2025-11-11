@@ -1,0 +1,36 @@
+name: Deployment Monitor
+
+on:
+  deployment_status:
+
+jobs:
+  track-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = context.payload.deployment_status.state;
+            const env = context.payload.deployment_status.environment;
+
+            if (status === 'failure' && env === 'production') {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 Production Deployment Failed',
+                body: `**Environment:** ${env}\n**Status:** ${status}\n**Deployment:** ${context.payload.deployment_status.target_url}`,
+                labels: ['production', 'deployment-failure', 'automated']
+              });
+            }
+
+      - name: Log deployment success
+        if: ${{ github.event.deployment_status.state == 'success' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = context.payload.deployment_status.state;
+            const env = context.payload.deployment_status.environment;
+
+            console.log(`✅ Deployment to ${env} succeeded`);
+            console.log(`Deployment URL: ${context.payload.deployment_status.target_url}`);
