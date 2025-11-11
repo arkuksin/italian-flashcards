@@ -19,6 +19,7 @@ import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
 import { useAuth } from '../contexts/AuthContext'
 import { WORDS, getShuffledWords } from '../data/words'
+import { wordService } from '../services/wordService'
 import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
 
 /**
@@ -47,6 +48,7 @@ export const Dashboard: React.FC = () => {
 
   const [hasSelectedMode, setHasSelectedMode] = useState(false)
   const [words, setWords] = useState<Word[]>(WORDS)
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [state, setState] = useState<AppState>({
     currentWordIndex: 0,
     userInput: '',
@@ -90,8 +92,33 @@ export const Dashboard: React.FC = () => {
 
   const currentWord = words[state.currentWordIndex]
 
-  const handleModeSelect = async (direction: LearningDirection) => {
+  const handleModeSelect = async (direction: LearningDirection, categories?: string[]) => {
     setState(prev => ({ ...prev, learningDirection: direction }))
+
+    // If categories are selected, filter words by categories
+    if (categories && categories.length > 0) {
+      try {
+        const allWords = await wordService.getAllWords()
+        const filteredWords = allWords.filter(word => categories.includes(word.category))
+
+        // Shuffle if shuffle mode is on
+        const wordsToUse = state.shuffleMode
+          ? [...filteredWords].sort(() => Math.random() - 0.5)
+          : filteredWords
+
+        setWords(wordsToUse)
+        setSelectedCategories(categories)
+      } catch (error) {
+        console.error('Error loading filtered words:', error)
+        // Fallback to all words if there's an error
+        setWords(WORDS)
+      }
+    } else {
+      // No filter, use all words
+      setWords(state.shuffleMode ? getShuffledWords() : WORDS)
+      setSelectedCategories([])
+    }
+
     // Start a new learning session in the database
     await startSession(direction)
     setHasSelectedMode(true)
@@ -195,14 +222,35 @@ export const Dashboard: React.FC = () => {
     setIsCorrect(null)
   }
 
-  const handleToggleShuffle = () => {
+  const handleToggleShuffle = async () => {
     const newShuffleMode = !state.shuffleMode
     setState(prev => ({ ...prev, shuffleMode: newShuffleMode }))
 
-    if (newShuffleMode) {
-      setWords(getShuffledWords())
+    // Apply category filter if categories are selected
+    if (selectedCategories.length > 0) {
+      try {
+        const allWords = await wordService.getAllWords()
+        const filteredWords = allWords.filter(word => selectedCategories.includes(word.category))
+        const wordsToUse = newShuffleMode
+          ? [...filteredWords].sort(() => Math.random() - 0.5)
+          : filteredWords
+        setWords(wordsToUse)
+      } catch (error) {
+        console.error('Error toggling shuffle with category filter:', error)
+        // Fallback
+        if (newShuffleMode) {
+          setWords(getShuffledWords())
+        } else {
+          setWords(WORDS)
+        }
+      }
     } else {
-      setWords(WORDS)
+      // No category filter
+      if (newShuffleMode) {
+        setWords(getShuffledWords())
+      } else {
+        setWords(WORDS)
+      }
     }
 
     setState(prev => ({
@@ -248,9 +296,13 @@ export const Dashboard: React.FC = () => {
     setResponseTimeMs(undefined)
     setDifficultyRating(undefined)
     setHasSelectedMode(false)
+    setSelectedCategories([])
 
+    // Reset to all words
     if (state.shuffleMode) {
       setWords(getShuffledWords())
+    } else {
+      setWords(WORDS)
     }
   }
 
