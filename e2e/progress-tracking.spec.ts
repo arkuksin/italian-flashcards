@@ -89,12 +89,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should track progress when answering flashcards correctly', async ({ page }) => {
-    // Start learning session
+    // Start learning session (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear (state change triggers re-render)
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Get the question text to identify the word
     const questionText = await page.locator('[data-testid="question-text"]').textContent()
@@ -121,12 +120,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should persist progress data across sessions', async ({ page }) => {
-    // Start first session and answer a question
+    // Start first session and answer a question (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     const inputField = page.getByRole('textbox')
     await inputField.fill('test')
@@ -145,12 +143,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await page.reload({ timeout: 15000 })
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
-    // Start learning again
+    // Start learning again (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Progress should be loaded from database
     const progressBarAfter = page.locator('[data-testid="progress-stats"]')
@@ -165,9 +162,8 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // Navigate to stats or progress view if available
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear (state change, not navigation)
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Answer multiple questions to generate statistics
     for (let i = 0; i < 3; i++) {
@@ -209,12 +205,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should handle mastery level progression', async ({ page }) => {
-    // Start learning and answer the same word multiple times correctly
+    // Start learning and answer the same word multiple times correctly (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Get the correct answer if displayed
     const showAnswerButton = page.locator('[data-testid="show-answer-button"]')
@@ -246,12 +241,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should start and end learning sessions', async ({ page }) => {
-    // Start a learning session
+    // Start a learning session (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Session should be active
     const sessionIndicator = page.locator('[data-testid="session-active"]')
@@ -279,12 +273,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should handle spaced repetition scheduling', async ({ page }) => {
-    // This test verifies that words are scheduled according to spaced repetition
+    // This test verifies that words are scheduled according to spaced repetition (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Answer multiple words to build progress history
     for (let i = 0; i < 5; i++) {
