@@ -105,6 +105,21 @@ Suggested workflow:
 3. Add tests / update docs
 4. Open a pull request
 
+## CI/CD
+
+The project includes automated checks to ensure code quality:
+
+- **CI Checks** - Runs on every PR and push to main:
+  - Linting (`npm run lint`) - Catches code style issues
+  - Build (`npm run build`) - Ensures the project builds successfully
+  - Unit tests (`npm run test`) - Runs all unit tests
+  - Build artifacts are saved for debugging
+
+- **E2E Tests** - Runs after deployment to preview environments
+- **Database Migrations** - Automated validation and deployment
+
+All CI checks must pass before code can be merged to main branch.
+
 ## Roadmap / Ideas
 
 - Add spaced repetition (SM-2) scheduling.
