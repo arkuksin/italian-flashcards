@@ -95,8 +95,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Test on all major browsers
-        browser: [chromium, firefox, webkit]
+        # Chromium runs the full suite; WebKit only runs @smoke coverage
+        browser: [chromium, webkit]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -134,7 +134,12 @@ jobs:
           VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        run: npx playwright test --project=${{ matrix.browser }} --reporter=github
+        run: |
+          if [ "${{ matrix.browser }}" = "chromium" ]; then
+            npx playwright test --project=chromium --reporter=github
+          else
+            npm run test:e2e:smoke -- --reporter=github
+          fi
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

@@ -18,7 +18,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
   })
 
-  test('should successfully authenticate and load the application', async ({ page }) => {
+  test('@smoke should successfully authenticate and load the application', async ({ page }) => {
     // Verify we're authenticated and app loaded
     await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 5000 })
 
@@ -74,7 +74,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
   })
 
-  test('should verify session persistence across page reloads', async ({ page }) => {
+  test('@smoke should verify session persistence across page reloads', async ({ page }) => {
     // Verify authenticated state persists (session stored in database)
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 5000 })
 
@@ -88,7 +88,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // Session persistence confirms database connection is working
   })
 
-  test('should track progress when answering flashcards correctly', async ({ page }) => {
+  test('@smoke should track progress when answering flashcards correctly', async ({ page }) => {
     // Start learning session (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 

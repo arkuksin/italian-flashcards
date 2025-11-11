@@ -9,7 +9,7 @@ test.describe('Privacy Policy Page', () => {
     // Require fresh session so login route stays accessible
     storageState: { cookies: [], origins: [] },
   })
-  test('should be accessible from the login page', async ({ page }) => {
+test('@smoke should be accessible from the login page', async ({ page }) => {
     await page.goto('/login');
 
     // Find and click the privacy policy link

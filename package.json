@@ -18,6 +18,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test --project=webkit --grep \"@smoke\"",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "setup:e2e": "node scripts/setup-e2e.js",

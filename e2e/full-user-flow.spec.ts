@@ -9,7 +9,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     // Override shared auth state so login flow can be exercised explicitly
     storageState: { cookies: [], origins: [] },
   })
-  test('should complete full cycle: login → answer → logout → login → see progress', async ({ page }) => {
+  test('@smoke should complete full cycle: login → answer → logout → login → see progress', async ({ page }) => {
     test.setTimeout(120000) // Increase timeout to 120 seconds for slower browsers
     // ========================
     // Step 1: Initial Login
@@ -168,7 +168,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     console.log('Progress was saved and persisted across sessions!')
   })
 
-  test('should display mastery level on flashcards', async ({ page }) => {
+  test('@smoke should display mastery level on flashcards', async ({ page }) => {
     test.setTimeout(120000) // Increase timeout to 120 seconds for slower browsers
     // Login
     await page.goto('/')
