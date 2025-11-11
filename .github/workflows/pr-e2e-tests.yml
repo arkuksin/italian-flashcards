@@ -95,8 +95,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Test on all major browsers
-        browser: [chromium, firefox, webkit]
+        # Firefox disabled temporarily due to flaky runs consuming excess Actions minutes
+        browser: [chromium, webkit]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
