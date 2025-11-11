@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase'
-import type { CategoryInfo, CategoryPreference } from '../types'
+import type { CategoryInfo, CategoryPreference, Word } from '../types'
 
 export class CategoryService {
   private static instance: CategoryService
@@ -156,7 +156,7 @@ export class CategoryService {
   async getWordsByCategories(
     userId: string,
     categories: string[]
-  ): Promise<any[]> {
+  ): Promise<Word[]> {
     try {
       const { data, error } = await supabase.rpc('get_words_by_categories', {
         p_user_id: userId,
@@ -174,7 +174,7 @@ export class CategoryService {
   /**
    * Get suggested category based on lowest accuracy
    */
-  async getSuggestedCategory(userId: string): Promise<string | null> {
+  async getSuggestedCategory(): Promise<string | null> {
     try {
       const stats = await this.getCategoryStatistics()
 

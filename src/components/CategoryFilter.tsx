@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Tag, Check, AlertCircle, Loader2 } from 'lucide-react'
 import { categoryService } from '../services/categoryService'
@@ -22,11 +22,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
-  useEffect(() => {
-    loadCategories()
-  }, [userId])
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -34,7 +30,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       const [stats, savedSelection, suggested] = await Promise.all([
         categoryService.getCategoryStatistics(),
         categoryService.getSelectedCategories(userId),
-        categoryService.getSuggestedCategory(userId)
+        categoryService.getSuggestedCategory()
       ])
 
       setCategories(stats)
@@ -52,7 +48,11 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, initialSelection, onSelectionChange])
+
+  useEffect(() => {
+    loadCategories()
+  }, [loadCategories])
 
   const handleToggle = (category: string) => {
     const newSelected = new Set(selected)
