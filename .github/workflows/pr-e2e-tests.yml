@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 concurrency:
   group: e2e-${{ github.event.pull_request.number }}
