@@ -99,4 +99,4 @@ COMMENT ON COLUMN user_category_preferences.last_practiced IS 'Last time user pr
 
 COMMENT ON VIEW v_category_statistics IS 'Aggregated statistics per category including word counts and accuracy';
 
-COMMENT ON FUNCTION get_words_by_categories(UUID, TEXT[], TEXT) IS 'Returns randomized words filtered by selected categories for a user';
+COMMENT ON FUNCTION get_words_by_categories IS 'Returns randomized words filtered by selected categories for a user';
