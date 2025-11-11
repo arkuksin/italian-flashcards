@@ -114,6 +114,7 @@ The project includes automated checks to ensure code quality:
   - Build (`npm run build`) - Ensures the project builds successfully
   - Unit tests (`npm run test`) - Runs all unit tests
   - Build artifacts are saved for debugging
+  - Workflow lives in `.github/workflows/ci.yml` and the `CI Checks / lint-build-test` status check is required on `main`
 
 - **E2E Tests** - Runs after deployment to preview environments
 - **Production Smoke Tests** - Verifies production deployments:
@@ -126,6 +127,12 @@ The project includes automated checks to ensure code quality:
 
 All CI checks must pass before code can be merged to main branch.
 
+### AI Automation (Claude only)
+
+- As of **2025-11-11** the project standardized on Claude for all AI-assisted workflows.
+- All Gemini workflows and docs were removed; invoke `@claude` (or the Claude CLI) for automation.
+- Repository secrets like `GEMINI_API_KEY` were scheduled for removal—verify they stay deleted.
+
 ## Roadmap / Ideas
 
 - Add spaced repetition (SM-2) scheduling.
@@ -137,8 +144,9 @@ All CI checks must pass before code can be merged to main branch.
 
 - [x] Task 01 - Delete Disabled Claude Code Review Workflow (`tasks/cicd-improvements/01-delete-disabled-claude-review.md`)
 - [x] Task 04 - Add Basic CI Checks (`tasks/cicd-improvements/04-add-basic-ci-checks.md`)
-- [x] Task 05 - Reduce Scheduled Triage Frequency (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
+- [x] Task 05 - Reduce Scheduled Triage Frequency *(superseded; Gemini workflows removed in Task 08)* (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
 - [x] Task 07 - Add Production Smoke Tests (`tasks/cicd-improvements/07-add-production-smoke-tests.md`)
+- [x] Task 08 - Choose One AI System *(Claude retained, Gemini removed)* (`tasks/cicd-improvements/08-choose-one-ai-system.md`)
 - [x] Task 09 - Add Production Monitoring (`tasks/cicd-improvements/09-add-monitoring.md`)
 
 ## Troubleshooting
