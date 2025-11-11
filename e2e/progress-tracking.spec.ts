@@ -191,7 +191,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
       if (await nextButton.isVisible({ timeout: 2000 })) {
         await nextButton.click()
         // Wait for new question to appear
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 
@@ -291,7 +293,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
       if (await nextButton.isVisible()) {
         await nextButton.click()
         // Wait for next question
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 

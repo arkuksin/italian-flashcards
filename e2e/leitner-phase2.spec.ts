@@ -365,7 +365,9 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible() && i < 2) {
         await nextButton.click()
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 
