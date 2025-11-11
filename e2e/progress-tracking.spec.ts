@@ -49,14 +49,14 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Verify input field exists
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await expect(inputField).toBeVisible({ timeout: 3000 })
 
     // Fill in an answer
     await inputField.fill('test answer')
 
     // Verify we can submit
-    await expect(page.locator('form button[type="submit"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.getByTestId('answer-submit-button')).toBeVisible({ timeout: 3000 })
   })
 
   test('should test useProgress hook can access database tables', async ({ page }) => {
@@ -100,11 +100,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
     expect(questionText).toBeTruthy()
 
     // Answer correctly (we'll type any answer and check it)
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('ciao')
 
     // Submit the answer
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Check if we got feedback (correct or wrong)
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -126,9 +126,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     // Wait for answer feedback instead of arbitrary timeout
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
@@ -167,9 +167,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
     // Answer multiple questions to generate statistics
     for (let i = 0; i < 3; i++) {
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill('test')
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
 
       // Wait for answer to be processed - check for multiple possible indicators
       // The answer feedback or difficulty buttons should appear
@@ -230,9 +230,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
         await expect(answerElement).toBeHidden({ timeout: 2000 })
       }
 
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill(correctAnswer || 'test')
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       // Wait for feedback
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
     }
@@ -256,9 +256,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
     }
 
     // Answer a question
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     // Wait for feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
@@ -283,9 +283,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
     // Answer multiple words to build progress history
     for (let i = 0; i < 5; i++) {
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill('test')
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       // Wait for feedback
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
@@ -314,6 +314,6 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Should show words according to spaced repetition algorithm
-    await expect(page.getByRole('textbox')).toBeVisible({ timeout: 3000 })
+    await expect(page.getByTestId('answer-input')).toBeVisible({ timeout: 3000 })
   })
 })

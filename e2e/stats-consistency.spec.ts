@@ -97,9 +97,9 @@ test.describe('Statistics Consistency', () => {
     await enterLearningMode(page)
 
     for (let i = 0; i < 2; i += 1) {
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill(`test${i}`)
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       await page.waitForTimeout(1_500)
 
       if (i === 0) {
