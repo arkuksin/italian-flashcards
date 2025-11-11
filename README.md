@@ -138,6 +138,7 @@ All CI checks must pass before code can be merged to main branch.
 - [x] Task 04 - Add Basic CI Checks (`tasks/cicd-improvements/04-add-basic-ci-checks.md`)
 - [x] Task 05 - Reduce Scheduled Triage Frequency (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
 - [x] Task 07 - Add Production Smoke Tests (`tasks/cicd-improvements/07-add-production-smoke-tests.md`)
+- [x] Task 09 - Add Production Monitoring (`tasks/cicd-improvements/09-add-monitoring.md`)
 
 ## Troubleshooting
 

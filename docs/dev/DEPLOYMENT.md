@@ -381,6 +381,83 @@ vercel --prod
 
 ## Monitoring & Debugging
 
+### Production Monitoring
+
+The application includes a multi-layer monitoring strategy to catch issues before users do:
+
+#### Layer 1: Deployment Monitoring
+
+**File**: `.github/workflows/deployment-monitor.yml`
+
+Automatically tracks deployment outcomes and creates GitHub issues for production deployment failures.
+
+**Features**:
+- Creates GitHub issue on production deployment failure
+- Logs successful deployments with URLs
+- Provides immediate notification via GitHub
+- Tracks deployment history
+
+**Issue Template**:
+```
+🚨 Production Deployment Failed
+Environment: production
+Status: failure
+Deployment: <deployment-url>
+```
+
+#### Layer 2: Error Tracking
+
+**Component**: `src/components/ErrorBoundary.tsx`
+
+React Error Boundary component that catches JavaScript errors in production and provides a user-friendly fallback UI.
+
+**Features**:
+- Catches all React component errors
+- Shows user-friendly error message
+- Logs error details to console in production
+- Provides "Try Again" and "Go Home" options
+- Shows detailed error info in development mode
+- Ready for integration with error tracking services (Sentry, LogRocket)
+
+**Error Report Structure**:
+```typescript
+{
+  message: string;
+  stack: string;
+  componentStack: string;
+  timestamp: string;
+  userAgent: string;
+  url: string;
+}
+```
+
+**Future Integration Options**:
+- **Sentry**: Full error tracking with source maps
+- **LogRocket**: Session replay and error tracking
+- **Custom endpoint**: Send errors to your own API
+
+#### Monitoring Best Practices
+
+**What to Monitor**:
+- Deployment success/failure rates
+- JavaScript errors in production
+- API response times
+- Database query performance
+- User authentication issues
+
+**When to Check**:
+- Immediately after production deployments
+- After major feature releases
+- When users report issues
+- During high-traffic periods
+
+**How to Respond**:
+1. Check Vercel Dashboard for deployment status
+2. Review GitHub issues for automated alerts
+3. Check browser console for error patterns
+4. Review Vercel logs for runtime errors
+5. Roll back if critical issues found
+
 ### Vercel Dashboard
 
 **Analytics**:
