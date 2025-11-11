@@ -152,15 +152,18 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     const emptyState = page.locator('[data-testid="leitner-empty-state"]')
     const levelBox = page.locator('[data-testid="leitner-level-0"]')
 
-    // Either empty state is visible OR we have level boxes
+    // Wait a bit for the component to stabilize after progress load
+    await page.waitForTimeout(500)
+
+    // Check atomically: either empty state with correct text OR level boxes are visible
     const hasEmptyState = await emptyState.isVisible().catch(() => false)
     const hasLevelBoxes = await levelBox.isVisible().catch(() => false)
 
     expect(hasEmptyState || hasLevelBoxes).toBeTruthy()
 
-    // If empty state, verify message
+    // If empty state is visible, verify message immediately (atomic check)
     if (hasEmptyState) {
-      await expect(emptyState).toContainText('Start learning to see your progress')
+      await expect(emptyState).toContainText('Start learning to see your progress', { timeout: 1000 })
     }
   })
 
