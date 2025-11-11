@@ -304,10 +304,19 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
     // Reload and verify due words are prioritized
     await page.reload({ timeout: 15000 })
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
-    await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
+    // Wait for button to be ready and click with navigation wait (Firefox needs this)
+    const learnButton = page.getByText('Learn Italian from Russian')
+    await expect(learnButton).toBeVisible({ timeout: 5000 })
+    await page.waitForTimeout(500) // Let page stabilize after reload
+    await Promise.all([
+      page.waitForURL(/.*/, { timeout: 15000 }), // Wait for any navigation
+      learnButton.click()
+    ])
+
+    // Wait for flashcard view to load
     await page.waitForLoadState('networkidle', { timeout: 10000 })
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
