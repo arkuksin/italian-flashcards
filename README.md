@@ -135,6 +135,7 @@ All CI checks must pass before code can be merged to main branch.
 
 ## CI/CD Improvements Progress
 
+- [x] Task 01 - Delete Disabled Claude Code Review Workflow (`tasks/cicd-improvements/01-delete-disabled-claude-review.md`)
 - [x] Task 04 - Add Basic CI Checks (`tasks/cicd-improvements/04-add-basic-ci-checks.md`)
 - [x] Task 05 - Reduce Scheduled Triage Frequency (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
 - [x] Task 07 - Add Production Smoke Tests (`tasks/cicd-improvements/07-add-production-smoke-tests.md`)
