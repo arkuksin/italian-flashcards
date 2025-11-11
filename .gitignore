@@ -92,8 +92,16 @@ scripts/delete-invalid-users.js
 scripts/list-production-users.js
 scripts/monitor-email-health.js
 
-# Gemini cache directories
+# AI assistant directories and configs
 .gemini/
+.serena/
+.bolt/
+.codex/
 mcp-vercel-tools/.gemini/
+
+# Temporary build cache
+tmp/
+
+# Database migration env files
 /db/migrations/.production.env
 /db/migrations/.test.env

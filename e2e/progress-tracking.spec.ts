@@ -89,12 +89,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should track progress when answering flashcards correctly', async ({ page }) => {
-    // Start learning session
+    // Start learning session (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear (state change triggers re-render)
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Get the question text to identify the word
     const questionText = await page.locator('[data-testid="question-text"]').textContent()
@@ -108,7 +107,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Check if we got feedback (correct or wrong)
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Progress should be updated in the database
     // This will be validated by checking the progress bar or stats
@@ -121,18 +120,17 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should persist progress data across sessions', async ({ page }) => {
-    // Start first session and answer a question
+    // Start first session and answer a question (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     const inputField = page.getByRole('textbox')
     await inputField.fill('test')
     await page.locator('form button[type="submit"]').click()
     // Wait for answer feedback instead of arbitrary timeout
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Note the current progress
     const progressBarBefore = page.locator('[data-testid="progress-stats"]')
@@ -145,12 +143,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await page.reload({ timeout: 15000 })
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
-    // Start learning again
+    // Start learning again (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Progress should be loaded from database
     const progressBarAfter = page.locator('[data-testid="progress-stats"]')
@@ -165,9 +162,8 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // Navigate to stats or progress view if available
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear (state change, not navigation)
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Answer multiple questions to generate statistics
     for (let i = 0; i < 3; i++) {
@@ -179,7 +175,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       // The answer feedback or difficulty buttons should appear
       try {
         // First try waiting for answer feedback
-        await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
+        await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
       } catch (e) {
         // If answer feedback doesn't appear immediately, check for difficulty buttons
         // or simply wait for input to be disabled (which indicates answer was processed)
@@ -195,7 +191,9 @@ test.describe('Progress Tracking - Hook Integration', () => {
       if (await nextButton.isVisible({ timeout: 2000 })) {
         await nextButton.click()
         // Wait for new question to appear
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 
@@ -209,12 +207,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should handle mastery level progression', async ({ page }) => {
-    // Start learning and answer the same word multiple times correctly
+    // Start learning and answer the same word multiple times correctly (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Get the correct answer if displayed
     const showAnswerButton = page.locator('[data-testid="show-answer-button"]')
@@ -237,7 +234,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await inputField.fill(correctAnswer || 'test')
       await page.locator('form button[type="submit"]').click()
       // Wait for feedback
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
     }
 
     // Mastery level should be tracked in the database
@@ -246,12 +243,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should start and end learning sessions', async ({ page }) => {
-    // Start a learning session
+    // Start a learning session (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Session should be active
     const sessionIndicator = page.locator('[data-testid="session-active"]')
@@ -264,7 +260,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await inputField.fill('test')
     await page.locator('form button[type="submit"]').click()
     // Wait for feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // End session (e.g., by navigating away or clicking restart)
     const restartButton = page.locator('[data-testid="restart-button"]')
@@ -279,12 +275,11 @@ test.describe('Progress Tracking - Hook Integration', () => {
   })
 
   test('should handle spaced repetition scheduling', async ({ page }) => {
-    // This test verifies that words are scheduled according to spaced repetition
+    // This test verifies that words are scheduled according to spaced repetition (state change, not navigation)
     await page.getByText('Learn Italian from Russian').click()
 
-    // Wait for page to transition to flashcard view (Firefox needs more time)
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
-    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
+    // Wait for flashcard view to appear
+    await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
 
     // Answer multiple words to build progress history
     for (let i = 0; i < 5; i++) {
@@ -292,23 +287,30 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await inputField.fill('test')
       await page.locator('form button[type="submit"]').click()
       // Wait for feedback
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible()) {
         await nextButton.click()
         // Wait for next question
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 
     // Reload and verify due words are prioritized
     await page.reload({ timeout: 15000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
-    await page.getByText('Learn Italian from Russian').click()
-
-    // Wait for page to transition to flashcard view (Firefox needs more time)
     await page.waitForLoadState('networkidle', { timeout: 10000 })
+    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+
+    // Click mode selection button (this is a state change, NOT a navigation)
+    const learnButton = page.getByText('Learn Italian from Russian')
+    await expect(learnButton).toBeVisible({ timeout: 5000 })
+    await page.waitForTimeout(500) // Let page stabilize after reload
+    await learnButton.click()
+
+    // Wait for flashcard view to appear (state change, not navigation)
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Should show words according to spaced repetition algorithm

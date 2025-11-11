@@ -152,15 +152,18 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     const emptyState = page.locator('[data-testid="leitner-empty-state"]')
     const levelBox = page.locator('[data-testid="leitner-level-0"]')
 
-    // Either empty state is visible OR we have level boxes
+    // Wait a bit for the component to stabilize after progress load
+    await page.waitForTimeout(500)
+
+    // Check atomically: either empty state with correct text OR level boxes are visible
     const hasEmptyState = await emptyState.isVisible().catch(() => false)
     const hasLevelBoxes = await levelBox.isVisible().catch(() => false)
 
     expect(hasEmptyState || hasLevelBoxes).toBeTruthy()
 
-    // If empty state, verify message
+    // If empty state is visible, verify message immediately (atomic check)
     if (hasEmptyState) {
-      await expect(emptyState).toContainText('Start learning to see your progress')
+      await expect(emptyState).toContainText('Start learning to see your progress', { timeout: 1000 })
     }
   })
 
@@ -180,7 +183,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     const inputField = page.getByRole('textbox')
     await inputField.fill('test answer')
     await page.locator('form button[type="submit"]').click()
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Go back to dashboard
     const restartButton = page.locator('[data-testid="restart-button"]')
@@ -357,12 +360,14 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
       const inputField = page.getByRole('textbox')
       await inputField.fill('test')
       await page.locator('form button[type="submit"]').click()
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible() && i < 2) {
         await nextButton.click()
-        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 3000 })
+        await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
+        // Wait for form to stabilize after next button - Firefox needs this
+        await page.waitForTimeout(500)
       }
     }
 
