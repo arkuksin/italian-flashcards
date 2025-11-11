@@ -197,9 +197,9 @@ test.describe('Leitner System - Phase 4: Analytics with Practice Data', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Answer first question
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Rate difficulty

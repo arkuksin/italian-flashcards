@@ -48,9 +48,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback to appear
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -64,9 +64,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -82,9 +82,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -101,9 +101,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -120,9 +120,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -139,9 +139,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -158,9 +158,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -179,9 +179,9 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await startLearningSession(page, browserName)
 
     // Answer first flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Click difficulty button
@@ -196,7 +196,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
 
       // Answer second flashcard
       await inputField.fill('another answer')
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
       // Difficulty buttons should be enabled again for the new word
@@ -223,9 +223,9 @@ test.describe('Leitner System - Phase 3: Response Time Tracking', () => {
     await page.waitForTimeout(1000)
 
     // Answer the flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -258,9 +258,9 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
 
     for (let i = 0; i < ratings.length; i++) {
       // Answer the flashcard
-      const inputField = page.getByRole('textbox')
+      const inputField = page.getByTestId('answer-input')
       await inputField.fill(`test answer ${i + 1}`)
-      await page.locator('form button[type="submit"]').click()
+      await page.getByTestId('answer-submit-button').click()
 
       // Wait for answer feedback
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -292,9 +292,9 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
     await startLearningSession(page, browserName)
 
     // Answer with wrong answer
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('wrong answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
 
     // Wait for answer feedback (should show incorrect)
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
@@ -330,9 +330,9 @@ test.describe('Leitner System - Phase 3: Integration with Database', () => {
     await startLearningSession(page, browserName)
 
     // Answer and rate a flashcard
-    const inputField = page.getByRole('textbox')
+    const inputField = page.getByTestId('answer-input')
     await inputField.fill('test answer')
-    await page.locator('form button[type="submit"]').click()
+    await page.getByTestId('answer-submit-button').click()
     await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
     await page.locator('[data-testid="difficulty-good"]').click()
 
@@ -342,6 +342,6 @@ test.describe('Leitner System - Phase 3: Integration with Database', () => {
 
     // Verify we can start a new session (confirming data was saved)
     await startLearningSession(page, browserName)
-    await expect(page.getByRole('textbox')).toBeVisible({ timeout: 3000 })
+    await expect(page.getByTestId('answer-input')).toBeVisible({ timeout: 3000 })
   })
 })

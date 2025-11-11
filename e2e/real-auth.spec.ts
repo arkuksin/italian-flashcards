@@ -82,10 +82,10 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible();
 
     // Test flashcard functionality
-    const input = page.getByRole('textbox');
+    const input = page.getByTestId('answer-input');
     await expect(input).toBeVisible();
     await input.fill('test answer');
-    await page.locator('form button[type="submit"]').click();
+    await page.getByTestId('answer-submit-button').click();
 
     // Should show result
     const resultMessage = page.locator('span.text-lg.font-semibold, p.text-xs').first();
