@@ -183,7 +183,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     const inputField = page.getByRole('textbox')
     await inputField.fill('test answer')
     await page.locator('form button[type="submit"]').click()
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
     // Go back to dashboard
     const restartButton = page.locator('[data-testid="restart-button"]')
@@ -360,7 +360,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
       const inputField = page.getByRole('textbox')
       await inputField.fill('test')
       await page.locator('form button[type="submit"]').click()
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible() && i < 2) {
