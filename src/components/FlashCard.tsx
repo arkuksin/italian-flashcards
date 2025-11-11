@@ -37,7 +37,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   onDifficultyRating,
   difficultyRating,
 }) => {
-  const { t, ready } = useTranslation('learning');
+  const { t } = useTranslation('learning');
   const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
   const targetWord = learningDirection === 'ru-it' ? word.italian : word.russian;
   const canGoNext = currentIndex < totalWords - 1;
@@ -151,7 +151,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         </form>
 
         {/* Answer Display */}
-        {showAnswer && ready && (
+        {showAnswer && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -167,24 +167,30 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
                     <Check className="w-6 h-6 mr-2" />
-                    <span className="text-lg font-semibold">{t('flashcard.feedback.correct')}</span>
+                    <span className="text-lg font-semibold">
+                      {t('flashcard.feedback.correct', 'Correct!')}
+                    </span>
                   </div>
                 ) : (
                   <div className="flex items-center text-red-700 dark:text-red-300">
                     <X className="w-6 h-6 mr-2" />
-                    <span className="text-lg font-semibold">{t('flashcard.feedback.incorrect')}</span>
+                    <span className="text-lg font-semibold">
+                      {t('flashcard.feedback.incorrect', 'Not quite')}
+                    </span>
                   </div>
                 )}
               </div>
 
               <div className="text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('flashcard.correctAnswer')}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  {t('flashcard.correctAnswer', 'Correct answer')}
+                </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
                   {targetWord}
                 </p>
                 {!isCorrect && userInput.trim() && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    {t('flashcard.yourAnswer')}: <span className="font-medium">{userInput}</span>
+                    {t('flashcard.yourAnswer', 'Your answer')}: <span className="font-medium">{userInput}</span>
                   </p>
                 )}
               </div>
