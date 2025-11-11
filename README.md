@@ -133,12 +133,6 @@ All CI checks must pass before code can be merged to main branch.
 - All Gemini workflows and docs were removed; invoke `@claude` (or the Claude CLI) for automation.
 - Repository secrets like `GEMINI_API_KEY` were scheduled for removal—verify they stay deleted.
 
-### AI Automation (Claude only)
-
-- As of **2025-11-11** the project standardized on Claude for all AI-assisted workflows.
-- All Gemini workflows and docs were removed; invoke `@claude` (or the Claude CLI) for automation.
-- Repository secrets like `GEMINI_API_KEY` were scheduled for removal—verify they stay deleted.
-
 ## Roadmap / Ideas
 
 - Add spaced repetition (SM-2) scheduling.
