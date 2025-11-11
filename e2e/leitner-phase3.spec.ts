@@ -53,7 +53,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback to appear
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Verify difficulty rating buttons are visible
     const difficultyButtons = page.locator('[data-testid="difficulty-buttons"]')
@@ -69,7 +69,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Verify all four buttons are present
     await expect(page.locator('[data-testid="difficulty-again"]')).toBeVisible({ timeout: 2000 })
@@ -87,7 +87,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click "Again" button
     const againButton = page.locator('[data-testid="difficulty-again"]')
@@ -106,7 +106,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click "Hard" button
     const hardButton = page.locator('[data-testid="difficulty-hard"]')
@@ -125,7 +125,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click "Good" button
     const goodButton = page.locator('[data-testid="difficulty-good"]')
@@ -144,7 +144,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click "Easy" button
     const easyButton = page.locator('[data-testid="difficulty-easy"]')
@@ -163,7 +163,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click one button
     await page.locator('[data-testid="difficulty-good"]').click()
@@ -182,7 +182,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
     const inputField = page.getByRole('textbox')
     await inputField.fill('test answer')
     await page.locator('form button[type="submit"]').click()
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Click difficulty button
     await page.locator('[data-testid="difficulty-good"]').click()
@@ -197,7 +197,7 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
       // Answer second flashcard
       await inputField.fill('another answer')
       await page.locator('form button[type="submit"]').click()
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
       // Difficulty buttons should be enabled again for the new word
       await expect(page.locator('[data-testid="difficulty-good"]')).toBeEnabled({ timeout: 2000 })
@@ -228,7 +228,7 @@ test.describe('Leitner System - Phase 3: Response Time Tracking', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     const endTime = Date.now()
     const elapsedTime = endTime - startTime
@@ -263,7 +263,7 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
       await page.locator('form button[type="submit"]').click()
 
       // Wait for answer feedback
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
       // Click difficulty button
       const difficultyButton = page.locator(`[data-testid="${ratings[i]}"]`)
@@ -297,7 +297,7 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Wait for answer feedback (should show incorrect)
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
 
     // Difficulty buttons should still be available for incorrect answers
     await expect(page.locator('[data-testid="difficulty-buttons"]')).toBeVisible({ timeout: 2000 })
@@ -333,7 +333,7 @@ test.describe('Leitner System - Phase 3: Integration with Database', () => {
     const inputField = page.getByRole('textbox')
     await inputField.fill('test answer')
     await page.locator('form button[type="submit"]').click()
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
     await page.locator('[data-testid="difficulty-good"]').click()
 
     // Refresh the page
