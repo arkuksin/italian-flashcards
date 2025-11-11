@@ -116,6 +116,12 @@ The project includes automated checks to ensure code quality:
   - Build artifacts are saved for debugging
 
 - **E2E Tests** - Runs after deployment to preview environments
+- **Production Smoke Tests** - Verifies production deployments:
+  - Runs automatically after successful production deployments
+  - Performs basic health check (site accessibility)
+  - Executes critical path tests tagged with `@smoke`
+  - Creates GitHub issue if tests fail
+  - Completes in < 5 minutes
 - **Database Migrations** - Automated validation and deployment
 
 All CI checks must pass before code can be merged to main branch.
@@ -131,6 +137,7 @@ All CI checks must pass before code can be merged to main branch.
 
 - [x] Task 04 - Add Basic CI Checks (`tasks/cicd-improvements/04-add-basic-ci-checks.md`)
 - [x] Task 05 - Reduce Scheduled Triage Frequency (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
+- [x] Task 07 - Add Production Smoke Tests (`tasks/cicd-improvements/07-add-production-smoke-tests.md`)
 
 ## Troubleshooting
 
