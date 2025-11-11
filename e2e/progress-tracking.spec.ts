@@ -307,17 +307,18 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 })
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
-    // Wait for button to be ready and click with navigation wait (Firefox needs this)
+    // Click button and wait for navigation to /demo route (Firefox needs explicit navigation wait)
     const learnButton = page.getByText('Learn Italian from Russian')
     await expect(learnButton).toBeVisible({ timeout: 5000 })
     await page.waitForTimeout(500) // Let page stabilize after reload
+
     await Promise.all([
-      page.waitForURL(/.*/, { timeout: 15000 }), // Wait for any navigation
+      page.waitForURL('**/demo', { timeout: 15000 }), // Wait for /demo route
       learnButton.click()
     ])
 
-    // Wait for flashcard view to load
-    await page.waitForLoadState('networkidle', { timeout: 10000 })
+    // Wait for flashcard view to load completely
+    await page.waitForLoadState('domcontentloaded', { timeout: 10000 })
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 12000 })
 
     // Should show words according to spaced repetition algorithm
