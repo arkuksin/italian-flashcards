@@ -28,9 +28,9 @@ git commit -m "chore: remove disabled Gemini review workflow"
 
 ## Acceptance Criteria
 
-- [ ] File `.github/workflows/gemini-review.yml` no longer exists
-- [ ] Commit message explains the removal
-- [ ] No references to this workflow remain in `gemini-dispatch.yml`
+- [x] File `.github/workflows/gemini-review.yml` no longer exists
+- [x] Commit message explains the removal
+- [x] No references to this workflow remain in `gemini-dispatch.yml`
 
 ## Benefits
 
