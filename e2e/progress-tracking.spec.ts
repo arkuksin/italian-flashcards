@@ -176,7 +176,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       try {
         // First try waiting for answer feedback
         await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
-      } catch (e) {
+      } catch {
         // If answer feedback doesn't appear immediately, check for difficulty buttons
         // or simply wait for input to be disabled (which indicates answer was processed)
         const inputDisabled = await inputField.isDisabled().catch(() => false)

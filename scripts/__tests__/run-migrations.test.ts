@@ -20,7 +20,20 @@ async function createMigrationDir(files: Array<{ name: string; sql: string }>): 
   return dir;
 }
 
-describe('runMigrations', () => {
+// Check if Docker is available
+async function isDockerAvailable(): Promise<boolean> {
+  try {
+    const { getContainerRuntimeClient } = await import('@testcontainers/postgresql/node_modules/testcontainers/src/container-runtime/clients/client.js');
+    await getContainerRuntimeClient();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const dockerAvailable = await isDockerAvailable();
+
+describe.skipIf(!dockerAvailable)('runMigrations', () => {
   let container: StartedPostgreSqlContainer;
   let connectionConfig: ClientConfig;
 
@@ -37,7 +50,7 @@ describe('runMigrations', () => {
   }, 120000);
 
   afterAll(async () => {
-    await container.stop();
+    await container?.stop();
   });
 
   async function resetDatabase(): Promise<void> {
