@@ -97,7 +97,13 @@ export const Dashboard: React.FC = () => {
     setHasSelectedMode(true)
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Auto-save progress if answer was shown but no difficulty rating was given
+    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
+      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
+      await updateDailyProgress(isCorrect)
+    }
+
     if (state.currentWordIndex < words.length - 1) {
       setState(prev => ({
         ...prev,
@@ -112,7 +118,13 @@ export const Dashboard: React.FC = () => {
     }
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = async () => {
+    // Auto-save progress if answer was shown but no difficulty rating was given
+    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
+      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
+      await updateDailyProgress(isCorrect)
+    }
+
     if (state.currentWordIndex > 0) {
       setState(prev => ({
         ...prev,
@@ -214,6 +226,12 @@ export const Dashboard: React.FC = () => {
   }
 
   const handleRestart = async () => {
+    // Auto-save progress if answer was shown but no difficulty rating was given
+    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
+      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
+      await updateDailyProgress(isCorrect)
+    }
+
     // End current session
     if (currentSession) {
       await endSession()
