@@ -112,6 +112,10 @@ Suggested workflow:
 - Provide mobile-friendly web UI or PWA.
 - Add example audio pronunciation files for cards.
 
+## CI/CD Improvements Progress
+
+- [x] Task 05 - Reduce Scheduled Triage Frequency (`tasks/cicd-improvements/05-reduce-scheduled-triage-frequency.md`)
+
 ## Troubleshooting
 
 - If decks are not found, check the repository's deck folder (commonly `decks/`).
