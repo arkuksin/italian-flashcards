@@ -57,7 +57,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     }
 
     loadCategories()
-  }, [userId, initialSelection, onSelectionChange, retryKey])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, initialSelection, retryKey])
 
   const handleRetry = () => {
     setRetryKey(prev => prev + 1)
