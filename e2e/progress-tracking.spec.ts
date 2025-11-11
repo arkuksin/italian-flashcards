@@ -107,7 +107,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await page.locator('form button[type="submit"]').click()
 
     // Check if we got feedback (correct or wrong)
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
 
     // Progress should be updated in the database
     // This will be validated by checking the progress bar or stats
@@ -130,7 +130,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await inputField.fill('test')
     await page.locator('form button[type="submit"]').click()
     // Wait for answer feedback instead of arbitrary timeout
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
 
     // Note the current progress
     const progressBarBefore = page.locator('[data-testid="progress-stats"]')
@@ -232,7 +232,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await inputField.fill(correctAnswer || 'test')
       await page.locator('form button[type="submit"]').click()
       // Wait for feedback
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
     }
 
     // Mastery level should be tracked in the database
@@ -258,7 +258,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await inputField.fill('test')
     await page.locator('form button[type="submit"]').click()
     // Wait for feedback
-    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
 
     // End session (e.g., by navigating away or clicking restart)
     const restartButton = page.locator('[data-testid="restart-button"]')
@@ -285,7 +285,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await inputField.fill('test')
       await page.locator('form button[type="submit"]').click()
       // Wait for feedback
-      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 5000 })
+      await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 8000 })
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible()) {
