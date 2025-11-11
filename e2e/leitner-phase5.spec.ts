@@ -154,7 +154,7 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
     let hasNoAchievementsMessage = false
     try {
       hasNoAchievementsMessage = await achievementBadges.getByText('No achievements yet').isVisible({ timeout: 2000 })
-    } catch (e) {
+    } catch {
       // Fallback: check if the text content contains the message
       const content = await achievementBadges.textContent()
       hasNoAchievementsMessage = content?.includes('No achievements yet') || false
