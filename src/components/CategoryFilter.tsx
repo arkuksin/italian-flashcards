@@ -30,11 +30,37 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         setLoading(true)
         setError(null)
 
-        const [stats, savedSelection, suggested] = await Promise.all([
-          categoryService.getCategoryStatistics(),
-          categoryService.getSelectedCategories(userId),
-          categoryService.getSuggestedCategory()
-        ])
+        console.log('[CategoryFilter] Loading categories for userId:', userId)
+
+        // Call each API individually with error logging
+        let stats, savedSelection, suggested
+
+        try {
+          console.log('[CategoryFilter] Fetching category statistics...')
+          stats = await categoryService.getCategoryStatistics()
+          console.log('[CategoryFilter] Got', stats.length, 'categories')
+        } catch (err) {
+          console.error('[CategoryFilter] Error getting statistics:', err)
+          throw err
+        }
+
+        try {
+          console.log('[CategoryFilter] Fetching selected categories...')
+          savedSelection = await categoryService.getSelectedCategories(userId)
+          console.log('[CategoryFilter] Got', savedSelection.length, 'selected categories')
+        } catch (err) {
+          console.error('[CategoryFilter] Error getting selected categories:', err)
+          throw err
+        }
+
+        try {
+          console.log('[CategoryFilter] Fetching suggested category...')
+          suggested = await categoryService.getSuggestedCategory()
+          console.log('[CategoryFilter] Suggested:', suggested)
+        } catch (err) {
+          console.error('[CategoryFilter] Error getting suggestion:', err)
+          throw err
+        }
 
         setCategories(stats)
 
@@ -48,8 +74,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           hasNotifiedRef.current = true
           onSelectionChange(categoriesToSelect)
         }
+
+        console.log('[CategoryFilter] Successfully loaded categories')
       } catch (err) {
-        console.error('Error loading categories:', err)
+        console.error('[CategoryFilter] Error loading categories:', err)
         setError('Failed to load categories. Please try again.')
       } finally {
         setLoading(false)
