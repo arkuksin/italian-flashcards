@@ -104,7 +104,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <div className="flex items-center justify-center py-8" data-testid="category-filter">
         <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
         <span className="ml-2 text-sm text-gray-500">Lade Kategorien...</span>
       </div>
@@ -113,7 +113,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg" data-testid="category-filter">
         <p className="text-sm text-red-800">{error}</p>
         <button
           onClick={handleRetry}
