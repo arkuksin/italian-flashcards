@@ -68,18 +68,21 @@ test.describe('Category Filter Feature', () => {
     // Expand category filter
     console.log('🔍 DEBUG: Clicking toggle button')
     await page.locator('[data-testid="toggle-category-filter"]').click()
-    await page.waitForTimeout(500)
 
     const categoryFilter = page.locator('[data-testid="category-filter"]')
     console.log('🔍 DEBUG: Checking if category filter is visible')
     await expect(categoryFilter).toBeVisible()
 
-    // DEBUG: Get the actual HTML content
-    const htmlContent = await categoryFilter.innerHTML()
-    console.log('🔍 DEBUG: CategoryFilter innerHTML:', htmlContent.substring(0, 500))
+    // Wait for loading to complete - spinner should disappear
+    console.log('🔍 DEBUG: Waiting for loading spinner to disappear')
+    const loadingSpinner = categoryFilter.locator('.animate-spin')
+    await expect(loadingSpinner).not.toBeVisible({ timeout: 10000 })
+    console.log('🔍 DEBUG: Loading complete')
 
-    // Should show at least one category option
+    // Wait for category options to appear
     const categoryOptions = page.locator('[data-testid^="category-option-"]')
+    await expect(categoryOptions.first()).toBeVisible({ timeout: 5000 })
+
     const count = await categoryOptions.count()
     console.log('🔍 DEBUG: Category options count:', count)
 
