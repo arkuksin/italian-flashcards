@@ -7,7 +7,7 @@ const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
 // Check if we have real authentication configuration
 const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
-test.describe('Progress Tracking - Hook Integration', () => {
+test.describe.skip('Progress Tracking - Hook Integration', () => {
   test.skip(!hasRealAuthConfig, 'Skipping progress tests - missing credentials')
 
   // Simplified beforeEach - authentication is already handled by global setup

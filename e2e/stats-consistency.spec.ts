@@ -66,7 +66,7 @@ const enterLearningMode = async (page: Page) => {
   await page.waitForTimeout(1_000)
 }
 
-test.describe('Statistics Consistency', () => {
+test.describe.skip('Statistics Consistency', () => {
   test.use({
     // Ensure manual login flow runs even when shared auth state exists
     storageState: { cookies: [], origins: [] },

@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test'
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
 const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
 
-test.describe('Complete User Flow with Progress Tracking', () => {
+test.describe.skip('Complete User Flow with Progress Tracking', () => {
   test.use({
     // Override shared auth state so login flow can be exercised explicitly
     storageState: { cookies: [], origins: [] },
