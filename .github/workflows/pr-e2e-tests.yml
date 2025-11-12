@@ -37,6 +37,22 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply database migrations
+        env:
+          SUPABASE_DB_HOST: ${{ secrets.SUPABASE_DB_HOST }}
+          SUPABASE_DB_PORT: ${{ secrets.SUPABASE_DB_PORT }}
+          SUPABASE_DB_DATABASE: ${{ secrets.SUPABASE_DB_DATABASE }}
+          SUPABASE_DB_USER: ${{ secrets.SUPABASE_DB_USER }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_DB_SSL: ${{ secrets.SUPABASE_DB_SSL }}
+          SUPABASE_DB_SSL_REJECT_UNAUTHORIZED: ${{ secrets.SUPABASE_DB_SSL_REJECT_UNAUTHORIZED }}
+        run: |
+          echo "📦 Applying migrations to test database..."
+          NODE_OPTIONS='--dns-result-order=ipv4first' npm run migrate
+
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
