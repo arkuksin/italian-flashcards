@@ -10,10 +10,13 @@ interface CategoryFilterProps {
   initialSelection?: string[]
 }
 
+// Stable empty array to prevent re-render loops
+const EMPTY_ARRAY: string[] = []
+
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   userId,
   onSelectionChange,
-  initialSelection = []
+  initialSelection = EMPTY_ARRAY
 }) => {
   const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelection))
