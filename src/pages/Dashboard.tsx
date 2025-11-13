@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -18,9 +18,13 @@ import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
 import { useAuth } from '../contexts/AuthContext'
+import { useTaskSession } from '../contexts/TaskSessionContext'
 import { WORDS, getShuffledWords } from '../data/words'
 import { wordService } from '../services/wordService'
 import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
+import { TaskModeAppBar } from '../components/TaskModeAppBar'
+import { ConfirmLeaveDialog } from '../components/ConfirmLeaveDialog'
+import { useConfirmNavigation } from '../hooks/useConfirmNavigation'
 
 /**
  * Dashboard Page
@@ -36,6 +40,7 @@ export const Dashboard: React.FC = () => {
   const { t } = useTranslation('dashboard')
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { session, saveSession, clearSession } = useTaskSession()
   const {
     progress: dbProgress,
     loading: progressLoading,
@@ -46,23 +51,36 @@ export const Dashboard: React.FC = () => {
   } = useProgress()
   const { updateDailyProgress } = useGamification()
 
-  const [hasSelectedMode, setHasSelectedMode] = useState(false)
-  const [words, setWords] = useState<Word[]>(WORDS)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [state, setState] = useState<AppState>({
-    currentWordIndex: 0,
-    userInput: '',
-    showAnswer: false,
-    learningDirection: 'ru-it',
-    darkMode: false,
-    shuffleMode: false,
-    accentSensitive: true,
-  })
+  const [hasSelectedMode, setHasSelectedMode] = useState(() => session?.status === 'active')
+  const [words, setWords] = useState<Word[]>(() => session?.words ?? WORDS)
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => session?.selectedCategories ?? [])
+  const [state, setState] = useState<AppState>(() =>
+    session?.state ?? {
+      currentWordIndex: 0,
+      userInput: '',
+      showAnswer: false,
+      learningDirection: 'ru-it',
+      darkMode: false,
+      shuffleMode: false,
+      accentSensitive: true,
+    },
+  )
 
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(session?.isCorrect ?? null)
   const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now())
-  const [responseTimeMs, setResponseTimeMs] = useState<number | undefined>(undefined)
-  const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(undefined)
+  const [responseTimeMs, setResponseTimeMs] = useState<number | undefined>(session?.responseTimeMs)
+  const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(session?.difficultyRating)
+  const [sessionId, setSessionId] = useState<string | null>(session?.id ?? null)
+  const [isSaving, setIsSaving] = useState(false)
+  const ensureSessionId = useCallback(() => {
+    if (sessionId) return sessionId
+    const generatedId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2)
+    setSessionId(generatedId)
+    return generatedId
+  }, [sessionId])
 
   // Initialize persisted preferences from localStorage
   useEffect(() => {
@@ -90,9 +108,73 @@ export const Dashboard: React.FC = () => {
     })
   }, [])
 
+  useEffect(() => {
+    if (!session) {
+      if (!hasSelectedMode) {
+        setSessionId(null)
+      }
+      return
+    }
+
+    if (!hasSelectedMode && session.status === 'active') {
+      setState(session.state)
+      setWords(session.words)
+      setSelectedCategories(session.selectedCategories)
+      setIsCorrect(session.isCorrect)
+      setResponseTimeMs(session.responseTimeMs)
+      setDifficultyRating(session.difficultyRating)
+      setSessionId(session.id)
+      setHasSelectedMode(true)
+      setQuestionStartTime(Date.now())
+
+      if (session.state.darkMode) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    } else if (!hasSelectedMode && session.status === 'suspended') {
+      setSessionId(session.id)
+    }
+  }, [hasSelectedMode, session])
+
   const currentWord = words[state.currentWordIndex]
 
+  useEffect(() => {
+    if (!hasSelectedMode) return
+
+    const id = ensureSessionId()
+
+    saveSession({
+      id,
+      status: 'active',
+      learningDirection: state.learningDirection,
+      state,
+      words,
+      selectedCategories,
+      isCorrect,
+      responseTimeMs,
+      difficultyRating,
+      updatedAt: Date.now(),
+    })
+  }, [
+    difficultyRating,
+    hasSelectedMode,
+    isCorrect,
+    responseTimeMs,
+    saveSession,
+    selectedCategories,
+    ensureSessionId,
+    state,
+    words,
+  ])
+
   const handleModeSelect = async (direction: LearningDirection, categories?: string[]) => {
+    const newSessionId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2)
+
+    setSessionId(newSessionId)
     setState(prev => ({ ...prev, learningDirection: direction }))
 
     // If categories are selected, filter words by categories
@@ -122,14 +204,56 @@ export const Dashboard: React.FC = () => {
     // Start a new learning session in the database
     await startSession(direction)
     setHasSelectedMode(true)
+    setIsCorrect(null)
+    setResponseTimeMs(undefined)
+    setDifficultyRating(undefined)
+    setQuestionStartTime(Date.now())
   }
 
-  const handleNext = async () => {
-    // Auto-save progress if answer was shown but no difficulty rating was given
-    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
+  const savePendingProgress = useCallback(async () => {
+    if (!currentWord) return
+
+    if (!(state.showAnswer && difficultyRating === undefined && isCorrect !== null)) {
+      return
+    }
+
+    setIsSaving(true)
+    try {
       await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
       await updateDailyProgress(isCorrect)
+    } catch (error) {
+      console.error('Error saving progress:', error)
+    } finally {
+      setIsSaving(false)
     }
+  }, [
+    currentWord,
+    difficultyRating,
+    isCorrect,
+    responseTimeMs,
+    state.showAnswer,
+    updateDailyProgress,
+    updateProgress,
+  ])
+
+  const hasUnsavedProgress =
+    (state.showAnswer && difficultyRating === undefined && isCorrect !== null) ||
+    (!state.showAnswer && state.userInput.trim().length > 0)
+
+  const {
+    isDialogOpen,
+    pendingNavigation,
+    requestNavigation,
+    cancelNavigation,
+    confirmNavigation,
+    discardNavigation,
+  } = useConfirmNavigation({
+    when: hasUnsavedProgress,
+    beforeUnloadMessage: 'Du hast ungesicherte Antworten. Möchtest du wirklich wechseln?',
+  })
+
+  const handleNext = async () => {
+    await savePendingProgress()
 
     if (state.currentWordIndex < words.length - 1) {
       setState(prev => ({
@@ -146,11 +270,7 @@ export const Dashboard: React.FC = () => {
   }
 
   const handlePrevious = async () => {
-    // Auto-save progress if answer was shown but no difficulty rating was given
-    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
-      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
-      await updateDailyProgress(isCorrect)
-    }
+    await savePendingProgress()
 
     if (state.currentWordIndex > 0) {
       setState(prev => ({
@@ -223,6 +343,8 @@ export const Dashboard: React.FC = () => {
   }
 
   const handleToggleShuffle = async () => {
+    await savePendingProgress()
+
     const newShuffleMode = !state.shuffleMode
     setState(prev => ({ ...prev, shuffleMode: newShuffleMode }))
 
@@ -274,11 +396,7 @@ export const Dashboard: React.FC = () => {
   }
 
   const handleRestart = async () => {
-    // Auto-save progress if answer was shown but no difficulty rating was given
-    if (state.showAnswer && difficultyRating === undefined && isCorrect !== null) {
-      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
-      await updateDailyProgress(isCorrect)
-    }
+    await savePendingProgress()
 
     // End current session
     if (currentSession) {
@@ -297,6 +415,8 @@ export const Dashboard: React.FC = () => {
     setDifficultyRating(undefined)
     setHasSelectedMode(false)
     setSelectedCategories([])
+    setSessionId(null)
+    clearSession()
 
     // Reset to all words
     if (state.shuffleMode) {
@@ -320,6 +440,145 @@ export const Dashboard: React.FC = () => {
     onToggleAccent: handleToggleAccentSensitivity,
   })
 
+  const handleBackToModeSelection = useCallback(() => {
+    requestNavigation({
+      context: 'mode-selection',
+      onProceed: async () => {
+        await savePendingProgress()
+        const id = ensureSessionId()
+        saveSession({
+          id,
+          status: 'suspended',
+          learningDirection: state.learningDirection,
+          state,
+          words,
+          selectedCategories,
+          isCorrect,
+          responseTimeMs,
+          difficultyRating,
+          updatedAt: Date.now(),
+        })
+        setHasSelectedMode(false)
+      },
+      onDiscard: async () => {
+        setState(prev => ({
+          ...prev,
+          userInput: '',
+          showAnswer: false,
+        }))
+        setIsCorrect(null)
+        setResponseTimeMs(undefined)
+        setDifficultyRating(undefined)
+        setHasSelectedMode(false)
+        setSessionId(null)
+        clearSession()
+      },
+    })
+  }, [
+    clearSession,
+    difficultyRating,
+    ensureSessionId,
+    isCorrect,
+    requestNavigation,
+    responseTimeMs,
+    savePendingProgress,
+    saveSession,
+    selectedCategories,
+    state,
+    words,
+  ])
+
+  const handleOpenAnalysis = useCallback(() => {
+    requestNavigation({
+      context: 'analytics',
+      onProceed: async () => {
+        await savePendingProgress()
+        const id = ensureSessionId()
+        saveSession({
+          id,
+          status: 'active',
+          learningDirection: state.learningDirection,
+          state,
+          words,
+          selectedCategories,
+          isCorrect,
+          responseTimeMs,
+          difficultyRating,
+          updatedAt: Date.now(),
+        })
+        navigate('/analytics')
+      },
+      onDiscard: async () => {
+        const id = ensureSessionId()
+        saveSession({
+          id,
+          status: 'active',
+          learningDirection: state.learningDirection,
+          state,
+          words,
+          selectedCategories,
+          isCorrect,
+          responseTimeMs,
+          difficultyRating,
+          updatedAt: Date.now(),
+        })
+        navigate('/analytics')
+      },
+    })
+  }, [
+    difficultyRating,
+    ensureSessionId,
+    isCorrect,
+    navigate,
+    requestNavigation,
+    responseTimeMs,
+    savePendingProgress,
+    saveSession,
+    selectedCategories,
+    state,
+    words,
+  ])
+
+  const resumeSession = useCallback(() => {
+    if (!session) return
+
+    setState(session.state)
+    setWords(session.words)
+    setSelectedCategories(session.selectedCategories)
+    setIsCorrect(session.isCorrect)
+    setResponseTimeMs(session.responseTimeMs)
+    setDifficultyRating(session.difficultyRating)
+    setSessionId(session.id)
+    setHasSelectedMode(true)
+    setQuestionStartTime(Date.now())
+
+    if (session.state.darkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [session])
+
+  useEffect(() => {
+    if (!hasSelectedMode) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        handleBackToModeSelection()
+      }
+      if (event.altKey && (event.key === 'a' || event.key === 'A')) {
+        event.preventDefault()
+        handleOpenAnalysis()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleBackToModeSelection, handleOpenAnalysis, hasSelectedMode])
+
   if (progressLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
@@ -332,6 +591,23 @@ export const Dashboard: React.FC = () => {
   }
 
   const currentWordProgress = dbProgress.get(currentWord?.id)
+  const resolvedCount = Math.min(words.length, state.currentWordIndex + (state.showAnswer ? 1 : 0))
+  const progressPercent = words.length === 0 ? 0 : (resolvedCount / words.length) * 100
+  const destinationLabelMap: Record<string, string> = {
+    'mode-selection': 'die Modus-Auswahl',
+    analytics: 'die Analyse',
+    dashboard: 'das Dashboard',
+    external: 'den Zielbereich',
+  }
+  const destinationLabel = pendingNavigation ? destinationLabelMap[pendingNavigation.context] ?? 'den Zielbereich' : undefined
+  const breadcrumbs = [
+    'Dashboard',
+    'Aufgabenmodus',
+    state.learningDirection === 'ru-it' ? 'Russisch → Italienisch' : 'Italienisch → Russisch',
+  ]
+  if (selectedCategories.length > 0) {
+    breadcrumbs.push(`Kategorien (${selectedCategories.length})`)
+  }
 
   return (
     <div data-testid="protected-content">
@@ -351,6 +627,32 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <div className="container mx-auto px-6">
+            {session && session.status === 'suspended' && (
+              <div className="max-w-4xl mx-auto mb-8">
+                <div className="rounded-3xl border border-blue-100 bg-white/90 p-6 shadow-xl dark:border-blue-900/40 dark:bg-gray-800/80">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+                        Unvollendete Aufgabe
+                      </p>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Setze deine Aufgabe fort</h2>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        Fortschritt:{' '}
+                        {Math.min(session.state.currentWordIndex + (session.state.showAnswer ? 1 : 0), session.words.length)}
+                        /{session.words.length} Karten · Richtung{' '}
+                        {session.learningDirection === 'ru-it' ? 'Russisch → Italienisch' : 'Italienisch → Russisch'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={resumeSession}
+                      className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2.5 font-semibold text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      Fortsetzen
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* User Stats Section */}
             <div className="max-w-4xl mx-auto mb-8">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
@@ -387,6 +689,15 @@ export const Dashboard: React.FC = () => {
           state.darkMode ? 'dark' : ''
         }`}>
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+            <TaskModeAppBar
+              onBackToModes={handleBackToModeSelection}
+              onOpenAnalysis={handleOpenAnalysis}
+              progressPercent={progressPercent}
+              resolvedCount={resolvedCount}
+              totalCount={words.length}
+              isSaving={isSaving}
+              breadcrumbs={breadcrumbs}
+            />
             <Header
               darkMode={state.darkMode}
               shuffleMode={state.shuffleMode}
@@ -454,6 +765,18 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
       )}
+      <ConfirmLeaveDialog
+        open={isDialogOpen}
+        onClose={cancelNavigation}
+        onConfirmSave={() => {
+          void confirmNavigation()
+        }}
+        onConfirmDiscard={() => {
+          void discardNavigation()
+        }}
+        isSaving={isSaving}
+        destinationLabel={destinationLabel}
+      />
     </div>
   )
 }
