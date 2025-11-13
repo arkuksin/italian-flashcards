@@ -1,14 +1,15 @@
 # Feature: Mode Selection UI - Buttons oben positionieren
 
 ## Übersicht
-Die Auswahl-Flächen für die Lernrichtung sollen oben auf der Seite sein, nicht unten. Dies verbessert die User Experience und macht die wichtigste Aktion sofort sichtbar.
+Die Auswahl-Flächen für die Lernrichtung sollen oben auf der Seite sein, nicht unten. Direkt darunter müssen die Kategorie-Flächen/Filterchips angezeigt werden, sodass Lernrichtung **und** Kategorien ohne Scroll sichtbar sind. Zusätzlich müssen die Kategorienamen immer in der UI-Sprache dargestellt werden, die der User über den Language Switcher ausgewählt hat.
 
 ## Motivation
-- Wichtigste Aktion sollte "above the fold" sein
-- User müssen nicht scrollen, um zu starten
+- Wichtigste Aktionen (Lernrichtung + Kategorien) sollten "above the fold" sein
+- User müssen nicht scrollen, um zu starten oder Kategorien zu filtern
 - Verbessert visuelle Hierarchie
 - Folgt Best Practices für Call-to-Action Platzierung
 - Reduziert kognitive Last
+- Konsistente Localisierung: Beschriftungen folgen der UI-Sprache
 
 ## Aktuelle Situation
 
@@ -51,6 +52,9 @@ Neues Layout:
 │  │             Russisch ]       │  │
 │  └─────────────────────────────┘  │
 │                                     │
+│  Kategorie-Filter (lokalisiert)     │
+│  [ Reisen ] [ Business ] [ Alltag ] │
+│                                     │
 │  Quick Stats (kompakt)              │
 │                                     │
 │  ↓ Weitere Widgets unten ↓          │
@@ -92,14 +96,23 @@ export default function Dashboard() {
 **Neuer Code:**
 ```tsx
 export default function Dashboard() {
+  const { user } = useAuth();
+  const uiLanguage = useUILanguage(); // z.B. aus useLanguagePreference / i18n
+
   return (
     <div>
-      {/* Mode Selection prominent oben */}
-      {!selectedMode && (
-        <div className="mb-8">
+      {/* Mode Selection + Kategorien ohne Scroll */}
+      <section className="space-y-6 mb-10">
+        {!selectedMode && (
           <ModeSelection onModeSelect={handleModeSelect} />
-        </div>
-      )}
+        )}
+
+        <CategoryFilter
+          userId={user?.id ?? ''}
+          onSelectionChange={setSelectedCategories}
+          locale={uiLanguage}
+        />
+      </section>
 
       {/* Kompakte Stats */}
       <QuickStats />
@@ -200,6 +213,37 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
   );
 };
 ```
+
+### Änderungen in `CategoryFilter.tsx`
+
+- `CategoryFilter` bekommt optionales Prop `locale?: SupportedLanguage`. Fallback auf `i18n.language`, damit Serverdaten (Keys) lokalisiert ausgegeben werden.
+- Texte wie Titel, Buttons "Alle/Keine", Error-/Loading-Messages landen im `dashboard`-Namespace und werden über `const { t } = useTranslation('dashboard')` gerendert.
+- Die vom Backend kommenden Kategorien behalten ihre Keys (`travel`, `business`, `daily`, ...). Vor der Darstellung wird per `t('categories.' + categoryKey + '.label', categoryKey)` übersetzt.
+- Die Komponente bleibt weiterhin datengetrieben (Stats, Suggestion, Save), aber alle sichtbaren Strings laufen durch die Übersetzungen, damit UI-Sprache konsequent bleibt.
+
+### Lokalisierungsdaten erweitern
+
+- `public/locales/*/dashboard.json` um die neuen Kategorie-Labels und Filtertexte ergänzen, z. B.:
+
+```json
+{
+  "filter": {
+    "title": "Kategorien filtern (optional)",
+    "selected": "{{count}} ausgewählt",
+    "all": "Alle",
+    "none": "Keine",
+    "error": "Kategorien konnten nicht geladen werden",
+    "retry": "Erneut versuchen"
+  },
+  "categories": {
+    "travel": "Reisen",
+    "business": "Business",
+    "daily": "Alltag",
+    "food": "Essen & Trinken"
+  }
+}
+```
+- Gleiches Schema für `en`, `it`, `ru`, `de`, damit Language Switcher sofort greift.
 
 ### Neue `QuickStats` Component
 
