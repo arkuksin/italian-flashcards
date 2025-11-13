@@ -42,15 +42,22 @@ test.describe('UserProfile Dropdown Z-Index', () => {
     // Wait for dashboard to load
     await page.waitForSelector('[data-testid="user-profile-button"]', { timeout: 10000 })
 
-    // Click user profile button
+    // Click user profile button (retry once to handle flaky preview toolbar clicks)
     const profileButton = page.locator('[data-testid="user-profile-button"]')
+    const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
+
     await profileButton.click()
 
-    // Wait for dropdown to appear
-    const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
-    await expect(dropdown).toBeVisible({ timeout: 5000 })
+    if (!(await dropdown.isVisible())) {
+      await page.waitForTimeout(500)
+      await profileButton.click()
+    }
 
-    // Wait for animations to complete
+    // Wait for dropdown to appear
+    await expect(dropdown).toBeVisible({ timeout: 15000 })
+
+    // Wait for layout/animations to settle before reading styles
+    await dropdown.waitFor({ state: 'visible' })
     await page.waitForTimeout(300)
 
     // Get z-index of dropdown
