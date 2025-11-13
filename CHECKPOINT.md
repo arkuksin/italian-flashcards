@@ -107,4 +107,27 @@ GRANT EXECUTE ON FUNCTION get_words_by_categories(...) TO authenticated, anon;
 ✅ Function query funktioniert: 25 Wörter
 ✅ Build + Lint: Erfolgreich
 
-**Nächster Schritt**: Push + CI Test
+---
+
+## ✅ ALL TESTS PASSING!
+
+### Final Solution - 3 Bugs Fixed:
+
+1. **RLS Permissions** (`V20251112221150__fix_category_view_rls.sql`)
+   - View `v_category_statistics` had no GRANT for anon role
+   - Added: `GRANT SELECT ON v_category_statistics TO authenticated, anon`
+
+2. **Infinite Re-render Loop** (CategoryFilter.tsx)
+   - Default param `initialSelection = []` created new array each render
+   - Fixed: Stable `EMPTY_ARRAY` constant outside component
+
+3. **Test Timing** (category-filter.spec.ts)
+   - Test checked count before component finished loading
+   - Fixed: Wait for spinner to disappear + first option visible
+
+### Re-enabled Tests:
+- ✅ 9 category-filter tests (removed test.skip)
+- ✅ 11 E2E test suites (removed describe.skip)
+- ✅ Cleaned up debug logging
+
+**Result**: All tests passing in CI! 🎉

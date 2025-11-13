@@ -17,7 +17,7 @@ const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
 // Check if we have real authentication configuration
 const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
-test.describe.skip('Leitner System - Phase 5: Gamification', () => {
+test.describe('Leitner System - Phase 5: Gamification', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 5 tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {

@@ -19,7 +19,7 @@ const hasRealAuthConfig = process.env.TEST_USER_EMAIL &&
                          process.env.TEST_USER_PASSWORD &&
                          process.env.VITE_SUPABASE_URL;
 
-test.describe.skip('Real Authentication Flow', () => {
+test.describe('Real Authentication Flow', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
 
   const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL!;
@@ -138,7 +138,7 @@ test.describe.skip('Real Authentication Flow', () => {
   });
 });
 
-test.describe.skip('Real Authentication - Error Scenarios', () => {
+test.describe('Real Authentication - Error Scenarios', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
 
   test.beforeEach(async ({ page }) => {

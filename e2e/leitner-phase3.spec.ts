@@ -35,7 +35,7 @@ async function startLearningSession(page: Page, browserName: string) {
   await flashcardQuestion.first().waitFor({ state: 'visible', timeout: 15000 })
 }
 
-test.describe.skip('Leitner System - Phase 3: Difficulty Rating', () => {
+test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 3 tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
@@ -205,7 +205,7 @@ test.describe.skip('Leitner System - Phase 3: Difficulty Rating', () => {
   })
 })
 
-test.describe.skip('Leitner System - Phase 3: Response Time Tracking', () => {
+test.describe('Leitner System - Phase 3: Response Time Tracking', () => {
   test.skip(!hasRealAuthConfig, 'Skipping response time tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
@@ -242,7 +242,7 @@ test.describe.skip('Leitner System - Phase 3: Response Time Tracking', () => {
   })
 })
 
-test.describe.skip('Leitner System - Phase 3: Complete Workflow', () => {
+test.describe('Leitner System - Phase 3: Complete Workflow', () => {
   test.skip(!hasRealAuthConfig, 'Skipping workflow tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
@@ -318,7 +318,7 @@ test.describe.skip('Leitner System - Phase 3: Complete Workflow', () => {
   })
 })
 
-test.describe.skip('Leitner System - Phase 3: Integration with Database', () => {
+test.describe('Leitner System - Phase 3: Integration with Database', () => {
   test.skip(!hasRealAuthConfig, 'Skipping database tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {

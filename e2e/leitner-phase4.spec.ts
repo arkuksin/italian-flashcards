@@ -18,7 +18,7 @@ const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
 // Check if we have real authentication configuration
 const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
-test.describe.skip('Leitner System - Phase 4: Analytics Dashboard', () => {
+test.describe('Leitner System - Phase 4: Analytics Dashboard', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 4 tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
@@ -184,7 +184,7 @@ test.describe.skip('Leitner System - Phase 4: Analytics Dashboard', () => {
   })
 })
 
-test.describe.skip('Leitner System - Phase 4: Analytics with Practice Data', () => {
+test.describe('Leitner System - Phase 4: Analytics with Practice Data', () => {
   test.skip(!hasRealAuthConfig, 'Skipping analytics data tests - missing credentials')
 
   test('should show analytics data after completing practice session', async ({ page }) => {

@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
  * Run with: npm run test:e2e -- e2e/quick-auth-check.spec.ts
  */
 
-test.describe.skip('Quick Auth Check @smoke', () => {
+test.describe('Quick Auth Check @smoke', () => {
   test.use({
     // Force fresh session so login UI can be validated
     storageState: { cookies: [], origins: [] },

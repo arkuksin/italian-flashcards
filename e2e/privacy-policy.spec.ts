@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com';
 const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!';
 
-test.describe.skip('Privacy Policy Page', () => {
+test.describe('Privacy Policy Page', () => {
   test.use({
     // Require fresh session so login route stays accessible
     storageState: { cookies: [], origins: [] },
