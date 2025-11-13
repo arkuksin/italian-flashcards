@@ -7,6 +7,7 @@ import './lib/env';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProgressProvider } from './hooks/useProgress';
 import { GamificationProvider } from './hooks/useGamification';
+import { TaskSessionProvider } from './contexts/TaskSessionContext';
 import { initI18n } from './lib/i18n';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -19,7 +20,9 @@ initI18n().then(() => {
           <AuthProvider>
             <ProgressProvider>
               <GamificationProvider>
-                <App />
+                <TaskSessionProvider>
+                  <App />
+                </TaskSessionProvider>
               </GamificationProvider>
             </ProgressProvider>
           </AuthProvider>
@@ -37,7 +40,9 @@ initI18n().then(() => {
           <AuthProvider>
             <ProgressProvider>
               <GamificationProvider>
-                <App />
+                <TaskSessionProvider>
+                  <App />
+                </TaskSessionProvider>
               </GamificationProvider>
             </ProgressProvider>
           </AuthProvider>
