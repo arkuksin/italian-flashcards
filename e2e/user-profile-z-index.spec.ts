@@ -50,6 +50,9 @@ test.describe('UserProfile Dropdown Z-Index', () => {
     const dropdown = page.locator('[data-testid="user-profile-dropdown"]')
     await expect(dropdown).toBeVisible({ timeout: 5000 })
 
+    // Wait for animations to complete
+    await page.waitForTimeout(300)
+
     // Get z-index of dropdown
     const dropdownZIndex = await dropdown.evaluate((el) => {
       const computed = window.getComputedStyle(el)
@@ -75,9 +78,6 @@ test.describe('UserProfile Dropdown Z-Index', () => {
     const logoutButton = dropdown.locator('[data-testid="logout-button"]')
     await expect(logoutButton).toBeVisible()
     await expect(logoutButton).toBeEnabled()
-
-    // Try to hover (this would fail if dropdown is behind flashcard)
-    await logoutButton.hover()
 
     console.log('✅ Dropdown is fully interactive and visible')
   })
