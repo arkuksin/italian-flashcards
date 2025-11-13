@@ -157,3 +157,29 @@ export interface AchievementDefinition {
   icon: string
   xp_reward: number
 }
+
+// Phase 9: Category Filter Types
+
+export interface CategoryInfo {
+  category: string
+  total_words: number
+  learned_words: number
+  avg_accuracy: number | null
+  avg_mastery_level: number | null
+}
+
+export interface CategoryPreference {
+  id: string
+  user_id: string
+  category: string
+  is_selected: boolean
+  priority: number
+  last_practiced: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CategoryFilter {
+  selectedCategories: string[]
+  excludedCategories: string[]
+}

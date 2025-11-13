@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
+import { CategoryFilter } from './CategoryFilter';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ModeSelectionProps {
-  onModeSelect: (direction: LearningDirection) => void;
+  onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
 }
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) => {
   const { t } = useTranslation('learning');
+  const { user } = useAuth();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+
+  const handleModeSelect = (direction: LearningDirection) => {
+    onModeSelect(direction, selectedCategories.length > 0 ? selectedCategories : undefined);
+  };
+
+  const handleCategoryChange = (categories: string[]) => {
+    setSelectedCategories(categories);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6">
@@ -28,7 +41,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
           >
             <BookOpen className="w-12 h-12 text-white" />
           </motion.div>
-          
+
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -51,7 +64,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
         {/* Mode Selection */}
         <motion.div
           initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="space-y-6"
         >
@@ -62,7 +75,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
           <div className="grid md:grid-cols-2 gap-6">
             <motion.button
               data-testid="mode-ru-it"
-              onClick={() => onModeSelect('ru-it')}
+              onClick={() => handleModeSelect('ru-it')}
               className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -83,7 +96,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
 
             <motion.button
               data-testid="mode-it-ru"
-              onClick={() => onModeSelect('it-ru')}
+              onClick={() => handleModeSelect('it-ru')}
               className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-500"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -103,6 +116,42 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) =>
             </motion.button>
           </div>
         </motion.div>
+
+        {/* Category Filter Section */}
+        {user && (
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6"
+          >
+            <button
+              onClick={() => setShowCategoryFilter(!showCategoryFilter)}
+              className="w-full flex items-center justify-between mb-4 text-left"
+              data-testid="toggle-category-filter"
+            >
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                🏷️ Kategorien filtern (optional)
+              </h3>
+              <span className="text-2xl text-gray-500 dark:text-gray-400">
+                {showCategoryFilter ? '▼' : '▶'}
+              </span>
+            </button>
+
+            {showCategoryFilter && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <CategoryFilter
+                  userId={user.id}
+                  onSelectionChange={handleCategoryChange}
+                />
+              </motion.div>
+            )}
+          </motion.div>
+        )}
 
         {/* Features */}
         <motion.div
