@@ -21,7 +21,7 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
  * Firefox needs extra time for mode selection transitions
  */
 async function startLearningSession(page: Page, browserName: string) {
-  const modeButton = page.locator('button:has-text("Learn Italian from Russian")')
+  const modeButton = page.locator('[data-testid="mode-ru-it"]')
   await modeButton.waitFor({ state: 'visible', timeout: 5000 })
   await modeButton.click()
 
