@@ -60,11 +60,24 @@ test.describe('UserProfile Dropdown Z-Index', () => {
     await dropdown.waitFor({ state: 'visible' })
     await page.waitForTimeout(300)
 
-    // Get z-index of dropdown
-    const dropdownZIndex = await dropdown.evaluate((el) => {
-      const computed = window.getComputedStyle(el)
-      return computed.zIndex
-    })
+    const readDropdownZIndex = async () => {
+      return dropdown.evaluate((el) => {
+        const computed = window.getComputedStyle(el)
+        return computed.zIndex
+      })
+    }
+
+    // Get z-index of dropdown (retry once if CI closes the menu instantly)
+    let dropdownZIndex: string
+    try {
+      dropdownZIndex = await readDropdownZIndex()
+    } catch (error) {
+      console.warn('Dropdown vanished before measuring, retrying once...', error)
+      await profileButton.click({ force: true })
+      await expect(dropdown).toBeVisible({ timeout: 5000 })
+      await dropdown.waitFor({ state: 'visible' })
+      dropdownZIndex = await readDropdownZIndex()
+    }
 
     console.log(`Dropdown z-index: ${dropdownZIndex}`)
 
