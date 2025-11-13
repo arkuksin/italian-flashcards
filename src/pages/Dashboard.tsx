@@ -484,7 +484,6 @@ export const Dashboard: React.FC = () => {
     savePendingProgress,
     saveSession,
     selectedCategories,
-    sessionId,
     state,
     words,
   ])
@@ -536,7 +535,6 @@ export const Dashboard: React.FC = () => {
     savePendingProgress,
     saveSession,
     selectedCategories,
-    sessionId,
     state,
     words,
   ])
