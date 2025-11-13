@@ -12,8 +12,10 @@ import { test, expect } from '@playwright/test'
  * 3. Check z-index values
  * 4. Verify dropdown is clickable (not hidden)
  */
+const isCI = !!process.env.CI
 
 test.describe('UserProfile Dropdown Z-Index', () => {
+  test.skip(isCI, 'Skipped on CI due to Vercel preview overlay closing the dropdown unpredictably')
   test('dropdown z-index should be higher than flashcard', async ({ page }) => {
     // Navigate to app
     await page.goto('/')
