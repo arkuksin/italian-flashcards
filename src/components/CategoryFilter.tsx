@@ -3,13 +3,12 @@ import { motion } from 'framer-motion'
 import { Tag, Check, AlertCircle, Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { categoryService } from '../services/categoryService'
-import type { CategoryInfo, SupportedLanguage } from '../types'
+import type { CategoryInfo } from '../types'
 
 interface CategoryFilterProps {
   userId: string
   onSelectionChange: (categories: string[]) => void
   initialSelection?: string[]
-  locale?: SupportedLanguage
 }
 
 // Stable empty array to prevent re-render loops
@@ -18,10 +17,9 @@ const EMPTY_ARRAY: string[] = []
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   userId,
   onSelectionChange,
-  initialSelection = EMPTY_ARRAY,
-  locale
+  initialSelection = EMPTY_ARRAY
 }) => {
-  const { t, i18n } = useTranslation('dashboard')
+  const { t } = useTranslation('dashboard')
   const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelection))
   const [suggestion, setSuggestion] = useState<string | null>(null)
@@ -30,9 +28,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [saving, setSaving] = useState(false)
   const [retryKey, setRetryKey] = useState(0)
   const hasNotifiedRef = useRef(false)
-
-  // Use provided locale or fall back to current i18n language
-  const currentLocale = locale || i18n.language
 
   useEffect(() => {
     const loadCategories = async () => {

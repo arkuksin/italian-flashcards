@@ -193,7 +193,7 @@ test.describe('Leitner System - Phase 4: Analytics with Practice Data', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
     // Start a learning session and answer a few questions
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Answer first question
