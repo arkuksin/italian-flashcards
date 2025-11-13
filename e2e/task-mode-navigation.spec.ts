@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { startLearningSession, waitForFlashcard, expectModeSelection } from './test-utils';
 
+test.skip(process.env.CI, 'Playwright browsers are not available in CI yet.');
+
 test.describe('Task mode navigation safeguards', () => {
   test('prompts to confirm before opening analytics with unsaved input', async ({ page }) => {
     await startLearningSession(page);

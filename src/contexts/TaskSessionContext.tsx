@@ -10,7 +10,7 @@ import { AppState, DifficultyRating, LearningDirection, Word } from '../types'
 
 type TaskSessionStatus = 'active' | 'suspended'
 
-export interface TaskSessionSnapshot {
+interface TaskSessionSnapshot {
   id: string
   status: TaskSessionStatus
   learningDirection: LearningDirection
@@ -31,36 +31,29 @@ interface TaskSessionContextValue {
 
 const TaskSessionContext = createContext<TaskSessionContextValue | undefined>(undefined)
 
-const areSessionsEqual = (
-  prev: TaskSessionSnapshot | null,
-  next: TaskSessionSnapshot,
-): boolean => {
-  if (!prev) return false
-  return (
-    prev.id === next.id &&
-    prev.status === next.status &&
-    prev.learningDirection === next.learningDirection &&
-    prev.state.currentWordIndex === next.state.currentWordIndex &&
-    prev.state.userInput === next.state.userInput &&
-    prev.state.showAnswer === next.state.showAnswer &&
-    prev.state.learningDirection === next.state.learningDirection &&
-    prev.state.darkMode === next.state.darkMode &&
-    prev.state.shuffleMode === next.state.shuffleMode &&
-    prev.state.accentSensitive === next.state.accentSensitive &&
-    prev.words === next.words &&
-    prev.selectedCategories === next.selectedCategories &&
-    prev.isCorrect === next.isCorrect &&
-    prev.responseTimeMs === next.responseTimeMs &&
-    prev.difficultyRating === next.difficultyRating
-  )
-}
-
 export const TaskSessionProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<TaskSessionSnapshot | null>(null)
 
   const saveSession = useCallback((snapshot: TaskSessionSnapshot) => {
     setSession(prev => {
-      if (areSessionsEqual(prev, snapshot)) {
+      if (
+        prev &&
+        prev.id === snapshot.id &&
+        prev.status === snapshot.status &&
+        prev.learningDirection === snapshot.learningDirection &&
+        prev.state.currentWordIndex === snapshot.state.currentWordIndex &&
+        prev.state.userInput === snapshot.state.userInput &&
+        prev.state.showAnswer === snapshot.state.showAnswer &&
+        prev.state.learningDirection === snapshot.state.learningDirection &&
+        prev.state.darkMode === snapshot.state.darkMode &&
+        prev.state.shuffleMode === snapshot.state.shuffleMode &&
+        prev.state.accentSensitive === snapshot.state.accentSensitive &&
+        prev.words === snapshot.words &&
+        prev.selectedCategories === snapshot.selectedCategories &&
+        prev.isCorrect === snapshot.isCorrect &&
+        prev.responseTimeMs === snapshot.responseTimeMs &&
+        prev.difficultyRating === snapshot.difficultyRating
+      ) {
         return prev
       }
       return snapshot
