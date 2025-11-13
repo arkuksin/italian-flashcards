@@ -20,6 +20,43 @@
     "totalAttempts": "Всего попыток",
     "inProgress": "В процессе"
   },
+  "modeSelection": {
+    "title": "Готовы учиться?",
+    "subtitle": "Выберите направление обучения",
+    "ruToIt": {
+      "title": "Русский → Итальянский",
+      "words": "{{count}} слов"
+    },
+    "itToRu": {
+      "title": "Итальянский → Русский",
+      "words": "{{count}} слов"
+    },
+    "accuracy": "{{accuracy}}% Точность"
+  },
+  "quickStats": {
+    "learned": "Выучено",
+    "accuracy": "Точность",
+    "streak": "Серия",
+    "level": "Уровень"
+  },
+  "filter": {
+    "title": "Фильтровать категории (необязательно)",
+    "selected": "{{count}} выбрано",
+    "all": "Все",
+    "none": "Нет",
+    "error": "Не удалось загрузить категории. Попробуйте снова.",
+    "retry": "Повторить",
+    "loading": "Загрузка категорий...",
+    "suggestion": "Рекомендация",
+    "suggestionText": "\"{{category}}\" имеет самую низкую точность",
+    "selected_label": "✓ Выбрано",
+    "select": "+ Выбрать",
+    "wordsCount": "{{count}} слов",
+    "learnedCount": "{{count}} выучено",
+    "accuracyLabel": "Точность",
+    "saving": "Сохранение...",
+    "saveAsDefault": "Сохранить как по умолчанию"
+  },
   "categories": {
     "title": "Категории",
     "food": "Еда",
@@ -30,7 +67,9 @@
     "body": "Тело",
     "travel": "Путешествия",
     "places": "Места",
-    "meals": "Приемы пищи"
+    "meals": "Приемы пищи",
+    "business": "Бизнес",
+    "daily": "Повседневная жизнь"
   },
   "mastery": {
     "title": "Статус владения",

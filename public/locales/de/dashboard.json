@@ -20,6 +20,43 @@
     "totalAttempts": "Versuche insgesamt",
     "inProgress": "In Bearbeitung"
   },
+  "modeSelection": {
+    "title": "Bereit zum Lernen?",
+    "subtitle": "Wählen Sie Ihre Lernrichtung",
+    "ruToIt": {
+      "title": "Russisch → Italienisch",
+      "words": "{{count}} Wörter"
+    },
+    "itToRu": {
+      "title": "Italienisch → Russisch",
+      "words": "{{count}} Wörter"
+    },
+    "accuracy": "{{accuracy}}% Genauigkeit"
+  },
+  "quickStats": {
+    "learned": "Gelernt",
+    "accuracy": "Genauigkeit",
+    "streak": "Serie",
+    "level": "Level"
+  },
+  "filter": {
+    "title": "Kategorien filtern (optional)",
+    "selected": "{{count}} ausgewählt",
+    "all": "Alle",
+    "none": "Keine",
+    "error": "Kategorien konnten nicht geladen werden",
+    "retry": "Erneut versuchen",
+    "loading": "Lade Kategorien...",
+    "suggestion": "Empfehlung",
+    "suggestionText": "\"{{category}}\" hat niedrigste Genauigkeit",
+    "selected_label": "✓ Ausgewählt",
+    "select": "+ Auswählen",
+    "wordsCount": "{{count}} Wörter",
+    "learnedCount": "{{count}} gelernt",
+    "accuracyLabel": "Genauigkeit",
+    "saving": "Speichere...",
+    "saveAsDefault": "Als Standard speichern"
+  },
   "categories": {
     "title": "Kategorien",
     "food": "Essen",
@@ -30,7 +67,9 @@
     "body": "Körper",
     "travel": "Reisen",
     "places": "Orte",
-    "meals": "Mahlzeiten"
+    "meals": "Mahlzeiten",
+    "business": "Business",
+    "daily": "Alltag"
   },
   "mastery": {
     "title": "Beherrschungsstatus",
