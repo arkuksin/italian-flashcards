@@ -192,9 +192,13 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
   })
 
   test('should maintain gamification state across navigation', async ({ page }) => {
-    // Capture initial XP level
+    // Wait for any pending async operations to complete
+    await page.waitForTimeout(2000)
+
+    // Capture initial XP level and XP value
     const xpBar = page.locator('[data-testid="xp-progress-bar"]')
     await expect(xpBar).toBeVisible({ timeout: 5000 })
+
     const initialLevelText = await xpBar.textContent()
     const initialLevelMatch = initialLevelText?.match(/Level (\d+)/)
     const initialLevel = initialLevelMatch ? parseInt(initialLevelMatch[1], 10) : 0
@@ -204,19 +208,25 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
     if (await analyticsButton.isVisible({ timeout: 2000 })) {
       await analyticsButton.click()
       await page.waitForURL(/\/analytics/, { timeout: 5000 })
+
+      // Wait a moment on analytics page
+      await page.waitForTimeout(500)
+
+      // Navigate back to dashboard
       await page.goto('/')
+      await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 5000 })
     }
 
-    // Verify XP level is maintained or increased (due to auto-save progress from other tests)
+    // Verify XP level is maintained (simple navigation should not award XP)
     await expect(xpBar).toBeVisible({ timeout: 5000 })
     const newLevelText = await xpBar.textContent()
     const newLevelMatch = newLevelText?.match(/Level (\d+)/)
     const newLevel = newLevelMatch ? parseInt(newLevelMatch[1], 10) : 0
 
-    // Level should be maintained or increased (never decreased)
+    // Level should remain the same during navigation
+    // Allow up to 2 level increase in case of async save completion from previous operations
+    // but catch excessive jumps (77 was the failing case)
     expect(newLevel).toBeGreaterThanOrEqual(initialLevel)
-    // Level should not jump excessively during simple navigation
-    // Allow up to 20 levels due to auto-save from other tests running before
-    expect(newLevel - initialLevel).toBeLessThanOrEqual(20)
+    expect(newLevel - initialLevel).toBeLessThanOrEqual(2)
   })
 })
