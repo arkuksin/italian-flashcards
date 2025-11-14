@@ -1,6 +1,7 @@
 import React from 'react'
 import { Calendar } from 'lucide-react'
 import { ReviewHeatmapData } from '../services/analyticsService'
+import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
 
 interface ReviewHeatmapProps {
   data: ReviewHeatmapData[]
@@ -18,8 +19,8 @@ interface ReviewHeatmapProps {
 export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <div className="animate-pulse space-y-4">
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`}>
+        <div className={`animate-pulse ${VERTICAL_SPACING.md}`}>
           <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
           <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
@@ -105,8 +106,8 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
   const activeDays = data.filter(d => d.reviewCount > 0).length
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="review-heatmap">
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="review-heatmap">
+      <div className={`flex items-center justify-between ${MARGIN_BOTTOM.lg}`}>
         <div className="flex items-center gap-2">
           <Calendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -119,7 +120,7 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className={`grid grid-cols-3 ${GAP.md} ${MARGIN_BOTTOM.lg}`}>
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
           <div className="text-xs text-blue-600 dark:text-blue-400 mb-1">Total Reviews</div>
           <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalReviews}</div>
@@ -138,7 +139,7 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
       <div className="overflow-x-auto">
         <div className="inline-block min-w-full">
           {/* Day labels */}
-          <div className="flex mb-2">
+          <div className={`flex ${MARGIN_BOTTOM.xs}`}>
             <div className="w-8"></div>
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => (
               <div key={i} className="flex-1 text-xs text-gray-500 dark:text-gray-400 text-center min-w-[12px]">

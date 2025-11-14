@@ -1,6 +1,7 @@
 import React from 'react'
 import { Brain, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { RetentionMetrics } from '../services/analyticsService'
+import { MARGIN_BOTTOM, VERTICAL_SPACING, PADDING } from '../constants/spacing'
 
 interface RetentionAnalysisProps {
   data: RetentionMetrics
@@ -18,8 +19,8 @@ interface RetentionAnalysisProps {
 export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <div className="animate-pulse space-y-4">
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`}>
+        <div className={`animate-pulse ${VERTICAL_SPACING.md}`}>
           <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
           <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
@@ -69,8 +70,8 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
   const maxRetentionRate = Math.max(...data.retentionByLevel.map(l => l.retentionRate), 100)
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="retention-analysis">
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="retention-analysis">
+      <div className={`flex items-center justify-between ${MARGIN_BOTTOM.lg}`}>
         <div className="flex items-center gap-2">
           <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -86,8 +87,8 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
       </div>
 
       {/* Overall Retention Rate */}
-      <div className="mb-6">
-        <div className="flex items-baseline justify-between mb-2">
+      <div className={MARGIN_BOTTOM.lg}>
+        <div className={`flex items-baseline justify-between ${MARGIN_BOTTOM.xs}`}>
           <span className="text-sm text-gray-600 dark:text-gray-400">Overall Retention Rate</span>
           <span className={`text-3xl font-bold ${getRetentionColor(data.overallRetentionRate)}`}>
             {data.overallRetentionRate.toFixed(1)}%
@@ -110,10 +111,10 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
       {/* Retention by Level */}
       {data.retentionByLevel.length > 0 ? (
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className={`text-sm font-medium text-gray-700 dark:text-gray-300 ${MARGIN_BOTTOM.sm}`}>
             Retention by Mastery Level
           </h4>
-          <div className="space-y-3">
+          <div className={VERTICAL_SPACING.sm}>
             {data.retentionByLevel.map(level => (
               <div key={level.level}>
                 <div className="flex items-center justify-between mb-1">
@@ -165,10 +166,10 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
 
       {/* Insights */}
       <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <h4 className={`text-sm font-medium text-gray-700 dark:text-gray-300 ${MARGIN_BOTTOM.xs}`}>
           Insights
         </h4>
-        <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className={`${VERTICAL_SPACING.xs} text-sm text-gray-600 dark:text-gray-400`}>
           {data.overallRetentionRate >= 80 && (
             <p className="flex items-start gap-2">
               <span className="text-green-500 mt-0.5">✓</span>

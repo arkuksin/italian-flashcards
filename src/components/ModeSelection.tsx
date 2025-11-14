@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { useProgress } from '../hooks/useProgress';
 import { Card } from './ui/Card';
+import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
@@ -24,9 +25,9 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
       {/* Hero Header */}
-      <div className="text-center mb-4 md:mb-6">
-        <Globe className="w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto mb-3 md:mb-4" />
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+      <div className={`text-center ${MARGIN_BOTTOM.md} md:${MARGIN_BOTTOM.lg}`}>
+        <Globe className={`w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto ${MARGIN_BOTTOM.sm} md:${MARGIN_BOTTOM.md}`} />
+        <h2 className={`text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 ${MARGIN_BOTTOM.xs}`}>
           {t('modeSelection.title')}
         </h2>
         <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
@@ -35,7 +36,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
       </div>
 
       {/* Large Mode Selection Buttons */}
-      <div className="space-y-3 md:space-y-4 max-w-2xl mx-auto">
+      <div className={`${VERTICAL_SPACING.sm} md:${VERTICAL_SPACING.md} max-w-2xl mx-auto`}>
         {/* Russian → Italian */}
         <Card
           variant="outlined"

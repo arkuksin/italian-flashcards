@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
 import { Card } from './ui/Card'
+import { GAP, MARGIN_BOTTOM } from '../constants/spacing'
 
 /**
  * QuickStats Component
@@ -18,10 +19,10 @@ export const QuickStats: React.FC = () => {
   const stats = getStats()
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4" data-testid="quick-stats">
+    <div className={`grid grid-cols-2 md:grid-cols-4 ${GAP.sm} md:${GAP.md}`} data-testid="quick-stats">
       {/* Words Learned */}
       <Card variant="default" size="compact" className="p-3 md:p-4">
-        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+        <div className={`text-xs text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs.replace('mb-2', 'mb-1')}`}>
           {t('quickStats.learned')}
         </div>
         <div className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">

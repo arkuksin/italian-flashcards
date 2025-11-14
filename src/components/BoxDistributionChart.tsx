@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useProgress } from '../hooks/useProgress'
+import { MARGIN_BOTTOM, GAP } from '../constants/spacing'
 
 /**
  * BoxDistributionChart - Phase 2 Leitner System Component
@@ -54,12 +55,12 @@ export const BoxDistributionChart: React.FC = () => {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+      <h3 className={`text-sm font-semibold text-gray-700 dark:text-gray-300 ${MARGIN_BOTTOM.sm}`}>
         Mastery Distribution
       </h3>
 
       {/* Bar Chart */}
-      <div className="flex items-end gap-2 h-32 mb-2">
+      <div className={`flex items-end ${GAP.xs} h-32 ${MARGIN_BOTTOM.xs}`}>
         {distribution.map((count, level) => {
           const heightPercentage = (count / maxCount) * 100
 

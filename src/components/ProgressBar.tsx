@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Target, Flame, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useProgress } from '../hooks/useProgress';
+import { MARGIN_BOTTOM, GAP } from '../constants/spacing';
 
 interface ProgressBarProps {
   totalWords: number;
@@ -36,8 +37,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       data-testid="progress-bar"
     >
       {/* Progress Bar */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
+      <div className={MARGIN_BOTTOM.lg}>
+        <div className={`flex justify-between items-center ${MARGIN_BOTTOM.xs}`}>
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
             {t('progress.title')}
           </span>
@@ -56,7 +57,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-2 md:grid-cols-4 ${GAP.md}`}>
         <motion.div
           className="text-center"
           whileHover={{ scale: 1.05 }}
