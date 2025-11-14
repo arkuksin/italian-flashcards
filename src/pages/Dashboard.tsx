@@ -74,7 +74,7 @@ export const Dashboard: React.FC = () => {
   const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(session?.difficultyRating)
   const [sessionId, setSessionId] = useState<string | null>(session?.id ?? null)
   const [isSaving, setIsSaving] = useState(false)
-  const [showStatistics, setShowStatistics] = useState(false)
+  const [showStatistics, setShowStatistics] = useState(true)
   const [showGamification, setShowGamification] = useState(false)
   const [showLeitner, setShowLeitner] = useState(false)
   const ensureSessionId = useCallback(() => {
