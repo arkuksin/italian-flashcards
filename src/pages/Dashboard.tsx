@@ -17,6 +17,7 @@ import { XPProgressBar } from '../components/XPProgressBar'
 import { AchievementBadges } from '../components/AchievementBadges'
 import { DailyGoalProgress } from '../components/DailyGoalProgress'
 import { Container } from '../components/layout'
+import { SkipLink } from '../components/ui/SkipLink'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
@@ -617,6 +618,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div data-testid="protected-content">
+      <SkipLink />
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
@@ -632,7 +634,7 @@ export const Dashboard: React.FC = () => {
             <UserProfile />
           </div>
 
-          <Container width="dashboard" className="py-2">
+          <Container width="dashboard" className="py-2" id="main-content">
             {/* PRIMARY ACTION: Mode Selection + Category Filter - Enhanced Visual Weight */}
             <motion.section
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -879,7 +881,7 @@ export const Dashboard: React.FC = () => {
               onRestart={handleRestart}
             />
 
-            <Container width="dashboard" className="py-8" data-testid="flashcard-app">
+            <Container width="dashboard" className="py-8" id="main-content" data-testid="flashcard-app">
               {currentSession && (
                 <div className="mb-4 flex justify-center">
                   <span
