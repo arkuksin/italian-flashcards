@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
 
@@ -60,6 +61,27 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   const getMasteryLabel = (level: number) => {
     return t(`flashcard.mastery.levels.${Math.min(level, 5)}`)
   }
+
+  const handleDifficultyRating = useCallback((rating: DifficultyRating) => {
+    if (!onDifficultyRating) return;
+
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(rating === 4 ? 50 : 10);
+    }
+
+    // Confetti for "Easy" rating
+    if (rating === 4) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#34d399', '#6ee7b7']
+      });
+    }
+
+    onDifficultyRating(rating);
+  }, [onDifficultyRating]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,62 +223,77 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">
                     {t('flashcard.difficulty.prompt', 'How well did you know this?')}
                   </p>
-                  <div className="grid grid-cols-4 gap-2" data-testid="difficulty-buttons">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="difficulty-buttons">
+                    {/* Again Button */}
                     <motion.button
-                      onClick={() => onDifficultyRating(1)}
+                      onClick={() => handleDifficultyRating(1)}
                       disabled={difficultyRating !== undefined}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      title={t('flashcard.difficulty.tooltip.again', 'Review this card soon (same session)')}
+                      className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 1
                           ? 'bg-red-500 text-white ring-2 ring-red-400'
                           : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
-                      } disabled:opacity-50`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
-                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9, rotate: [-2, 2, -2, 2, 0] } : {}}
                       data-testid="difficulty-again"
                     >
-                      {t('flashcard.difficulty.again', 'Again')}
+                      <span className="text-2xl mb-1">👎</span>
+                      <span className="text-sm">{t('flashcard.difficulty.again', 'Again')}</span>
                     </motion.button>
+
+                    {/* Hard Button */}
                     <motion.button
-                      onClick={() => onDifficultyRating(2)}
+                      onClick={() => handleDifficultyRating(2)}
                       disabled={difficultyRating !== undefined}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      title={t('flashcard.difficulty.tooltip.hard', 'Show again in a few minutes')}
+                      className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 2
                           ? 'bg-orange-500 text-white ring-2 ring-orange-400'
                           : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50'
-                      } disabled:opacity-50`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
-                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-hard"
                     >
-                      {t('flashcard.difficulty.hard', 'Hard')}
+                      <span className="text-2xl mb-1">🤔</span>
+                      <span className="text-sm">{t('flashcard.difficulty.hard', 'Hard')}</span>
                     </motion.button>
+
+                    {/* Good Button */}
                     <motion.button
-                      onClick={() => onDifficultyRating(3)}
+                      onClick={() => handleDifficultyRating(3)}
                       disabled={difficultyRating !== undefined}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      title={t('flashcard.difficulty.tooltip.good', 'Show again in ~1 day')}
+                      className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 3
                           ? 'bg-blue-500 text-white ring-2 ring-blue-400'
                           : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
-                      } disabled:opacity-50`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
-                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-good"
                     >
-                      {t('flashcard.difficulty.good', 'Good')}
+                      <span className="text-2xl mb-1">🙂</span>
+                      <span className="text-sm">{t('flashcard.difficulty.good', 'Good')}</span>
                     </motion.button>
+
+                    {/* Easy Button */}
                     <motion.button
-                      onClick={() => onDifficultyRating(4)}
+                      onClick={() => handleDifficultyRating(4)}
                       disabled={difficultyRating !== undefined}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      title={t('flashcard.difficulty.tooltip.easy', 'Show again in several days')}
+                      className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 4
                           ? 'bg-green-500 text-white ring-2 ring-green-400'
                           : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
-                      } disabled:opacity-50`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
-                      whileTap={difficultyRating === undefined ? { scale: 0.95 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-easy"
                     >
-                      {t('flashcard.difficulty.easy', 'Easy')}
+                      <span className="text-2xl mb-1">😊</span>
+                      <span className="text-sm">{t('flashcard.difficulty.easy', 'Easy')}</span>
                     </motion.button>
                   </div>
                   {difficultyRating && (

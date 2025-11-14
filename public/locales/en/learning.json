@@ -58,7 +58,21 @@
       "next": "Next",
       "progress": "{{current}} of {{total}}"
     },
-    "shortcuts": "Use ← / → to navigate, Enter to submit"
+    "shortcuts": "Use ← / → to navigate, Enter to submit",
+    "difficulty": {
+      "prompt": "How well did you know this?",
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy",
+      "saved": "Rating saved! You can continue to the next word.",
+      "tooltip": {
+        "again": "Review this card soon (same session)",
+        "hard": "Show again in a few minutes",
+        "good": "Show again in ~1 day",
+        "easy": "Show again in several days"
+      }
+    }
   },
   "feedback": {
     "correct": "Correct!",
