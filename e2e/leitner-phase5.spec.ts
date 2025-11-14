@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { resetGamificationData } from './helpers/reset-gamification'
 
 /**
  * E2E Tests for Leitner System - Phase 5
@@ -19,6 +20,12 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
 test.describe('Leitner System - Phase 5: Gamification', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 5 tests - missing credentials')
+
+  // Reset gamification data before all tests in this suite to ensure clean state
+  test.beforeAll(async () => {
+    console.log('🔄 Resetting gamification data for clean test environment...')
+    await resetGamificationData()
+  })
 
   test.beforeEach(async ({ page }) => {
     // Navigate to homepage - authentication is handled by global setup
@@ -192,10 +199,11 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
   })
 
   test('should maintain gamification state across navigation', async ({ page }) => {
-    // Wait for any pending async operations to complete
-    await page.waitForTimeout(2000)
+    // Wait for initial page load and data to stabilize
+    await page.waitForLoadState('networkidle')
+    await page.waitForTimeout(1000)
 
-    // Capture initial XP level and XP value
+    // Capture initial XP level
     const xpBar = page.locator('[data-testid="xp-progress-bar"]')
     await expect(xpBar).toBeVisible({ timeout: 5000 })
 
@@ -203,18 +211,29 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
     const initialLevelMatch = initialLevelText?.match(/Level (\d+)/)
     const initialLevel = initialLevelMatch ? parseInt(initialLevelMatch[1], 10) : 0
 
+    console.log(`📊 Initial state - Level: ${initialLevel}`)
+
+    // Verify initial level is reasonable (not corrupted data)
+    expect(initialLevel).toBeGreaterThanOrEqual(1)
+    expect(initialLevel).toBeLessThan(10) // With reset, should be low level
+
     // Navigate to analytics and back
     const analyticsButton = page.locator('[data-testid="analytics-button"]')
     if (await analyticsButton.isVisible({ timeout: 2000 })) {
       await analyticsButton.click()
       await page.waitForURL(/\/analytics/, { timeout: 5000 })
 
-      // Wait a moment on analytics page
+      // Wait for analytics page to load
+      await page.waitForLoadState('networkidle')
       await page.waitForTimeout(500)
 
       // Navigate back to dashboard
       await page.goto('/')
       await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 5000 })
+
+      // Wait for gamification data to reload
+      await page.waitForLoadState('networkidle')
+      await page.waitForTimeout(1000)
     }
 
     // Verify XP level is maintained (simple navigation should not award XP)
@@ -223,10 +242,12 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
     const newLevelMatch = newLevelText?.match(/Level (\d+)/)
     const newLevel = newLevelMatch ? parseInt(newLevelMatch[1], 10) : 0
 
+    console.log(`📊 After navigation - Level: ${newLevel}`)
+    console.log(`📈 Level change: ${newLevel - initialLevel}`)
+
     // Level should remain the same during navigation
-    // Allow up to 2 level increase in case of async save completion from previous operations
-    // but catch excessive jumps (77 was the failing case)
+    // Allow up to 1 level increase in case of async save completion from previous operations
     expect(newLevel).toBeGreaterThanOrEqual(initialLevel)
-    expect(newLevel - initialLevel).toBeLessThanOrEqual(2)
+    expect(newLevel - initialLevel).toBeLessThanOrEqual(1)
   })
 })

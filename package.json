@@ -25,6 +25,7 @@
     "setup:branch-protection": "node scripts/setup-branch-protection.js",
     "verify:branch-protection": "node scripts/verify-branch-protection.js",
     "test:create-user": "node scripts/create-test-user.js",
+    "test:reset-gamification": "node scripts/reset-test-user-gamification.js",
     "test:cleanup-users": "node scripts/cleanup-test-users.js --database=test --dry-run",
     "prod:list-users": "node scripts/list-production-users.js",
     "prod:delete-users": "node scripts/delete-invalid-users.js",
