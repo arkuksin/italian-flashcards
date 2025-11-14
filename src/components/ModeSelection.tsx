@@ -26,10 +26,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
       {/* Hero Header */}
       <div className="text-center mb-4 md:mb-6">
         <Globe className="w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto mb-3 md:mb-4" />
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+        <h2 className="text-headline-lg text-gray-800 dark:text-gray-100 mb-2">
           {t('modeSelection.title')}
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
+        <p className="text-gray-600 dark:text-gray-300 text-body-lg">
           {t('modeSelection.subtitle')}
         </p>
       </div>
@@ -51,10 +51,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
             <div className="flex items-center gap-3 md:gap-4">
               <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇷🇺</span>
               <div className="text-left">
-                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
+                <div className="text-headline-sm text-gray-800 dark:text-gray-100">
                   {t('modeSelection.ruToIt.title')}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
+                <div className="text-gray-600 dark:text-gray-400 mt-1 text-body-sm">
                   {t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
@@ -78,10 +78,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
             <div className="flex items-center gap-3 md:gap-4">
               <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇮🇹</span>
               <div className="text-left">
-                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
+                <div className="text-headline-sm text-gray-800 dark:text-gray-100">
                   {t('modeSelection.itToRu.title')}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
+                <div className="text-gray-600 dark:text-gray-400 mt-1 text-body-sm">
                   {t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
