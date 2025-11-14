@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
+import { TextField } from './ui/TextField';
 
 interface FlashCardProps {
   word: Word;
@@ -124,27 +125,30 @@ export const FlashCard: React.FC<FlashCardProps> = ({
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="mb-6" data-testid="answer-form">
-          <div className="relative">
-            <input
+          <div className="flex flex-col sm:flex-row gap-3">
+            <TextField
               type="text"
               value={userInput}
               onChange={(e) => onInputChange(e.target.value)}
               disabled={showAnswer}
-              placeholder={t('flashcard.inputPlaceholder')}
-              className="w-full px-6 py-4 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              label={t('flashcard.inputPlaceholder')}
+              variant="filled"
+              size="large"
               autoFocus
               data-testid="answer-input"
+              fullWidth
             />
             {!showAnswer && (
               <motion.button
                 type="submit"
                 disabled={!userInput.trim()}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="flex-shrink-0 w-full sm:w-auto px-8 py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed font-medium text-base min-h-[64px] flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 data-testid="answer-submit-button"
               >
                 <Send className="w-5 h-5" />
+                <span className="hidden sm:inline">{t('flashcard.submit', 'Submit')}</span>
               </motion.button>
             )}
           </div>
