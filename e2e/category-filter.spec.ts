@@ -195,11 +195,14 @@ test.describe('Category Filter Feature', () => {
   })
 
   test('should display selected category count', async ({ page }) => {
-    // Expand category filter
+    // Wait for category filter to finish loading categories from database
+    // (otherwise clicking "None" gets overwritten by the async load)
+    await expect(page.locator('[data-testid^="category-option-"]').first()).toBeVisible({ timeout: 10000 })
+    await page.waitForTimeout(500) // Extra wait for any animations and state updates
 
     // Click "Keine" to deselect all
     await page.locator('[data-testid="select-none-categories"]').click()
-    await page.waitForTimeout(300)
+    await page.waitForTimeout(500) // Wait for state update
 
     // Should show 0 selected (language-independent: just check for number 0)
     const filterTextZero = await page.locator('[data-testid="category-filter"]').textContent()
@@ -207,7 +210,7 @@ test.describe('Category Filter Feature', () => {
 
     // Select all
     await page.locator('[data-testid="select-all-categories"]').click()
-    await page.waitForTimeout(300)
+    await page.waitForTimeout(500) // Wait for state update
 
     // Should show count greater than 0 (language-independent: check for pattern with non-zero number)
     const filterText = await page.locator('[data-testid="category-filter"]').textContent()
