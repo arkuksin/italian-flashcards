@@ -631,7 +631,7 @@ export const Dashboard: React.FC = () => {
           <div className="container mx-auto px-6">
             {/* Mode Selection + Category Filter - Above the Fold */}
             <section className="max-w-4xl mx-auto mb-8 space-y-6">
-              <ModeSelection onModeSelect={handleModeSelect} />
+              <ModeSelection onModeSelect={handleModeSelect} selectedCategories={selectedCategories} />
 
               {user && (
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
