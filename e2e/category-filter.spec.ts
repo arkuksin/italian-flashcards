@@ -59,9 +59,10 @@ test.describe('Category Filter Feature', () => {
     const count = await categoryOptions.count()
     expect(count).toBeGreaterThan(0)
 
-    // First category should show word count
+    // First category should show word count (language-independent: just check for numbers)
     const firstCategory = categoryOptions.first()
-    await expect(firstCategory).toContainText('Wörter')
+    const categoryText = await firstCategory.textContent()
+    expect(categoryText).toMatch(/\d+/) // Should contain a number (word count)
   })
 
   test('should allow selecting and deselecting categories', async ({ page }) => {
@@ -142,8 +143,9 @@ test.describe('Category Filter Feature', () => {
     // Wait for save to complete
     await page.waitForTimeout(1000)
 
-    // Should show success (button text should not be in loading state)
-    await expect(saveButton).not.toContainText('Speichere...')
+    // Should show success (button text should not be in loading state - language-independent check)
+    const buttonText = await saveButton.textContent()
+    expect(buttonText).not.toMatch(/\.\.\.$/) // Should not end with "..." (loading indicator)
   })
 
   test('should filter words by selected category during learning session', async ({ page }) => {
@@ -179,10 +181,12 @@ test.describe('Category Filter Feature', () => {
     const suggestion = page.locator('[data-testid="category-suggestion"]')
 
     // Suggestion may or may not be visible depending on user's learning history
-    // If visible, it should contain expected text
+    // If visible, verify it has content and toggle button (language-independent)
     if (await suggestion.isVisible()) {
-      await expect(suggestion).toContainText('Empfehlung')
-      await expect(suggestion).toContainText('niedrigste Accuracy')
+      // Should have some text content
+      const suggestionText = await suggestion.textContent()
+      expect(suggestionText).toBeTruthy()
+      expect(suggestionText!.length).toBeGreaterThan(0)
 
       // Should have a button to toggle selection
       const toggleButton = suggestion.locator('[data-testid="toggle-suggested-category"]')
@@ -197,16 +201,17 @@ test.describe('Category Filter Feature', () => {
     await page.locator('[data-testid="select-none-categories"]').click()
     await page.waitForTimeout(300)
 
-    // Should show 0 selected
-    await expect(page.locator('[data-testid="category-filter"]')).toContainText('(0 ausgewählt)')
+    // Should show 0 selected (language-independent: just check for number 0)
+    const filterTextZero = await page.locator('[data-testid="category-filter"]').textContent()
+    expect(filterTextZero).toMatch(/\(0\s+\w+\)/)
 
     // Select all
     await page.locator('[data-testid="select-all-categories"]').click()
     await page.waitForTimeout(300)
 
-    // Should show count greater than 0
+    // Should show count greater than 0 (language-independent: check for pattern with non-zero number)
     const filterText = await page.locator('[data-testid="category-filter"]').textContent()
-    expect(filterText).toMatch(/\(\d+ ausgewählt\)/)
-    expect(filterText).not.toContain('(0 ausgewählt)')
+    expect(filterText).toMatch(/\([1-9]\d*\s+\w+\)/) // Matches "(1 selected)" or "(5 ausgewählt)" etc in any language
+    expect(filterText).not.toMatch(/\(0\s+\w+\)/)
   })
 })
