@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 import { Card } from './ui/Card'
+import { VERTICAL_SPACING, GAP } from '../constants/spacing'
 
 interface CategoryFilterProps {
   userId: string
@@ -145,7 +146,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
+      className={VERTICAL_SPACING.md}
       data-testid="category-filter"
     >
       {/* Header */}
@@ -205,7 +206,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       )}
 
       {/* Category Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 ${GAP.xs} max-h-80 overflow-y-auto pr-1`}>
         {categories.map((category, index) => (
           <Card
             key={category.category}

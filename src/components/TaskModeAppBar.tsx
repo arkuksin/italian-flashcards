@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { ArrowLeft, BarChart3, Loader2, Timer } from 'lucide-react'
+import { GAP, SPACING_PATTERNS } from '../constants/spacing'
 
 interface TaskModeAppBarProps {
   onBackToModes: () => void
@@ -30,8 +31,8 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
       role="navigation"
       data-testid="task-mode-app-bar"
     >
-      <div className="mx-auto flex w-full flex-col gap-4 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
+      <div className={`mx-auto flex w-full flex-col ${GAP.md} px-4 py-3 sm:flex-row sm:items-center sm:justify-between`}>
+        <div className={`flex items-center ${GAP.sm}`}>
           <button
             type="button"
             onClick={onBackToModes}
@@ -54,9 +55,9 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
           </nav>
         </div>
 
-        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-200">
+        <div className={`flex flex-1 flex-col ${GAP.xs} sm:flex-row sm:items-center sm:justify-end`}>
+          <div className={`flex items-center ${GAP.sm}`}>
+            <div className={`flex items-center ${SPACING_PATTERNS.iconText} rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-200`}>
               <span>{resolvedCount}</span>
               <span className="text-xs text-blue-500/70 dark:text-blue-200/70">von</span>
               <span>{totalCount}</span>
@@ -79,7 +80,7 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
             )}
             {isSaving && (
               <div
-                className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600 dark:bg-amber-500/10 dark:text-amber-200"
+                className={`inline-flex items-center ${SPACING_PATTERNS.iconText} rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600 dark:bg-amber-500/10 dark:text-amber-200`}
                 data-testid="saving-indicator"
                 aria-live="polite"
               >
@@ -92,7 +93,7 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
           <button
             type="button"
             onClick={onOpenAnalysis}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className={`inline-flex items-center justify-center ${SPACING_PATTERNS.iconText} rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`}
             aria-label="Analyse öffnen"
           >
             <BarChart3 className="h-4 w-4" />
