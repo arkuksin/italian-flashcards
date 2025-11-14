@@ -8,6 +8,7 @@ import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
 import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
+import { getMasteryIndicatorColor, getMasteryLabel as getMasteryLabelFromConstants } from '../constants/masteryColors';
 
 interface FlashCardProps {
   word: Word;
@@ -48,21 +49,12 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   const canGoNext = currentIndex < totalWords - 1;
   const canGoPrevious = currentIndex > 0;
 
-  // Mastery level colors
-  const getMasteryColor = (level: number) => {
-    const colors = [
-      'bg-gray-200 dark:bg-gray-700', // Level 0
-      'bg-red-200 dark:bg-red-900/50', // Level 1
-      'bg-orange-200 dark:bg-orange-900/50', // Level 2
-      'bg-yellow-200 dark:bg-yellow-900/50', // Level 3
-      'bg-green-200 dark:bg-green-900/50', // Level 4
-      'bg-blue-200 dark:bg-blue-900/50', // Level 5
-    ]
-    return colors[Math.min(level, 5)]
-  }
-
+  // Mastery level label - use translation if available, otherwise use constant
   const getMasteryLabel = (level: number) => {
-    return t(`flashcard.mastery.levels.${Math.min(level, 5)}`)
+    const translationKey = `flashcard.mastery.levels.${Math.min(level, 5)}`;
+    const translated = t(translationKey);
+    // If translation is same as key (not found), use constant
+    return translated !== translationKey ? translated : getMasteryLabelFromConstants(level);
   }
 
   const handleDifficultyRating = useCallback((rating: DifficultyRating) => {
@@ -132,7 +124,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       key={level}
                       className={`w-2 h-6 rounded ${
                         level <= wordProgress.mastery_level
-                          ? getMasteryColor(wordProgress.mastery_level)
+                          ? getMasteryIndicatorColor(wordProgress.mastery_level)
                           : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                       title={`${t('flashcard.mastery.title')}: ${getMasteryLabel(wordProgress.mastery_level)}`}
