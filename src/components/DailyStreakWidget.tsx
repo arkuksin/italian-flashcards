@@ -1,4 +1,5 @@
 import { useGamification } from '../hooks/useGamification'
+import { Card } from './ui/Card'
 
 export const DailyStreakWidget = () => {
   const { dailyGoals, loading } = useGamification()
@@ -10,8 +11,9 @@ export const DailyStreakWidget = () => {
   const { current_streak, longest_streak } = dailyGoals
 
   return (
-    <div
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+    <Card
+      variant="default"
+      size="default"
       data-testid="daily-streak-widget"
     >
       <div className="flex items-center justify-between">
@@ -48,6 +50,6 @@ export const DailyStreakWidget = () => {
           </p>
         </div>
       )}
-    </div>
+    </Card>
   )
 }

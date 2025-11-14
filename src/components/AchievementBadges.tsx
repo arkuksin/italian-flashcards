@@ -1,6 +1,7 @@
 import { useGamification } from '../hooks/useGamification'
 import { ACHIEVEMENT_DEFINITIONS } from '../utils/gamification'
 import { AchievementType } from '../types'
+import { Card } from './ui/Card'
 
 export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) => {
   const { achievements, loading } = useGamification()
@@ -13,8 +14,9 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
   const totalUnlocked = achievements.length
 
   return (
-    <div
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+    <Card
+      variant="default"
+      size="default"
       data-testid="achievement-badges"
     >
       <div className="flex items-center justify-between mb-4">
@@ -38,9 +40,11 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
           {recentAchievements.map(achievement => {
             const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType]
             return (
-              <div
+              <Card
                 key={achievement.id}
-                className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                variant="flat"
+                size="compact"
+                className="flex flex-col items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                 data-testid={`achievement-${achievement.achievement_type}`}
               >
                 <span className="text-4xl mb-2">{definition.icon}</span>
@@ -53,7 +57,7 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
                 <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
                   +{definition.xp_reward} XP
                 </p>
-              </div>
+              </Card>
             )
           })}
         </div>
@@ -66,6 +70,6 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
           </p>
         </div>
       )}
-    </div>
+    </Card>
   )
 }

@@ -4,6 +4,7 @@ import { Globe, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { useProgress } from '../hooks/useProgress';
+import { Card } from './ui/Card';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
@@ -36,10 +37,13 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
       {/* Large Mode Selection Buttons */}
       <div className="space-y-3 md:space-y-4 max-w-2xl mx-auto">
         {/* Russian → Italian */}
-        <motion.button
+        <Card
+          variant="outlined"
+          size="default"
+          as={motion.button}
           data-testid="mode-ru-it"
           onClick={() => handleModeSelect('ru-it')}
-          className="w-full p-4 md:p-6 bg-white dark:bg-gray-800 border-2 md:border-3 border-blue-300 dark:border-blue-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all group"
+          className="w-full !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -57,13 +61,16 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
             </div>
             <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </div>
-        </motion.button>
+        </Card>
 
         {/* Italian → Russian */}
-        <motion.button
+        <Card
+          variant="outlined"
+          size="default"
+          as={motion.button}
           data-testid="mode-it-ru"
           onClick={() => handleModeSelect('it-ru')}
-          className="w-full p-4 md:p-6 bg-white dark:bg-gray-800 border-2 md:border-3 border-blue-300 dark:border-blue-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all group"
+          className="w-full !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -81,7 +88,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
             </div>
             <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </div>
-        </motion.button>
+        </Card>
       </div>
     </div>
   );

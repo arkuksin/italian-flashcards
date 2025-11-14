@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
+import { Card } from './ui/Card';
 
 interface FlashCardProps {
   word: Word;
@@ -72,10 +73,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
       className="max-w-2xl mx-auto"
     >
       {/* Main Card */}
-      <motion.div
-        className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-3xl p-8 shadow-2xl"
-        layout
-      >
+      <Card variant="elevated" size="comfortable" as={motion.div} layout>
         {/* Word Display */}
         <div className="text-center mb-8">
           <motion.div
@@ -308,7 +306,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             <ChevronRight className="w-5 h-5 ml-2" />
           </motion.button>
         </div>
-      </motion.div>
+      </Card>
 
       {/* Keyboard Shortcuts Help */}
       <motion.div

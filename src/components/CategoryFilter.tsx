@@ -4,6 +4,7 @@ import { Tag, Check, AlertCircle, Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
+import { Card } from './ui/Card'
 
 interface CategoryFilterProps {
   userId: string
@@ -206,15 +207,18 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       {/* Category Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
         {categories.map((category, index) => (
-          <motion.label
+          <Card
             key={category.category}
+            variant="outlined"
+            size="compact"
+            as={motion.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
-            className={`flex items-start gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+            className={`flex items-start gap-3 cursor-pointer transition-all duration-200 ${
               selected.has(category.category)
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400'
-                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
+                : 'hover:!border-gray-300 dark:hover:!border-gray-600'
             }`}
             data-testid={`category-option-${category.category}`}
           >
@@ -245,7 +249,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             {selected.has(category.category) && (
               <Check className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
             )}
-          </motion.label>
+          </Card>
         ))}
       </div>
 

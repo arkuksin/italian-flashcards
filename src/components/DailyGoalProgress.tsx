@@ -1,6 +1,7 @@
 import { useGamification } from '../hooks/useGamification'
 import { useProgress } from '../hooks/useProgress'
 import { useMemo } from 'react'
+import { Card } from './ui/Card'
 
 export const DailyGoalProgress = () => {
   const { dailyGoals, loading: gamificationLoading } = useGamification()
@@ -36,8 +37,9 @@ export const DailyGoalProgress = () => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+    <Card
+      variant="default"
+      size="default"
       data-testid="daily-goal-progress"
     >
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
@@ -104,6 +106,6 @@ export const DailyGoalProgress = () => {
           </p>
         )}
       </div>
-    </div>
+    </Card>
   )
 }
