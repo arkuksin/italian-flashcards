@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useProgress } from '../hooks/useProgress'
 import { MasteryLevelBadge } from './MasteryLevelBadge'
 import { getMasteryBarColor } from '../constants/masteryColors'
+import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
 
 /**
  * LeitnerBoxVisualizer - Phase 2 Leitner System Component
@@ -42,12 +43,12 @@ export const LeitnerBoxVisualizer: React.FC = () => {
   ]
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="leitner-box-visualizer">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4" data-testid="leitner-box-heading">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="leitner-box-visualizer">
+      <h2 className={`text-xl font-bold text-gray-900 dark:text-white ${MARGIN_BOTTOM.md}`} data-testid="leitner-box-heading">
         Leitner Box System
       </h2>
 
-      <div className="mb-6">
+      <div className={MARGIN_BOTTOM.lg}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Words are organized into boxes based on how well you know them. Higher boxes = longer review intervals.
         </p>
@@ -58,7 +59,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
           <p>Start learning to see your progress!</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className={VERTICAL_SPACING.sm}>
           {boxes.map((box, index) => {
             const count = distribution[box.level as keyof typeof distribution]
             const percentage = totalWords > 0 ? (count / totalWords) * 100 : 0
@@ -72,7 +73,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
                 className="relative"
                 data-testid={`leitner-level-${box.level}`}
               >
-                <div className="flex items-center gap-4">
+                <div className={`flex items-center ${GAP.md}`}>
                   {/* Box Level Badge */}
                   <div className="flex-shrink-0 w-28">
                     <MasteryLevelBadge level={box.level} size="sm" animated={false} />

@@ -1,5 +1,6 @@
 import { useGamification } from '../hooks/useGamification'
 import { getXPProgress } from '../utils/gamification'
+import { MARGIN_BOTTOM, PADDING } from '../constants/spacing'
 
 export const XPProgressBar = () => {
   const { dailyGoals, loading } = useGamification()
@@ -17,10 +18,10 @@ export const XPProgressBar = () => {
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md ${PADDING.comfortable}`}
       data-testid="xp-progress-bar"
     >
-      <div className="flex items-center justify-between mb-2">
+      <div className={`flex items-center justify-between ${MARGIN_BOTTOM.xs}`}>
         <div className="flex items-center space-x-2">
           <span className="text-2xl">⭐</span>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

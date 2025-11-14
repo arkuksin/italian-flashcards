@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { MARGIN_BOTTOM, GAP } from '../constants/spacing';
 
 interface Props {
   children: ReactNode;
@@ -88,7 +89,7 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
           <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
-            <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+            <div className={`flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full ${MARGIN_BOTTOM.md}`}>
               <svg
                 className="w-6 h-6 text-red-600"
                 fill="none"
@@ -104,18 +105,18 @@ class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
 
-            <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+            <h2 className={`text-xl font-bold text-gray-900 text-center ${MARGIN_BOTTOM.xs}`}>
               Something went wrong
             </h2>
 
-            <p className="text-gray-600 text-center mb-6">
+            <p className={`text-gray-600 text-center ${MARGIN_BOTTOM.lg}`}>
               We're sorry, but something unexpected happened. Please try refreshing the page or
               contact support if the problem persists.
             </p>
 
             {!import.meta.env.PROD && this.state.error && (
-              <details className="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
-                <summary className="cursor-pointer font-semibold text-sm text-gray-700 mb-2">
+              <details className={`${MARGIN_BOTTOM.md} p-4 bg-gray-50 rounded border border-gray-200`}>
+                <summary className={`cursor-pointer font-semibold text-sm text-gray-700 ${MARGIN_BOTTOM.xs}`}>
                   Error Details (Development Only)
                 </summary>
                 <div className="text-xs font-mono text-red-600 overflow-auto max-h-48">
@@ -130,7 +131,7 @@ class ErrorBoundary extends Component<Props, State> {
               </details>
             )}
 
-            <div className="flex gap-3">
+            <div className={`flex ${GAP.sm}`}>
               <button
                 onClick={this.handleReset}
                 className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"

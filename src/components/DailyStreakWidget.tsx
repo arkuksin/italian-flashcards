@@ -1,5 +1,6 @@
 import { useGamification } from '../hooks/useGamification'
 import { Card } from './ui/Card'
+import { MARGIN_BOTTOM } from '../constants/spacing'
 
 export const DailyStreakWidget = () => {
   const { dailyGoals, loading } = useGamification()
@@ -18,7 +19,7 @@ export const DailyStreakWidget = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className={`text-lg font-semibold text-gray-900 dark:text-white ${MARGIN_BOTTOM.xs}`}>
             Daily Streak
           </h3>
           <div className="flex items-center space-x-2">

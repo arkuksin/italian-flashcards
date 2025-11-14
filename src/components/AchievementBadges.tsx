@@ -2,6 +2,7 @@ import { useGamification } from '../hooks/useGamification'
 import { ACHIEVEMENT_DEFINITIONS } from '../utils/gamification'
 import { AchievementType } from '../types'
 import { Card } from './ui/Card'
+import { MARGIN_BOTTOM, GAP } from '../constants/spacing'
 
 export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) => {
   const { achievements, loading } = useGamification()
@@ -19,7 +20,7 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
       size="default"
       data-testid="achievement-badges"
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className={`flex items-center justify-between ${MARGIN_BOTTOM.md}`}>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           Achievements
         </h3>
@@ -30,13 +31,13 @@ export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) =
 
       {recentAchievements.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 dark:text-gray-400 mb-2">No achievements yet</p>
+          <p className={`text-gray-500 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>No achievements yet</p>
           <p className="text-sm text-gray-400 dark:text-gray-500">
             Start studying to unlock your first achievement!
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className={`grid grid-cols-2 sm:grid-cols-3 ${GAP.md}`}>
           {recentAchievements.map(achievement => {
             const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType]
             return (
