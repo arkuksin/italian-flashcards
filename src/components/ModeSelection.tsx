@@ -43,18 +43,18 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           as={motion.button}
           data-testid="mode-ru-it"
           onClick={() => handleModeSelect('ru-it')}
-          className="w-full !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
+          className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 md:gap-4">
-              <span className="text-3xl md:text-5xl">🇷🇺</span>
+            <div className="flex items-center gap-3 md:gap-4">
+              <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇷🇺</span>
               <div className="text-left">
-                <div className="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
                   {t('modeSelection.ruToIt.title')}
                 </div>
-                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
                   {t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
@@ -70,18 +70,18 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           as={motion.button}
           data-testid="mode-it-ru"
           onClick={() => handleModeSelect('it-ru')}
-          className="w-full !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
+          className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 md:gap-4">
-              <span className="text-3xl md:text-5xl">🇮🇹</span>
+            <div className="flex items-center gap-3 md:gap-4">
+              <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇮🇹</span>
               <div className="text-left">
-                <div className="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
                   {t('modeSelection.itToRu.title')}
                 </div>
-                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
                   {t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
