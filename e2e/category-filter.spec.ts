@@ -66,7 +66,16 @@ test.describe('Category Filter Feature', () => {
   })
 
   test('should allow selecting and deselecting categories', async ({ page }) => {
-    // Expand category filter
+    // Wait for category filter to finish loading
+    const categoryFilter = page.locator('[data-testid="category-filter"]')
+    await expect(categoryFilter).toBeVisible()
+
+    // Wait for loading spinner to disappear
+    const loadingSpinner = categoryFilter.locator('.animate-spin')
+    await expect(loadingSpinner).not.toBeVisible({ timeout: 10000 })
+
+    // Wait for category options to appear
+    await expect(page.locator('[data-testid^="category-option-"]').first()).toBeVisible({ timeout: 5000 })
 
     // Get first category checkbox
     const firstCategoryOption = page.locator('[data-testid^="category-option-"]').first()
@@ -97,6 +106,7 @@ test.describe('Category Filter Feature', () => {
 
     // Click "Alle" button
     await page.locator('[data-testid="select-all-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // All checkboxes should be checked
     const checkboxes = page.locator('[data-testid^="category-option-"] input[type="checkbox"]')
@@ -113,9 +123,11 @@ test.describe('Category Filter Feature', () => {
 
     // First select all
     await page.locator('[data-testid="select-all-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // Then click "Keine"
     await page.locator('[data-testid="select-none-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // All checkboxes should be unchecked
     const checkboxes = page.locator('[data-testid^="category-option-"] input[type="checkbox"]')
@@ -149,7 +161,16 @@ test.describe('Category Filter Feature', () => {
   })
 
   test('should filter words by selected category during learning session', async ({ page }) => {
-    // Expand category filter
+    // Wait for category filter to finish loading
+    const categoryFilter = page.locator('[data-testid="category-filter"]')
+    await expect(categoryFilter).toBeVisible()
+
+    // Wait for loading spinner to disappear
+    const loadingSpinner = categoryFilter.locator('.animate-spin')
+    await expect(loadingSpinner).not.toBeVisible({ timeout: 10000 })
+
+    // Wait for category options to appear
+    await expect(page.locator('[data-testid^="category-option-"]').first()).toBeVisible({ timeout: 5000 })
 
     // Deselect all first
     await page.locator('[data-testid="select-none-categories"]').click()

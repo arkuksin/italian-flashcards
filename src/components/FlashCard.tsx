@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
+import { Container } from './layout';
 
 interface FlashCardProps {
   word: Word;
@@ -90,11 +91,11 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="max-w-2xl mx-auto"
-    >
+    <Container width="content">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
       {/* Main Card */}
       <Card variant="elevated" size="comfortable" as={motion.div} layout>
         {/* Word Display */}
@@ -358,6 +359,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
       >
         <p>{t('flashcard.shortcuts')}</p>
       </motion.div>
-    </motion.div>
+      </motion.div>
+    </Container>
   );
 };

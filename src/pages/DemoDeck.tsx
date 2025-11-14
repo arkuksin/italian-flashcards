@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Container } from '../components/layout'
 
 interface DemoCardContent {
   term: string
@@ -54,7 +55,7 @@ export const DemoDeck: React.FC = () => {
       </div>
 
       <main className="relative z-10 py-12 sm:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container width="dashboard">
           <button
             type="button"
             onClick={handleBackToLanding}
@@ -70,7 +71,7 @@ export const DemoDeck: React.FC = () => {
               {t('demo.hero.kicker')}
             </span>
             <h1 className="mt-4 text-4xl font-bold leading-tight text-gray-900 dark:text-white">{t('demo.hero.heading')}</h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300 max-w-3xl">{t('demo.hero.body')}</p>
+            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">{t('demo.hero.body')}</p>
           </div>
 
           <section className="mt-12 grid gap-10 lg:grid-cols-[1.4fr,1fr]">
@@ -176,7 +177,7 @@ export const DemoDeck: React.FC = () => {
               </button>
             </div>
           </section>
-        </div>
+        </Container>
       </main>
     </div>
   )
