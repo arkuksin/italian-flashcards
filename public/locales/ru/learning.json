@@ -72,11 +72,14 @@
     "wordsLearned": "Слов выучено",
     "accuracy": "Точность",
     "streak": "Серия",
+    "correct": "Правильно",
+    "wrong": "Неправильно",
     "currentStreak": "Текущая серия",
-    "longestStreak": "Longest Streak",
+    "longestStreak": "Самая длинная серия",
     "masteryLevel": "Уровень мастерства",
     "totalWords": "Всего слов",
-    "completedWords": "Завершенных слов"
+    "completedWords": "Завершенных слов",
+    "wordsCompletedLabel": "Слов завершено"
   },
   "session": {
     "title": "Учебная сессия",

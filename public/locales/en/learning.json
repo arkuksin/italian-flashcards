@@ -72,11 +72,14 @@
     "wordsLearned": "Words Learned",
     "accuracy": "Accuracy",
     "streak": "Streak",
+    "correct": "Correct",
+    "wrong": "Wrong",
     "currentStreak": "Current Streak",
     "longestStreak": "Longest Streak",
     "masteryLevel": "Mastery Level",
     "totalWords": "Total Words",
-    "completedWords": "Completed Words"
+    "completedWords": "Completed Words",
+    "wordsCompletedLabel": "Words Completed"
   },
   "session": {
     "title": "Learning Session",

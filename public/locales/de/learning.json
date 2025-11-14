@@ -72,11 +72,14 @@
     "wordsLearned": "Gelernte Wörter",
     "accuracy": "Genauigkeit",
     "streak": "Serie",
+    "correct": "Richtig",
+    "wrong": "Falsch",
     "currentStreak": "Aktuelle Serie",
     "longestStreak": "Längste Serie",
     "masteryLevel": "Beherrschungsniveau",
     "totalWords": "Wörter insgesamt",
-    "completedWords": "Abgeschlossene Wörter"
+    "completedWords": "Abgeschlossene Wörter",
+    "wordsCompletedLabel": "Wörter abgeschlossen"
   },
   "session": {
     "title": "Lernsitzung",

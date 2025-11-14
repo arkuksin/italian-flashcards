@@ -72,11 +72,14 @@
     "wordsLearned": "Parole imparate",
     "accuracy": "Precisione",
     "streak": "Serie",
+    "correct": "Corrette",
+    "wrong": "Sbagliate",
     "currentStreak": "Serie attuale",
     "longestStreak": "Serie più lunga",
     "masteryLevel": "Livello di padronanza",
     "totalWords": "Parole totali",
-    "completedWords": "Parole completate"
+    "completedWords": "Parole completate",
+    "wordsCompletedLabel": "Parole completate"
   },
   "session": {
     "title": "Sessione di apprendimento",
