@@ -36,7 +36,14 @@
   },
   "labels": {
     "accentCheckOn": "Controllo accenti attivo",
-    "accentCheckOff": "Controllo accenti disattivo"
+    "accentCheckOff": "Controllo accenti disattivo",
+    "menu": "Menu",
+    "close": "Chiudi",
+    "on": "Attivo",
+    "off": "Disattivo",
+    "lightMode": "Tema chiaro",
+    "darkMode": "Tema scuro",
+    "language": "Lingua"
   },
   "tooltips": {
     "toggleDirection": "Cambia direzione di apprendimento (Ctrl+T)",

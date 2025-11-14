@@ -36,7 +36,14 @@
   },
   "labels": {
     "accentCheckOn": "Проверка акцентов включена",
-    "accentCheckOff": "Проверка акцентов выключена"
+    "accentCheckOff": "Проверка акцентов выключена",
+    "menu": "Меню",
+    "close": "Закрыть",
+    "on": "Включено",
+    "off": "Выключено",
+    "lightMode": "Светлая тема",
+    "darkMode": "Темная тема",
+    "language": "Язык"
   },
   "tooltips": {
     "toggleDirection": "Изменить направление обучения (Ctrl+T)",
