@@ -6,6 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { LoadingSpinner } from '../ui/LoadingSpinner'
 import { Mail, Lock, Eye, EyeOff, Github } from 'lucide-react'
 import { isValidProductionEmail } from '../../lib/emailValidator'
+import { Container } from '../layout'
 
 // ⚠️ WARNING: Email Bounce Prevention
 // This signup flow triggers email confirmations via Supabase.
@@ -106,7 +107,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`w-full ${variant === 'standalone' ? 'max-w-md' : ''}`}
+      className="w-full"
     >
       <div
         className={`rounded-2xl p-8 ${
@@ -286,8 +287,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
-      {card}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+      <Container width="content">
+        {card}
+      </Container>
     </div>
   )
 }
