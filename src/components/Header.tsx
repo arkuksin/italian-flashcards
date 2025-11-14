@@ -6,6 +6,7 @@ import { LearningDirection } from '../types';
 import { UserProfile } from './auth/UserProfile';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileDrawer } from './MobileDrawer';
+import { GAP, SPACING_PATTERNS } from '../constants/spacing';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -61,14 +62,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right side: Desktop actions and mobile hamburger */}
-        <div className="flex items-center gap-2">
+        <div className={`flex items-center ${GAP.xs}`}>
           {/* Desktop: All buttons visible (≥768px) */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className={`hidden md:flex items-center ${GAP.xs}`}>
             {/* Session controls group */}
             <div className="flex items-center gap-1 px-1 py-1 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
               <motion.button
                 onClick={onToggleDirection}
-                className="p-2 lg:px-3 lg:py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 title={t('tooltips.toggleDirection')}
@@ -79,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <motion.button
                 onClick={onToggleShuffle}
-                className={`p-2 lg:px-3 lg:py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                className={`p-3 lg:px-3 lg:py-3 rounded-lg transition-colors flex items-center ${SPACING_PATTERNS.iconText} ${
                   shuffleMode
                     ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-md'
                     : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -94,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <motion.button
                 onClick={onToggleAccent}
-                className={`p-2 lg:px-3 lg:py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                className={`p-3 lg:px-3 lg:py-3 rounded-lg transition-colors flex items-center ${SPACING_PATTERNS.iconText} ${
                   accentSensitive
                     ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-md'
                     : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -111,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <motion.button
                 onClick={onRestart}
-                className="p-2 lg:px-3 lg:py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
                 whileHover={{ scale: 1.05, rotate: 180 }}
                 whileTap={{ scale: 0.95 }}
                 title={t('tooltips.restartSession')}
@@ -126,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-1 px-1 py-1 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
               <motion.button
                 onClick={onToggleDarkMode}
-                className="p-2 lg:px-3 lg:py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 title={t('tooltips.toggleDarkMode')}
@@ -147,13 +148,13 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Mobile: Hamburger menu (<768px) */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className={`flex md:hidden items-center ${GAP.xs}`}>
             {/* Keep user profile visible on mobile */}
             <UserProfile />
 
             <motion.button
               onClick={() => setDrawerOpen(true)}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label={t('labels.menu')}

@@ -2,6 +2,7 @@ import { useGamification } from '../hooks/useGamification'
 import { useProgress } from '../hooks/useProgress'
 import { useMemo } from 'react'
 import { Card } from './ui/Card'
+import { MARGIN_BOTTOM } from '../constants/spacing'
 
 export const DailyGoalProgress = () => {
   const { dailyGoals, loading: gamificationLoading } = useGamification()
@@ -42,7 +43,7 @@ export const DailyGoalProgress = () => {
       size="default"
       data-testid="daily-goal-progress"
     >
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+      <h3 className={`text-lg font-semibold text-gray-900 dark:text-white ${MARGIN_BOTTOM.md} text-center`}>
         Daily Goal
       </h3>
 

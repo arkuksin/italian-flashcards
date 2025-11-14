@@ -4,6 +4,7 @@ import { X, Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight, Check, X as XIcon } f
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { VERTICAL_SPACING, GAP, MARGIN_BOTTOM } from '../constants/spacing';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -106,7 +107,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label={t('labels.close')}
               >
                 <X className="w-5 h-5" />
@@ -114,7 +115,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
             </div>
 
             {/* Menu Items */}
-            <div className="p-4 space-y-2">
+            <div className={`p-4 ${VERTICAL_SPACING.xs}`}>
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -124,7 +125,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       item.onClick();
                       // Don't close drawer immediately to allow seeing state change
                     }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-lg transition-colors ${
+                    className={`w-full flex items-center ${GAP.md} p-4 rounded-lg transition-colors ${
                       item.isActive
                         ? 'bg-blue-500 text-white hover:bg-blue-600'
                         : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -150,7 +151,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
               {/* Language Switcher */}
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 px-1">
+                <div className={`text-sm font-medium text-gray-700 dark:text-gray-300 ${MARGIN_BOTTOM.xs} px-1`}>
                   {t('labels.language')}
                 </div>
                 <LanguageSwitcher />

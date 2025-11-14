@@ -6,6 +6,8 @@ import { useAuth } from '../../contexts/AuthContext'
 import { LoadingSpinner } from '../ui/LoadingSpinner'
 import { Mail, Lock, Eye, EyeOff, Github } from 'lucide-react'
 import { isValidProductionEmail } from '../../lib/emailValidator'
+import { MARGIN_BOTTOM, VERTICAL_SPACING, GAP } from '../../constants/spacing'
+import { Container } from '../layout'
 
 // ⚠️ WARNING: Email Bounce Prevention
 // This signup flow triggers email confirmations via Supabase.
@@ -116,8 +118,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         }`}
       >
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <div className={`text-center ${MARGIN_BOTTOM.xl}`}>
+            <h1 className={`text-3xl font-bold text-gray-900 dark:text-white ${MARGIN_BOTTOM.xs}`}>
               {t('title')}
             </h1>
             <p className="text-gray-600 dark:text-gray-300" data-testid="auth-form-subtitle">
@@ -127,7 +129,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
           {/* Messages */}
           {message && (
-            <div className="mb-4 p-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-md">
+            <div className={`${MARGIN_BOTTOM.md} p-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-md`}>
               <p className="text-yellow-800 dark:text-yellow-200 text-sm">{message}</p>
             </div>
           )}
@@ -145,7 +147,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className={VERTICAL_SPACING.lg}>
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -224,7 +226,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className={`mt-6 grid grid-cols-2 ${GAP.sm}`}>
               <button
                 type="button"
                 onClick={() => handleSocialLogin('google')}
@@ -287,7 +289,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
-      {card}
+      <Container width="content">
+        {card}
+      </Container>
     </div>
   )
 }

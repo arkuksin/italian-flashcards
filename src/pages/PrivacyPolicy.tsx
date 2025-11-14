@@ -3,16 +3,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Container } from '../components/layout';
 
 export const PrivacyPolicy: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
-      >
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 py-12">
+      <Container width="content">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
         <div className="mb-8">
           <Link
             to="/"
@@ -119,7 +120,8 @@ export const PrivacyPolicy: React.FC = () => {
             </p>
           </section>
         </div>
-      </motion.div>
+        </motion.div>
+      </Container>
     </div>
   );
 };

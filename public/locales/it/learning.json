@@ -58,7 +58,21 @@
       "next": "Successivo",
       "progress": "{{current}} di {{total}}"
     },
-    "shortcuts": "Usa ← / → per navigare, Invio per inviare"
+    "shortcuts": "Usa ← / → per navigare, Invio per inviare",
+    "difficulty": {
+      "prompt": "Quanto bene lo conoscevi?",
+      "again": "Ancora",
+      "hard": "Difficile",
+      "good": "Bene",
+      "easy": "Facile",
+      "saved": "Valutazione salvata! Puoi passare alla prossima parola.",
+      "tooltip": {
+        "again": "Rivedi questa carta presto (stessa sessione)",
+        "hard": "Mostra di nuovo tra qualche minuto",
+        "good": "Mostra di nuovo tra ~1 giorno",
+        "easy": "Mostra di nuovo tra alcuni giorni"
+      }
+    }
   },
   "feedback": {
     "correct": "Corretto!",

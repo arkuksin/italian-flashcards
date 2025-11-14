@@ -1,6 +1,7 @@
 import React from 'react'
 import { TrendingUp } from 'lucide-react'
 import { LearningVelocityData } from '../services/analyticsService'
+import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
 
 interface LearningVelocityChartProps {
   data: LearningVelocityData[]
@@ -18,8 +19,8 @@ interface LearningVelocityChartProps {
 export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <div className="animate-pulse space-y-4">
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`}>
+        <div className={`animate-pulse ${VERTICAL_SPACING.md}`}>
           <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
           <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
@@ -54,8 +55,8 @@ export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ da
   const averageAccuracy = data.reduce((sum, d) => sum + d.accuracy, 0) / data.length
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="learning-velocity-chart">
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="learning-velocity-chart">
+      <div className={`flex items-center justify-between ${MARGIN_BOTTOM.lg}`}>
         <div className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -68,7 +69,7 @@ export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ da
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className={`grid grid-cols-3 ${GAP.md} ${MARGIN_BOTTOM.lg}`}>
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
           <div className="text-xs text-blue-600 dark:text-blue-400 mb-1">Total Reviewed</div>
           <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalReviewed}</div>
@@ -86,7 +87,7 @@ export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ da
       </div>
 
       {/* Legend */}
-      <div className="flex gap-4 mb-4 text-sm">
+      <div className={`flex ${GAP.md} ${MARGIN_BOTTOM.md} text-sm`}>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-blue-500 rounded"></div>
           <span className="text-gray-700 dark:text-gray-300">Words Reviewed</span>
@@ -98,7 +99,7 @@ export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ da
       </div>
 
       {/* Bar Chart */}
-      <div className="space-y-3">
+      <div className={VERTICAL_SPACING.sm}>
         {data.map((week) => (
           <div key={week.weekStart} className="group">
             <div className="flex items-center gap-2 mb-1">

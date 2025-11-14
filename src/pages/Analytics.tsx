@@ -6,6 +6,7 @@ import { UserProfile } from '../components/auth/UserProfile'
 import { LearningVelocityChart } from '../components/LearningVelocityChart'
 import { RetentionAnalysis } from '../components/RetentionAnalysis'
 import { ReviewHeatmap } from '../components/ReviewHeatmap'
+import { Container } from '../components/layout'
 import {
   analyticsService,
   LearningVelocityData,
@@ -80,7 +81,7 @@ export const Analytics: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow">
-        <div className="container mx-auto px-6 py-4">
+        <Container width="analytics" className="py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
@@ -99,11 +100,11 @@ export const Analytics: React.FC = () => {
             </div>
             <UserProfile />
           </div>
-        </div>
+        </Container>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
+      <Container width="analytics" className="py-8">
         {loading ? (
           <div className="grid lg:grid-cols-2 gap-6">
             {[1, 2, 3, 4].map(i => (
@@ -311,7 +312,7 @@ export const Analytics: React.FC = () => {
               )}
           </div>
         )}
-      </div>
+      </Container>
     </div>
   )
 }

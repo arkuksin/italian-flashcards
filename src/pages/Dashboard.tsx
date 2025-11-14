@@ -16,6 +16,7 @@ import { DailyStreakWidget } from '../components/DailyStreakWidget'
 import { XPProgressBar } from '../components/XPProgressBar'
 import { AchievementBadges } from '../components/AchievementBadges'
 import { DailyGoalProgress } from '../components/DailyGoalProgress'
+import { Container } from '../components/layout'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
@@ -631,13 +632,13 @@ export const Dashboard: React.FC = () => {
             <UserProfile />
           </div>
 
-          <div className="container mx-auto px-6">
+          <Container width="dashboard" className="py-2">
             {/* PRIMARY ACTION: Mode Selection + Category Filter - Enhanced Visual Weight */}
             <motion.section
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="max-w-5xl mx-auto mb-16 space-y-8"
+              className="mb-16 space-y-8"
             >
               {/* Enhanced Mode Selection with Glow Effect */}
               <div className="relative">
@@ -666,7 +667,7 @@ export const Dashboard: React.FC = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="max-w-5xl mx-auto mb-12"
+                className="mb-12"
               >
                 <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 shadow-lg dark:border-blue-800/40">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -698,7 +699,7 @@ export const Dashboard: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.3 }}
-              className="max-w-5xl mx-auto mb-6"
+              className="mb-6"
             >
               <QuickStats />
             </motion.div>
@@ -710,7 +711,7 @@ export const Dashboard: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.4 }}
-              className="max-w-5xl mx-auto mb-6"
+              className="mb-6"
             >
               <button
                 onClick={() => setShowStatistics(!showStatistics)}
@@ -759,7 +760,7 @@ export const Dashboard: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.5 }}
-              className="max-w-5xl mx-auto mb-6"
+              className="mb-6"
             >
               <button
                 onClick={() => setShowGamification(!showGamification)}
@@ -812,7 +813,7 @@ export const Dashboard: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.6 }}
-              className="max-w-5xl mx-auto mb-8"
+              className="mb-8"
             >
               <button
                 onClick={() => setShowLeitner(!showLeitner)}
@@ -850,7 +851,7 @@ export const Dashboard: React.FC = () => {
                 )}
               </AnimatePresence>
             </motion.div>
-          </div>
+          </Container>
         </div>
       ) : (
         <div className={`min-h-screen transition-colors duration-300 ${
@@ -878,7 +879,7 @@ export const Dashboard: React.FC = () => {
               onRestart={handleRestart}
             />
 
-            <div className="container mx-auto px-6 py-8" data-testid="flashcard-app">
+            <Container width="dashboard" className="py-8" data-testid="flashcard-app">
               {currentSession && (
                 <div className="mb-4 flex justify-center">
                   <span
@@ -929,7 +930,7 @@ export const Dashboard: React.FC = () => {
                   </AnimatePresence>
                 </div>
               </div>
-            </div>
+            </Container>
           </div>
         </div>
       )}

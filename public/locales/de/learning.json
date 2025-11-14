@@ -58,7 +58,21 @@
       "next": "Weiter",
       "progress": "{{current}} von {{total}}"
     },
-    "shortcuts": "Verwenden Sie ← / → zum Navigieren, Eingabe zum Absenden"
+    "shortcuts": "Verwenden Sie ← / → zum Navigieren, Eingabe zum Absenden",
+    "difficulty": {
+      "prompt": "Wie gut kannten Sie das?",
+      "again": "Nochmal",
+      "hard": "Schwer",
+      "good": "Gut",
+      "easy": "Leicht",
+      "saved": "Bewertung gespeichert! Sie können zum nächsten Wort übergehen.",
+      "tooltip": {
+        "again": "Diese Karte bald wiederholen (gleiche Sitzung)",
+        "hard": "In ein paar Minuten erneut anzeigen",
+        "good": "In ~1 Tag erneut anzeigen",
+        "easy": "In mehreren Tagen erneut anzeigen"
+      }
+    }
   },
   "feedback": {
     "correct": "Richtig!",
