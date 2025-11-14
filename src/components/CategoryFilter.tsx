@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 import { Card } from './ui/Card'
+import { ProgressRing } from './ui/ProgressRing'
 
 interface CategoryFilterProps {
   userId: string
@@ -28,6 +29,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [retryKey, setRetryKey] = useState(0)
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const hasNotifiedRef = useRef(false)
 
   useEffect(() => {
@@ -118,6 +120,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     return translated || categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)
   }
 
+  // Calculate mastery percentage for a category
+  const getMasteryPercentage = (category: CategoryInfo): number => {
+    if (category.total_words === 0) return 0
+    return (category.learned_words / category.total_words) * 100
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8" data-testid="category-filter">
@@ -205,52 +213,96 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       )}
 
       {/* Category Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-        {categories.map((category, index) => (
-          <Card
-            key={category.category}
-            variant="outlined"
-            size="compact"
-            as={motion.label}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.03 }}
-            className={`flex items-start gap-3 cursor-pointer transition-all duration-200 ${
-              selected.has(category.category)
-                ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
-                : 'hover:!border-gray-300 dark:hover:!border-gray-600'
-            }`}
-            data-testid={`category-option-${category.category}`}
-          >
-            <input
-              type="checkbox"
-              checked={selected.has(category.category)}
-              onChange={() => handleToggle(category.category)}
-              className="mt-1 w-5 h-5 text-blue-600 rounded"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
-                {getCategoryLabel(category.category)}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+        {categories.map((category, index) => {
+          const isExpanded = expandedCard === category.category
+          const isSelected = selected.has(category.category)
+          const masteryPercent = getMasteryPercentage(category)
+
+          return (
+            <Card
+              key={category.category}
+              variant="outlined"
+              size="compact"
+              as={motion.div}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.03 }}
+              whileHover={{ y: -2 }}
+              onMouseEnter={() => setExpandedCard(category.category)}
+              onMouseLeave={() => setExpandedCard(null)}
+              onTouchStart={() => setExpandedCard(category.category)}
+              className={`relative cursor-pointer transition-all duration-200 ${
+                isSelected
+                  ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
+                  : 'hover:!border-gray-300 dark:hover:!border-gray-600'
+              }`}
+              data-testid={`category-option-${category.category}`}
+              onClick={() => handleToggle(category.category)}
+            >
+              <div className="flex items-center gap-3">
+                {/* Progress Ring */}
+                <ProgressRing value={masteryPercent} size={44} strokeWidth={3} />
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                    {getCategoryLabel(category.category)}
+                  </h3>
+
+                  {/* Simple view - shown by default */}
+                  {!isExpanded && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {category.learned_words > 0
+                        ? `${Math.round(masteryPercent)}% ${t('filter.mastered', { defaultValue: 'mastered' })}`
+                        : `${category.total_words} ${t('filter.words', { defaultValue: 'words' })}`
+                      }
+                    </p>
+                  )}
+
+                  {/* Detailed view - shown on hover */}
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-gray-600 dark:text-gray-400 space-y-1 mt-1"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{t('filter.total', { defaultValue: 'Total' })}:</span>
+                        <span>{category.total_words} {t('filter.words', { defaultValue: 'words' })}</span>
+                      </div>
+                      {category.learned_words > 0 && (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{t('filter.learned', { defaultValue: 'Learned' })}:</span>
+                            <span>{category.learned_words} {t('filter.words', { defaultValue: 'words' })}</span>
+                          </div>
+                          {category.avg_accuracy !== null && category.avg_accuracy > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{t('filter.accuracy', { defaultValue: 'Accuracy' })}:</span>
+                              <span>{category.avg_accuracy.toFixed(0)}%</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Checkbox/Check indicator */}
+                <div className="flex-shrink-0">
+                  {isSelected ? (
+                    <Check className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  ) : (
+                    <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded" />
+                  )}
+                </div>
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                <div>{t('filter.wordsCount', { count: category.total_words })}</div>
-                {category.learned_words > 0 && (
-                  <div>
-                    {t('filter.learnedCount', { count: category.learned_words })}
-                    {category.avg_accuracy !== null && category.avg_accuracy > 0 && (
-                      <span className="ml-1">
-                        ({category.avg_accuracy.toFixed(0)}% {t('filter.accuracyLabel')})
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-            {selected.has(category.category) && (
-              <Check className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-            )}
-          </Card>
-        ))}
+            </Card>
+          )
+        })}
       </div>
 
       {/* Save Preferences Button */}
