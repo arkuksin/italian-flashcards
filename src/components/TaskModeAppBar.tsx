@@ -39,7 +39,7 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
             className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-blue-400 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-600 dark:bg-gray-900/80 dark:text-gray-200 dark:hover:border-blue-500"
             aria-label="Zur Auswahl"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">Zur Auswahl</span>
             <span className="sm:hidden">Zurück</span>
           </button>
@@ -85,13 +85,17 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
               className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-label="Analyse öffnen"
             >
-              <BarChart3 className="h-4 w-4" />
+              <BarChart3 className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
           {/* Desktop: Multiple detailed badges */}
           <div className={`hidden md:flex items-center ${GAP.sm}`}>
-            <div className={`flex items-center ${SPACING_PATTERNS.iconText} rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-200`}>
+            <div
+              className={`flex items-center ${SPACING_PATTERNS.iconText} rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-200`}
+              role="status"
+              aria-label={`${resolvedCount} von ${totalCount} abgeschlossen`}
+            >
               <span>{resolvedCount}</span>
               <span className="text-xs text-blue-500/70 dark:text-blue-200/70">von</span>
               <span>{totalCount}</span>
@@ -103,6 +107,8 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-500/10 dark:text-slate-200'
             }`}
               data-testid="progress-badge"
+              role="status"
+              aria-label={`${clampedPercent} Prozent erledigt`}
             >
               {clampedPercent}% erledigt
             </div>
@@ -131,14 +137,21 @@ export const TaskModeAppBar: React.FC<TaskModeAppBarProps> = ({
             className={`hidden md:inline-flex items-center justify-center ${SPACING_PATTERNS.iconText} rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`}
             aria-label="Analyse öffnen"
           >
-            <BarChart3 className="h-4 w-4" />
+            <BarChart3 className="h-4 w-4" aria-hidden="true" />
             <span>Analyse öffnen</span>
           </button>
         </div>
       </div>
 
       <div className="px-4 pb-2 md:pb-3">
-        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700" aria-hidden="true">
+        <div
+          className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+          role="progressbar"
+          aria-label="Overall progress"
+          aria-valuenow={clampedPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <div
             className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
             style={{ width: `${clampedPercent}%` }}

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { useProgress } from '../hooks/useProgress';
 import { Card } from './ui/Card';
+import { AriaLabel } from './ui/AriaLabel';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
 
 interface ModeSelectionProps {
@@ -26,7 +27,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
       {/* Hero Header */}
       <div className={`text-center ${MARGIN_BOTTOM.md} md:${MARGIN_BOTTOM.lg}`}>
-        <Globe className={`w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto ${MARGIN_BOTTOM.sm} md:${MARGIN_BOTTOM.md}`} />
+        <Globe className={`w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto ${MARGIN_BOTTOM.sm} md:${MARGIN_BOTTOM.md}`} aria-hidden="true" />
         <h2 className={`text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 ${MARGIN_BOTTOM.xs}`}>
           {t('modeSelection.title')}
         </h2>
@@ -44,13 +45,16 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           as={motion.button}
           data-testid="mode-ru-it"
           onClick={() => handleModeSelect('ru-it')}
+          aria-label={`${t('modeSelection.ruToIt.title')} - ${t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} - ${t('modeSelection.accuracy', { accuracy: stats.accuracy })}`}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">
-              <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇷🇺</span>
+              <AriaLabel label="Russian" className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>
+                🇷🇺
+              </AriaLabel>
               <div className="text-left">
                 <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
                   {t('modeSelection.ruToIt.title')}
@@ -60,7 +64,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
                 </div>
               </div>
             </div>
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" aria-hidden="true" />
           </div>
         </Card>
 
@@ -71,13 +75,16 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           as={motion.button}
           data-testid="mode-it-ru"
           onClick={() => handleModeSelect('it-ru')}
+          aria-label={`${t('modeSelection.itToRu.title')} - ${t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} - ${t('modeSelection.accuracy', { accuracy: stats.accuracy })}`}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">
-              <span className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🇮🇹</span>
+              <AriaLabel label="Italian" className="text-3xl md:text-5xl flex-shrink-0" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>
+                🇮🇹
+              </AriaLabel>
               <div className="text-left">
                 <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
                   {t('modeSelection.itToRu.title')}
@@ -87,7 +94,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
                 </div>
               </div>
             </div>
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" aria-hidden="true" />
           </div>
         </Card>
       </div>
