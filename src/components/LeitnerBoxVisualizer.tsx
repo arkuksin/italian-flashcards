@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useProgress } from '../hooks/useProgress'
 import { MasteryLevelBadge } from './MasteryLevelBadge'
+import { getMasteryBarColor } from '../constants/masteryColors'
 
 /**
  * LeitnerBoxVisualizer - Phase 2 Leitner System Component
@@ -84,15 +85,7 @@ export const LeitnerBoxVisualizer: React.FC = () => {
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
                         transition={{ duration: 0.6, delay: index * 0.1 }}
-                        className={`
-                          absolute inset-y-0 left-0 rounded-lg
-                          ${box.level === 5 ? 'bg-blue-500 dark:bg-blue-600' : ''}
-                          ${box.level === 4 ? 'bg-green-500 dark:bg-green-600' : ''}
-                          ${box.level === 3 ? 'bg-yellow-500 dark:bg-yellow-600' : ''}
-                          ${box.level === 2 ? 'bg-orange-500 dark:bg-orange-600' : ''}
-                          ${box.level === 1 ? 'bg-red-500 dark:bg-red-600' : ''}
-                          ${box.level === 0 ? 'bg-gray-500 dark:bg-gray-600' : ''}
-                        `}
+                        className={`absolute inset-y-0 left-0 rounded-lg ${getMasteryBarColor(box.level)}`}
                       />
                       <div className="relative h-full flex items-center justify-between px-4">
                         <span className="text-sm font-medium text-gray-900 dark:text-white z-10" data-testid={`level-${box.level}-count`}>
