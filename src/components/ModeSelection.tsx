@@ -7,16 +7,17 @@ import { useProgress } from '../hooks/useProgress';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
+  selectedCategories?: string[];
 }
 
-export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) => {
+export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, selectedCategories }) => {
   const { t } = useTranslation('dashboard');
   const { getStats } = useProgress();
 
   const stats = getStats();
 
   const handleModeSelect = (direction: LearningDirection) => {
-    onModeSelect(direction);
+    onModeSelect(direction, selectedCategories);
   };
 
   return (
