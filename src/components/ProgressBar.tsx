@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Target, Flame, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useProgress } from '../hooks/useProgress';
 
 interface ProgressBarProps {
@@ -12,6 +13,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   totalWords,
   currentIndex,
 }) => {
+  const { t } = useTranslation('learning');
+
   // Get database statistics for persistent progress tracking
   const { getStats } = useProgress();
   const dbStats = getStats();
@@ -36,7 +39,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-            Progress
+            {t('progress.title')}
           </span>
           <span className="text-sm font-medium text-gray-900 dark:text-white">
             {currentIndex + 1} / {totalWords}
@@ -65,7 +68,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               {correct}
             </span>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Correct</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('progress.correct')}</p>
         </motion.div>
 
         <motion.div
@@ -79,7 +82,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               {wrong}
             </span>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Wrong</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('progress.wrong')}</p>
         </motion.div>
 
         <motion.div
@@ -93,7 +96,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               {accuracy}%
             </span>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Accuracy</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('progress.accuracy')}</p>
         </motion.div>
 
         <motion.div
@@ -107,7 +110,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               {streak}
             </span>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Streak</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('progress.streak')}</p>
         </motion.div>
       </div>
 
@@ -125,7 +128,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           </span>
         </div>
         <p className="text-sm text-purple-600 dark:text-purple-400">
-          Words Completed: {completed} / {totalWords}
+          {t('progress.wordsCompletedLabel')}: {completed} / {totalWords}
         </p>
       </motion.div>
     </motion.div>
