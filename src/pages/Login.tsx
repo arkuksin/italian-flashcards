@@ -10,6 +10,7 @@ import {
   LandingFooter
 } from '../components/landing/LandingSections'
 import { CheckCircle2, Compass, Sparkles } from 'lucide-react'
+import { Container } from '../components/layout'
 
 const heroChecklistKeys = [
   'hero.checklist.ai',
@@ -79,7 +80,8 @@ export const Login: React.FC = () => {
       </div>
 
       <main className="relative z-10 space-y-20 pb-16">
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 lg:pt-20 flex flex-col gap-12 lg:gap-16 lg:flex-row items-stretch">
+        <Container width="analytics" className="pt-12 lg:pt-20">
+          <section className="flex flex-col gap-12 lg:gap-16 lg:flex-row items-stretch">
           <div className="flex-1 flex flex-col justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/60 dark:border-blue-500/40 bg-white/70 dark:bg-gray-900/70 px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 w-fit">
               <Sparkles className="w-4 h-4" aria-hidden="true" />
@@ -88,7 +90,7 @@ export const Login: React.FC = () => {
             <h1 className="mt-6 text-4xl sm:text-5xl font-bold leading-tight text-gray-900 dark:text-white">
               {t('hero.headline')}
             </h1>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl">
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
               {t('hero.subheadline')}
             </p>
             <ul className="mt-8 space-y-4" aria-label={t('hero.ariaBenefits')}>
@@ -140,7 +142,8 @@ export const Login: React.FC = () => {
               <LoginForm variant="embedded" initialMode={authMode} />
             </div>
           </div>
-        </section>
+          </section>
+        </Container>
 
         <FeatureHighlights />
         <LearningScienceSection />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { LoadingSpinner } from '../components/ui/LoadingSpinner'
+import { Container } from '../components/layout'
 
 /**
  * OAuth Callback Handler
@@ -60,10 +61,11 @@ export const Callback: React.FC = () => {
   }, [navigate])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
-      <div className="text-center">
-        {error ? (
-          <div className="max-w-md mx-auto">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+      <Container width="content">
+        <div className="text-center">
+          {error ? (
+            <div>
             <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg p-6">
               <h2 className="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
                 Authentication Error
@@ -82,7 +84,8 @@ export const Callback: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
+        </div>
+      </Container>
     </div>
   )
 }
