@@ -20,10 +20,10 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('@smoke should successfully authenticate and load the application', async ({ page }) => {
     // Verify we're authenticated and app loaded
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 5000 })
 
     // Verify mode selection is available (app is ready)
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
   })
 
   test('should verify database connection by checking auth state', async ({ page }) => {
@@ -35,15 +35,15 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
     // Should still be authenticated (session from database)
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 5000 })
   })
 
   test('should be able to interact with flashcards', async ({ page }) => {
     // Start learning session
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible()
+    await expect(page.getByTestId('mode-selection')).toBeVisible()
 
     // Select learning direction
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
@@ -63,7 +63,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // This test verifies the database tables needed by useProgress hook exist
     // by checking if we can access the application (which queries these tables)
 
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 5000 })
 
     // If we can see the app, it means:
     // 1. Authentication table works (we logged in)
@@ -71,7 +71,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     // 3. Database connection is established
 
     // Verify app is interactive
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
   })
 
   test('@smoke should verify session persistence across page reloads', async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     for (let i = 0; i < 2; i++) {
       await page.reload({ timeout: 15000 })
       await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
-      await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 5000 })
+      await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 5000 })
     }
 
     // Session persistence confirms database connection is working
@@ -90,7 +90,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('@smoke should track progress when answering flashcards correctly', async ({ page }) => {
     // Start learning session (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear (state change triggers re-render)
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -121,7 +121,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('should persist progress data across sessions', async ({ page }) => {
     // Start first session and answer a question (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -144,7 +144,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
     // Start learning again (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -160,7 +160,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('should calculate statistics correctly', async ({ page }) => {
     // Navigate to stats or progress view if available
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear (state change, not navigation)
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -208,7 +208,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('should handle mastery level progression', async ({ page }) => {
     // Start learning and answer the same word multiple times correctly (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -244,7 +244,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('should start and end learning sessions', async ({ page }) => {
     // Start a learning session (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -267,7 +267,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     if (await restartButton.isVisible()) {
       await restartButton.click()
       // Wait for mode selection to appear
-      await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 3000 })
+      await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 3000 })
     }
 
     // Session should be recorded in the database
@@ -276,7 +276,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
 
   test('should handle spaced repetition scheduling', async ({ page }) => {
     // This test verifies that words are scheduled according to spaced repetition (state change, not navigation)
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
 
     // Wait for flashcard view to appear
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 15000 })
@@ -305,7 +305,7 @@ test.describe('Progress Tracking - Hook Integration', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
 
     // Click mode selection button (this is a state change, NOT a navigation)
-    const learnButton = page.getByText('Learn Italian from Russian')
+    const learnButton = page.getByTestId('mode-ru-it')
     await expect(learnButton).toBeVisible({ timeout: 5000 })
     await page.waitForTimeout(500) // Let page stabilize after reload
     await learnButton.click()

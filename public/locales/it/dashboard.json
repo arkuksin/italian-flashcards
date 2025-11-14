@@ -20,6 +20,43 @@
     "totalAttempts": "Tentativi totali",
     "inProgress": "In corso"
   },
+  "modeSelection": {
+    "title": "Pronto per imparare?",
+    "subtitle": "Scegli la tua direzione di apprendimento",
+    "ruToIt": {
+      "title": "Russo → Italiano",
+      "words": "{{count}} parole"
+    },
+    "itToRu": {
+      "title": "Italiano → Russo",
+      "words": "{{count}} parole"
+    },
+    "accuracy": "{{accuracy}}% Precisione"
+  },
+  "quickStats": {
+    "learned": "Imparato",
+    "accuracy": "Precisione",
+    "streak": "Serie",
+    "level": "Livello"
+  },
+  "filter": {
+    "title": "Filtra categorie (opzionale)",
+    "selected": "{{count}} selezionate",
+    "all": "Tutte",
+    "none": "Nessuna",
+    "error": "Impossibile caricare le categorie. Riprova.",
+    "retry": "Riprova",
+    "loading": "Caricamento categorie...",
+    "suggestion": "Suggerimento",
+    "suggestionText": "\"{{category}}\" ha la precisione più bassa",
+    "selected_label": "✓ Selezionato",
+    "select": "+ Seleziona",
+    "wordsCount": "{{count}} parole",
+    "learnedCount": "{{count}} imparate",
+    "accuracyLabel": "Precisione",
+    "saving": "Salvataggio...",
+    "saveAsDefault": "Salva come predefinito"
+  },
   "categories": {
     "title": "Categorie",
     "food": "Cibo",
@@ -30,7 +67,9 @@
     "body": "Corpo",
     "travel": "Viaggi",
     "places": "Luoghi",
-    "meals": "Pasti"
+    "meals": "Pasti",
+    "business": "Business",
+    "daily": "Vita quotidiana"
   },
   "mastery": {
     "title": "Stato di padronanza",

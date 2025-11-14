@@ -40,18 +40,50 @@ const lintRules = [
       const issues: LintIssue[] = [];
       const lines = sql.split('\n');
 
-      lines.forEach((line, index) => {
-        const trimmed = line.trim().toUpperCase();
-        if (trimmed.startsWith('BEGIN') || trimmed.startsWith('COMMIT') || trimmed.startsWith('ROLLBACK')) {
-          // Allow if it's in a comment
-          if (!line.trim().startsWith('--')) {
-            issues.push({
-              severity: 'error',
-              line: index + 1,
-              message: `Found ${trimmed.split(/\s+/)[0]} statement - migrations are automatically wrapped in transactions`,
-              suggestion: 'Remove BEGIN, COMMIT, and ROLLBACK statements from your migration'
-            });
+      const dollarQuoteStack: string[] = [];
+
+      const isInsideDollarQuote = (): boolean => dollarQuoteStack.length > 0;
+
+      const updateDollarQuoteStack = (line: string): void => {
+        const matches = line.match(/\$[A-Za-z0-9_]*\$/g);
+        if (!matches) return;
+
+        for (const match of matches) {
+          const lastIndex = dollarQuoteStack.lastIndexOf(match);
+          if (lastIndex === -1) {
+            dollarQuoteStack.push(match);
+          } else {
+            dollarQuoteStack.splice(lastIndex, 1);
           }
+        }
+      };
+
+      lines.forEach((line, index) => {
+        updateDollarQuoteStack(line);
+
+        if (isInsideDollarQuote()) {
+          return;
+        }
+
+        const trimmedUpper = line.trim().toUpperCase();
+        if (line.trim().startsWith('--')) {
+          return;
+        }
+
+        if (
+          trimmedUpper.startsWith('BEGIN;') ||
+          trimmedUpper.startsWith('BEGIN TRANSACTION') ||
+          trimmedUpper === 'BEGIN' ||
+          trimmedUpper.startsWith('COMMIT') ||
+          trimmedUpper.startsWith('ROLLBACK')
+        ) {
+          const keyword = trimmedUpper.split(/\s+/)[0].replace(/;$/, '');
+          issues.push({
+            severity: 'error',
+            line: index + 1,
+            message: `Found ${keyword} statement - migrations are automatically wrapped in transactions`,
+            suggestion: 'Remove BEGIN, COMMIT, and ROLLBACK statements from your migration'
+          });
         }
       });
 

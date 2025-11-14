@@ -61,7 +61,7 @@ const login = async (page: Page) => {
 }
 
 const enterLearningMode = async (page: Page) => {
-  await page.getByText('Learn Italian from Russian').click()
+  await page.getByTestId('mode-ru-it').click()
   await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10_000 })
   await page.waitForTimeout(1_000)
 }

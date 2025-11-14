@@ -44,10 +44,10 @@ test.describe('Real Authentication Flow', () => {
 
     // Should successfully authenticate and show flashcard app
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
-    await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 10000 });
 
     // Should see mode selection
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('Learn Russian from Italian')).toBeVisible({ timeout: 10000 });
   });
 
@@ -78,7 +78,7 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
 
     // Start learning session
-    await page.getByText('Learn Italian from Russian').click();
+    await page.getByTestId('mode-ru-it').click();
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible();
 
     // Test flashcard functionality

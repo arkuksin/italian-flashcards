@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Tag, Check, AlertCircle, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 
@@ -18,6 +19,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectionChange,
   initialSelection = EMPTY_ARRAY
 }) => {
+  const { t } = useTranslation('dashboard')
   const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelection))
   const [suggestion, setSuggestion] = useState<string | null>(null)
@@ -105,24 +107,34 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     }
   }
 
+  // Helper function to translate category names
+  const getCategoryLabel = (categoryKey: string): string => {
+    // Try to get translation from dashboard.categories namespace
+    const translationKey = `categories.${categoryKey}`
+    const translated = t(translationKey, { defaultValue: '' })
+
+    // If no translation found, return the category key capitalized
+    return translated || categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8" data-testid="category-filter">
-        <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
-        <span className="ml-2 text-sm text-gray-500">Lade Kategorien...</span>
+        <Loader2 className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
+        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{t('filter.loading')}</span>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg" data-testid="category-filter">
-        <p className="text-sm text-red-800">{error}</p>
+      <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" data-testid="category-filter">
+        <p className="text-sm text-red-800 dark:text-red-200">{t('filter.error')}</p>
         <button
           onClick={handleRetry}
-          className="mt-2 text-xs text-red-600 hover:text-red-800 font-medium underline"
+          className="mt-2 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium underline"
         >
-          Erneut versuchen
+          {t('filter.retry')}
         </button>
       </div>
     )
@@ -140,10 +152,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         <div className="flex items-center gap-2">
           <Tag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 className="font-semibold text-gray-800 dark:text-gray-200">
-            Kategorien filtern (optional)
+            {t('filter.title')}
           </h3>
           <span className="text-xs text-gray-500 dark:text-gray-400">
-            ({selected.size} ausgewählt)
+            ({t('filter.selected', { count: selected.size })})
           </span>
         </div>
         <div className="flex gap-2">
@@ -152,14 +164,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
             data-testid="select-all-categories"
           >
-            Alle
+            {t('filter.all')}
           </button>
           <button
             onClick={handleSelectNone}
             className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
             data-testid="select-none-categories"
           >
-            Keine
+            {t('filter.none')}
           </button>
         </div>
       </div>
@@ -175,16 +187,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           <div className="flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1 text-sm">
-              <span className="font-medium text-gray-800 dark:text-gray-200">Empfehlung: </span>
+              <span className="font-medium text-gray-800 dark:text-gray-200">{t('filter.suggestion')}: </span>
               <span className="text-gray-700 dark:text-gray-300">
-                "{suggestion}" hat niedrigste Accuracy
+                {t('filter.suggestionText', { category: getCategoryLabel(suggestion) })}
               </span>
               <button
                 onClick={() => handleToggle(suggestion)}
                 className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                 data-testid="toggle-suggested-category"
               >
-                {selected.has(suggestion) ? '✓ Ausgewählt' : '+ Auswählen'}
+                {selected.has(suggestion) ? t('filter.selected_label') : t('filter.select')}
               </button>
             </div>
           </div>
@@ -214,16 +226,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             />
             <div className="flex-1 min-w-0">
               <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
-                {category.category}
+                {getCategoryLabel(category.category)}
               </div>
               <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                <div>{category.total_words} Wörter</div>
+                <div>{t('filter.wordsCount', { count: category.total_words })}</div>
                 {category.learned_words > 0 && (
                   <div>
-                    {category.learned_words} gelernt
+                    {t('filter.learnedCount', { count: category.learned_words })}
                     {category.avg_accuracy !== null && category.avg_accuracy > 0 && (
                       <span className="ml-1">
-                        ({category.avg_accuracy.toFixed(0)}% Accuracy)
+                        ({category.avg_accuracy.toFixed(0)}% {t('filter.accuracyLabel')})
                       </span>
                     )}
                   </div>
@@ -247,10 +259,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         {saving ? (
           <>
             <Loader2 className="w-3 h-3 animate-spin" />
-            Speichere...
+            {t('filter.saving')}
           </>
         ) : (
-          'Als Standard speichern'
+          t('filter.saveAsDefault')
         )}
       </button>
     </motion.div>

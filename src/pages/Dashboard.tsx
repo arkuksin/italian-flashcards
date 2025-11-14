@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BarChart3 } from 'lucide-react'
 import { ModeSelection } from '../components/ModeSelection'
+import { CategoryFilter } from '../components/CategoryFilter'
+import { QuickStats } from '../components/QuickStats'
 import { Header } from '../components/Header'
 import { FlashCard } from '../components/FlashCard'
 import { ProgressBar } from '../components/ProgressBar'
@@ -627,6 +629,17 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <div className="container mx-auto px-6">
+            {/* Mode Selection + Category Filter - Above the Fold */}
+            <section className="max-w-4xl mx-auto mb-8 space-y-6">
+              <ModeSelection onModeSelect={handleModeSelect} />
+
+              {user && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                  <CategoryFilter userId={user.id} onSelectionChange={setSelectedCategories} />
+                </div>
+              )}
+            </section>
+
             {session && session.status === 'suspended' && (
               <div className="max-w-4xl mx-auto mb-8">
                 <div className="rounded-3xl border border-blue-100 bg-white/90 p-6 shadow-xl dark:border-blue-900/40 dark:bg-gray-800/80">
@@ -653,7 +666,13 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
             )}
-            {/* User Stats Section */}
+
+            {/* Quick Stats - Compact Overview */}
+            <div className="max-w-4xl mx-auto mb-8">
+              <QuickStats />
+            </div>
+
+            {/* Welcome Message and Detailed Stats */}
             <div className="max-w-4xl mx-auto mb-8">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
@@ -679,9 +698,6 @@ export const Dashboard: React.FC = () => {
             <div className="max-w-4xl mx-auto mb-8">
               <LeitnerBoxVisualizer />
             </div>
-
-            {/* Mode Selection */}
-            <ModeSelection onModeSelect={handleModeSelect} />
           </div>
         </div>
       ) : (

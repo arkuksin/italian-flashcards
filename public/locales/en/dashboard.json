@@ -20,6 +20,43 @@
     "totalAttempts": "Total Attempts",
     "inProgress": "In Progress"
   },
+  "modeSelection": {
+    "title": "Ready to Learn?",
+    "subtitle": "Choose your learning direction",
+    "ruToIt": {
+      "title": "Russian → Italian",
+      "words": "{{count}} words"
+    },
+    "itToRu": {
+      "title": "Italian → Russian",
+      "words": "{{count}} words"
+    },
+    "accuracy": "{{accuracy}}% Accuracy"
+  },
+  "quickStats": {
+    "learned": "Learned",
+    "accuracy": "Accuracy",
+    "streak": "Streak",
+    "level": "Level"
+  },
+  "filter": {
+    "title": "Filter categories (optional)",
+    "selected": "{{count}} selected",
+    "all": "All",
+    "none": "None",
+    "error": "Failed to load categories. Please try again.",
+    "retry": "Retry",
+    "loading": "Loading categories...",
+    "suggestion": "Suggestion",
+    "suggestionText": "\"{{category}}\" has lowest accuracy",
+    "selected_label": "✓ Selected",
+    "select": "+ Select",
+    "wordsCount": "{{count}} words",
+    "learnedCount": "{{count}} learned",
+    "accuracyLabel": "Accuracy",
+    "saving": "Saving...",
+    "saveAsDefault": "Save as default"
+  },
   "categories": {
     "title": "Categories",
     "food": "Food",
@@ -30,7 +67,9 @@
     "body": "Body",
     "travel": "Travel",
     "places": "Places",
-    "meals": "Meals"
+    "meals": "Meals",
+    "business": "Business",
+    "daily": "Daily Life"
   },
   "mastery": {
     "title": "Mastery Status",

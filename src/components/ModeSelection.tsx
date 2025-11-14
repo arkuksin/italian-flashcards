@@ -1,182 +1,87 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { Globe, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
-import { CategoryFilter } from './CategoryFilter';
-import { useAuth } from '../contexts/AuthContext';
+import { useProgress } from '../hooks/useProgress';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
 }
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect }) => {
-  const { t } = useTranslation('learning');
-  const { user } = useAuth();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+  const { t } = useTranslation('dashboard');
+  const { getStats } = useProgress();
+
+  const stats = getStats();
 
   const handleModeSelect = (direction: LearningDirection) => {
-    onModeSelect(direction, selectedCategories.length > 0 ? selectedCategories : undefined);
-  };
-
-  const handleCategoryChange = (categories: string[]) => {
-    setSelectedCategories(categories);
+    onModeSelect(direction);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl w-full text-center space-y-12"
-      >
-        {/* Header */}
-        <div className="space-y-4">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="w-24 h-24 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center"
-          >
-            <BookOpen className="w-12 h-12 text-white" />
-          </motion.div>
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
+      {/* Hero Header */}
+      <div className="text-center mb-4 md:mb-6">
+        <Globe className="w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto mb-3 md:mb-4" />
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+          {t('modeSelection.title')}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
+          {t('modeSelection.subtitle')}
+        </p>
+      </div>
 
-          <motion.h1
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
-          >
-            {t('modeSelection.title')}
-          </motion.h1>
-
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-lg text-gray-600 dark:text-gray-400"
-          >
-            {t('modeSelection.subtitle')}
-          </motion.p>
-        </div>
-
-        {/* Mode Selection */}
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="space-y-6"
+      {/* Large Mode Selection Buttons */}
+      <div className="space-y-3 md:space-y-4 max-w-2xl mx-auto">
+        {/* Russian → Italian */}
+        <motion.button
+          data-testid="mode-ru-it"
+          onClick={() => handleModeSelect('ru-it')}
+          className="w-full p-4 md:p-6 bg-white dark:bg-gray-800 border-2 md:border-3 border-blue-300 dark:border-blue-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all group"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-8">
-            {t('modeSelection.chooseDirection')}
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <motion.button
-              data-testid="mode-ru-it"
-              onClick={() => handleModeSelect('ru-it')}
-              className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="space-y-4">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                  Русский
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 md:gap-4">
+              <span className="text-3xl md:text-5xl">🇷🇺</span>
+              <div className="text-left">
+                <div className="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {t('modeSelection.ruToIt.title')}
                 </div>
-                <ArrowRight className="w-6 h-6 text-gray-400 group-hover:text-blue-500 mx-auto transition-colors" />
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                  Italiano
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                  {t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('modeSelection.modes.ruToIt.description')}
-                </p>
               </div>
-            </motion.button>
-
-            <motion.button
-              data-testid="mode-it-ru"
-              onClick={() => handleModeSelect('it-ru')}
-              className="group relative p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-500"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="space-y-4">
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                  Italiano
-                </div>
-                <ArrowRight className="w-6 h-6 text-gray-400 group-hover:text-purple-500 mx-auto transition-colors" />
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                  Русский
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('modeSelection.modes.itToRu.description')}
-                </p>
-              </div>
-            </motion.button>
+            </div>
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </div>
-        </motion.div>
+        </motion.button>
 
-        {/* Category Filter Section */}
-        {user && (
-          <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6"
-          >
-            <button
-              onClick={() => setShowCategoryFilter(!showCategoryFilter)}
-              className="w-full flex items-center justify-between mb-4 text-left"
-              data-testid="toggle-category-filter"
-            >
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                🏷️ Kategorien filtern (optional)
-              </h3>
-              <span className="text-2xl text-gray-500 dark:text-gray-400">
-                {showCategoryFilter ? '▼' : '▶'}
-              </span>
-            </button>
-
-            {showCategoryFilter && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <CategoryFilter
-                  userId={user.id}
-                  onSelectionChange={handleCategoryChange}
-                />
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-
-        {/* Features */}
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center"
+        {/* Italian → Russian */}
+        <motion.button
+          data-testid="mode-it-ru"
+          onClick={() => handleModeSelect('it-ru')}
+          className="w-full p-4 md:p-6 bg-white dark:bg-gray-800 border-2 md:border-3 border-blue-300 dark:border-blue-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all group"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <div className="space-y-2">
-            <div className="text-2xl">⌨️</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.keyboard.title')}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.keyboard.description')}</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 md:gap-4">
+              <span className="text-3xl md:text-5xl">🇮🇹</span>
+              <div className="text-left">
+                <div className="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {t('modeSelection.itToRu.title')}
+                </div>
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                  {t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
+                </div>
+              </div>
+            </div>
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </div>
-          <div className="space-y-2">
-            <div className="text-2xl">📊</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.progress.title')}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.progress.description')}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl">🎨</div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{t('modeSelection.features.design.title')}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{t('modeSelection.features.design.description')}</p>
-          </div>
-        </motion.div>
-      </motion.div>
+        </motion.button>
+      </div>
     </div>
   );
 };

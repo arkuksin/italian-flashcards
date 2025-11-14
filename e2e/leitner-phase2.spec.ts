@@ -27,7 +27,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
 
   test('@smoke should display LeitnerBoxVisualizer on Dashboard', async ({ page }) => {
     // Verify user is on the mode selection/dashboard view
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     // Check if Leitner Box System section is visible
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
@@ -40,7 +40,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should show correct box structure (levels 0-5)', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -53,7 +53,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should display mastery level badges for each box', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -69,7 +69,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should display correct review intervals for each level', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -92,7 +92,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should show word counts for each level', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -109,7 +109,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should display percentages for each level', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -126,7 +126,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should display total words studied statistic', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -143,7 +143,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
 
   test('should show empty state when no progress exists', async ({ page }) => {
     // This test assumes we might have a fresh user with no progress
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -169,14 +169,14 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
 
   test('should update word distribution after answering flashcards', async ({ page }) => {
     // Navigate to mode selection
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     // Record initial total words count
     const totalWordsCount = page.locator('[data-testid="total-words-count"]')
     await totalWordsCount.textContent().catch(() => '0')
 
     // Start a learning session
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Answer a flashcard
@@ -189,7 +189,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     const restartButton = page.locator('[data-testid="restart-button"]')
     if (await restartButton.isVisible()) {
       await restartButton.click()
-      await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 3000 })
+      await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 3000 })
     }
 
     // Check if the distribution updated
@@ -200,7 +200,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   })
 
   test('should calculate word distribution percentages correctly', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -244,7 +244,7 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
 
     await page.goto('/', { timeout: 20000 })
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     // Leitner visualizer should still be visible on mobile
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
@@ -274,7 +274,7 @@ test.describe('Leitner System - Phase 2: MasteryLevelBadge', () => {
   })
 
   test('should display mastery level badges with correct labels', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -304,7 +304,7 @@ test.describe('Leitner System - Phase 2: MasteryLevelBadge', () => {
 
   test('should display mastery level badge on flashcard if word has progress', async ({ page }) => {
     // Start learning session
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Check if any mastery level badges are displayed
@@ -330,20 +330,20 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
   })
 
   test('should integrate with Dashboard layout', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     // Verify visualizer is part of dashboard
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible({ timeout: 5000 })
 
     // Mode selection should also be visible
-    const modeSelection = page.getByText('Learn Italian from Russian')
+    const modeSelection = page.getByTestId('mode-ru-it')
     await expect(modeSelection).toBeVisible()
   })
 
   test('should reflect progress accurately after multiple answers', async ({ page }) => {
     // Get initial state
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible()
@@ -352,7 +352,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
     await totalWordsCount.textContent().catch(() => '0')
 
     // Answer multiple flashcards
-    await page.getByText('Learn Italian from Russian').click()
+    await page.getByTestId('mode-ru-it').click()
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 8000 })
 
     // Answer 3 flashcards
@@ -375,7 +375,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
     const restartButton = page.locator('[data-testid="restart-button"]')
     if (await restartButton.isVisible()) {
       await restartButton.click()
-      await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 3000 })
+      await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 3000 })
     }
 
     // Check updated distribution
@@ -391,7 +391,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
   })
 
   test('should handle dark mode correctly', async ({ page }) => {
-    await expect(page.getByText('Learn Italian from Russian')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
     await expect(visualizer).toBeVisible({ timeout: 5000 })
