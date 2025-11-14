@@ -241,14 +241,23 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               onClick={() => handleToggle(category.category)}
             >
               <div className="flex items-center gap-3">
+                {/* Hidden checkbox for accessibility and test compatibility */}
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => handleToggle(category.category)}
+                  className="sr-only"
+                  aria-label={`Select ${getCategoryLabel(category.category)}`}
+                />
+
                 {/* Progress Ring */}
                 <ProgressRing value={masteryPercent} size={44} strokeWidth={3} />
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                  <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
                     {getCategoryLabel(category.category)}
-                  </h3>
+                  </div>
 
                   {/* Simple view - shown by default */}
                   {!isExpanded && (
@@ -291,7 +300,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   )}
                 </div>
 
-                {/* Checkbox/Check indicator */}
+                {/* Visual checkbox indicator */}
                 <div className="flex-shrink-0">
                   {isSelected ? (
                     <Check className="w-5 h-5 text-blue-600 dark:text-blue-400" />
