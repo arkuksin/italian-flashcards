@@ -11,7 +11,7 @@ import React from 'react'
  */
 export type ContainerWidth = 'content' | 'dashboard' | 'analytics' | 'wide'
 
-export interface ContainerProps {
+export interface ContainerProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Width variant to use
    * @default 'dashboard'
@@ -59,6 +59,7 @@ export const Container: React.FC<ContainerProps> = ({
   children,
   className = '',
   as: Component = 'div',
+  ...props
 }) => {
   const widthClasses: Record<ContainerWidth, string> = {
     content: 'max-w-4xl',
@@ -68,7 +69,7 @@ export const Container: React.FC<ContainerProps> = ({
   }
 
   return (
-    <Component className={`${widthClasses[width]} mx-auto px-4 ${className}`}>
+    <Component className={`${widthClasses[width]} mx-auto px-4 ${className}`} {...props}>
       {children}
     </Component>
   )

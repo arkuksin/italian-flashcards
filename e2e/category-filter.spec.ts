@@ -106,6 +106,7 @@ test.describe('Category Filter Feature', () => {
 
     // Click "Alle" button
     await page.locator('[data-testid="select-all-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // All checkboxes should be checked
     const checkboxes = page.locator('[data-testid^="category-option-"] input[type="checkbox"]')
@@ -122,9 +123,11 @@ test.describe('Category Filter Feature', () => {
 
     // First select all
     await page.locator('[data-testid="select-all-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // Then click "Keine"
     await page.locator('[data-testid="select-none-categories"]').click()
+    await page.waitForTimeout(300) // Wait for state update
 
     // All checkboxes should be unchecked
     const checkboxes = page.locator('[data-testid^="category-option-"] input[type="checkbox"]')
