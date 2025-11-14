@@ -7,6 +7,8 @@ import { UserProfile } from './auth/UserProfile';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileDrawer } from './MobileDrawer';
 import { GAP, SPACING_PATTERNS } from '../constants/spacing';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { ANIMATION_DURATIONS } from '../constants/animations';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -32,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   onRestart,
 }) => {
   const { t } = useTranslation('common');
+  const prefersReducedMotion = useReducedMotion();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
   const accentLabel = accentSensitive ? t('labels.accentCheckOn') : t('labels.accentCheckOff');
@@ -39,26 +42,24 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={prefersReducedMotion ? {} : { opacity: 0 }}
+        animate={prefersReducedMotion ? {} : { opacity: 1 }}
+        transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
         className="flex justify-between items-center p-4 md:p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 relative z-50"
       >
         {/* Left side: Logo and direction indicator */}
         <div className="flex items-center space-x-2 md:space-x-4">
-          <motion.h1
+          <h1
             className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
           >
             {t('app.shortTitle')}
-          </motion.h1>
-          <motion.div
+          </h1>
+          <div
             className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-xs md:text-sm font-medium"
-            whileHover={{ scale: 1.05 }}
           >
             <ArrowLeftRight className="w-3 h-3 md:w-4 md:h-4" />
             <span>{directionText}</span>
-          </motion.div>
+          </div>
         </div>
 
         {/* Right side: Desktop actions and mobile hamburger */}
@@ -70,8 +71,8 @@ export const Header: React.FC<HeaderProps> = ({
               <motion.button
                 onClick={onToggleDirection}
                 className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 title={t('tooltips.toggleDirection')}
               >
                 <ArrowLeftRight className="w-5 h-5" />
@@ -85,8 +86,8 @@ export const Header: React.FC<HeaderProps> = ({
                     ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-md'
                     : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 title={t('tooltips.toggleShuffle')}
               >
                 <Shuffle className="w-5 h-5" />
@@ -100,8 +101,8 @@ export const Header: React.FC<HeaderProps> = ({
                     ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-md'
                     : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 title={`${t('tooltips.toggleAccentCheck')} - ${accentLabel}`}
                 aria-pressed={accentSensitive}
                 aria-label={`${t('tooltips.toggleAccentCheck')} - ${accentLabel}`}
@@ -113,8 +114,8 @@ export const Header: React.FC<HeaderProps> = ({
               <motion.button
                 onClick={onRestart}
                 className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
-                whileHover={{ scale: 1.05, rotate: 180 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 title={t('tooltips.restartSession')}
                 data-testid="restart-button"
               >
@@ -128,8 +129,8 @@ export const Header: React.FC<HeaderProps> = ({
               <motion.button
                 onClick={onToggleDarkMode}
                 className={`p-3 lg:px-3 lg:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center ${SPACING_PATTERNS.iconText}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 title={t('tooltips.toggleDarkMode')}
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -155,8 +156,8 @@ export const Header: React.FC<HeaderProps> = ({
             <motion.button
               onClick={() => setDrawerOpen(true)}
               className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+              transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
               aria-label={t('labels.menu')}
             >
               <Menu className="w-6 h-6" />

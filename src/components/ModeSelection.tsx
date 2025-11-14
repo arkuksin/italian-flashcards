@@ -6,6 +6,8 @@ import { LearningDirection } from '../types';
 import { useProgress } from '../hooks/useProgress';
 import { Card } from './ui/Card';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { ANIMATION_DURATIONS } from '../constants/animations';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
@@ -14,6 +16,7 @@ interface ModeSelectionProps {
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, selectedCategories }) => {
   const { t } = useTranslation('dashboard');
+  const prefersReducedMotion = useReducedMotion();
   const { getStats } = useProgress();
 
   const stats = getStats();
@@ -45,8 +48,8 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           data-testid="mode-ru-it"
           onClick={() => handleModeSelect('ru-it')}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+          transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">
@@ -72,8 +75,8 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           data-testid="mode-it-ru"
           onClick={() => handleModeSelect('it-ru')}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+          transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">

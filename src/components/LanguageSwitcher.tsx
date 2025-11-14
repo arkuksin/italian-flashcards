@@ -4,6 +4,8 @@ import { Globe, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supportedLanguages, SupportedLanguage } from '../lib/i18n';
 import { useLanguagePreference } from '../hooks/useLanguagePreference';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { ANIMATION_DURATIONS } from '../constants/animations';
 
 interface LanguageSwitcherProps {
   compact?: boolean;
@@ -11,6 +13,7 @@ interface LanguageSwitcherProps {
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = false }) => {
   const { i18n } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const currentLanguage = i18n.language as SupportedLanguage;
   const { saveLanguagePreference } = useLanguagePreference();
@@ -34,8 +37,8 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
+          transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
           title="Change language"
         >
           <Globe className="w-5 h-5" />
@@ -52,10 +55,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
 
               {/* Dropdown */}
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                exit={prefersReducedMotion ? {} : { opacity: 0 }}
+                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
               >
                 {supportedLanguages.map((lang) => (
@@ -98,8 +101,8 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+        transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
       >
         <Globe className="w-5 h-5" />
         <span className="font-medium">{currentLangName}</span>
@@ -116,10 +119,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
 
             {/* Dropdown */}
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+              exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+              transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
               className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
             >
               <div className="p-2 border-b border-gray-200 dark:border-gray-700">
@@ -130,10 +133,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
 
               <div className="p-2">
                 {supportedLanguages.map((lang) => (
-                  <motion.button
+                  <button
                     key={lang.code}
                     onClick={() => handleLanguageChange(lang.code)}
-                    whileHover={{ x: 4 }}
                     className={`w-full px-4 py-3 flex items-center justify-between rounded-lg transition-colors ${
                       currentLanguage === lang.code
                         ? 'bg-blue-50 dark:bg-blue-900/30'
@@ -152,15 +154,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ compact = fa
                       </div>
                     </div>
                     {currentLanguage === lang.code && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      >
-                        <Check className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                      </motion.div>
+                      <Check className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     )}
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             </motion.div>
