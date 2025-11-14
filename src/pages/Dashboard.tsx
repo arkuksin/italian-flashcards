@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BarChart3 } from 'lucide-react'
+import { BarChart3, ChevronDown, ChevronUp } from 'lucide-react'
 import { ModeSelection } from '../components/ModeSelection'
 import { CategoryFilter } from '../components/CategoryFilter'
 import { QuickStats } from '../components/QuickStats'
@@ -74,6 +74,9 @@ export const Dashboard: React.FC = () => {
   const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(session?.difficultyRating)
   const [sessionId, setSessionId] = useState<string | null>(session?.id ?? null)
   const [isSaving, setIsSaving] = useState(false)
+  const [showStatistics, setShowStatistics] = useState(false)
+  const [showGamification, setShowGamification] = useState(false)
+  const [showLeitner, setShowLeitner] = useState(false)
   const ensureSessionId = useCallback(() => {
     if (sessionId) return sessionId
     const generatedId =
@@ -619,36 +622,59 @@ export const Dashboard: React.FC = () => {
           <div className="flex justify-between items-center p-6">
             <button
               onClick={() => navigate('/analytics')}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg shadow-md transition-colors"
+              className="flex items-center gap-2 px-3 py-2 bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 rounded-lg shadow-sm transition-all text-sm"
               data-testid="analytics-button"
             >
-              <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <span className="font-medium text-gray-900 dark:text-white">Analytics</span>
+              <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span className="font-medium text-gray-700 dark:text-gray-200">Analytics</span>
             </button>
             <UserProfile />
           </div>
 
           <div className="container mx-auto px-6">
-            {/* Mode Selection + Category Filter - Above the Fold */}
-            <section className="max-w-4xl mx-auto mb-8 space-y-6">
-              <ModeSelection onModeSelect={handleModeSelect} selectedCategories={selectedCategories} />
-
-              {user && (
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                  <CategoryFilter userId={user.id} onSelectionChange={setSelectedCategories} />
+            {/* PRIMARY ACTION: Mode Selection + Category Filter - Enhanced Visual Weight */}
+            <motion.section
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="max-w-5xl mx-auto mb-16 space-y-8"
+            >
+              {/* Enhanced Mode Selection with Glow Effect */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl blur-xl opacity-20 dark:opacity-30"></div>
+                <div className="relative">
+                  <ModeSelection onModeSelect={handleModeSelect} selectedCategories={selectedCategories} />
                 </div>
-              )}
-            </section>
+              </div>
 
+              {/* Category Filter with Reduced Visual Weight */}
+              {user && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  className="bg-white/70 dark:bg-gray-800/70 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5"
+                >
+                  <CategoryFilter userId={user.id} onSelectionChange={setSelectedCategories} />
+                </motion.div>
+              )}
+            </motion.section>
+
+            {/* Resume Session Card */}
             {session && session.status === 'suspended' && (
-              <div className="max-w-4xl mx-auto mb-8">
-                <div className="rounded-3xl border border-blue-100 bg-white/90 p-6 shadow-xl dark:border-blue-900/40 dark:bg-gray-800/80">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="max-w-5xl mx-auto mb-12"
+              >
+                <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 shadow-lg dark:border-blue-800/40">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">
                         Unvollendete Aufgabe
                       </p>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Setze deine Aufgabe fort</h2>
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">Setze deine Aufgabe fort</h2>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         Fortschritt:{' '}
                         {Math.min(session.state.currentWordIndex + (session.state.showAnswer ? 1 : 0), session.words.length)}
@@ -658,46 +684,172 @@ export const Dashboard: React.FC = () => {
                     </div>
                     <button
                       onClick={resumeSession}
-                      className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2.5 font-semibold text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                      className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-semibold text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       Fortsetzen
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            {/* Quick Stats - Compact Overview */}
-            <div className="max-w-4xl mx-auto mb-8">
+            {/* Quick Stats - Reduced Visual Weight */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="max-w-5xl mx-auto mb-6"
+            >
               <QuickStats />
-            </div>
+            </motion.div>
 
-            {/* Welcome Message and Detailed Stats */}
-            <div className="max-w-4xl mx-auto mb-8">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  {t('welcome', { name: user?.email?.split('@')[0] || '' })}
-                </h1>
-                <Statistics />
-              </div>
-            </div>
+            {/* SECONDARY CONTENT: Collapsible Sections with Clear Headers */}
 
-            {/* Phase 5: Gamification Section */}
-            <div className="max-w-4xl mx-auto mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <DailyStreakWidget />
-                <XPProgressBar />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DailyGoalProgress />
-                <AchievementBadges maxDisplay={3} />
-              </div>
-            </div>
+            {/* Detailed Statistics Section */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="max-w-5xl mx-auto mb-6"
+            >
+              <button
+                onClick={() => setShowStatistics(!showStatistics)}
+                className="w-full flex items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 rounded-lg border border-gray-200/50 dark:border-gray-700/50 transition-all mb-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
+                  <div className="text-left">
+                    <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                      Detaillierte Statistiken
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Lernfortschritt und Leistungsanalyse
+                    </p>
+                  </div>
+                </div>
+                {showStatistics ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
 
-            {/* Phase 2: Leitner Box Visualizer */}
-            <div className="max-w-4xl mx-auto mb-8">
-              <LeitnerBoxVisualizer />
-            </div>
+              <AnimatePresence>
+                {showStatistics && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg border border-gray-100 dark:border-gray-700/50 p-5">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        {t('welcome', { name: user?.email?.split('@')[0] || '' })}
+                      </h3>
+                      <Statistics />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Gamification Section */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              className="max-w-5xl mx-auto mb-6"
+            >
+              <button
+                onClick={() => setShowGamification(!showGamification)}
+                className="w-full flex items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 rounded-lg border border-gray-200/50 dark:border-gray-700/50 transition-all mb-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-6 bg-gradient-to-b from-amber-500 to-orange-500 rounded-full"></div>
+                  <div className="text-left">
+                    <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                      Erfolge & Fortschritt
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Streaks, XP, Ziele und Auszeichnungen
+                    </p>
+                  </div>
+                </div>
+                {showGamification ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showGamification && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <DailyStreakWidget />
+                        <XPProgressBar />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <DailyGoalProgress />
+                        <AchievementBadges maxDisplay={3} />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Leitner Box Visualizer Section */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="max-w-5xl mx-auto mb-8"
+            >
+              <button
+                onClick={() => setShowLeitner(!showLeitner)}
+                className="w-full flex items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 rounded-lg border border-gray-200/50 dark:border-gray-700/50 transition-all mb-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full"></div>
+                  <div className="text-left">
+                    <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                      Leitner System
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Visualisierung deiner Lernboxen
+                    </p>
+                  </div>
+                </div>
+                {showLeitner ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showLeitner && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <LeitnerBoxVisualizer />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
         </div>
       ) : (
