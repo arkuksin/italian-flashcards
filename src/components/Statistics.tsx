@@ -4,7 +4,7 @@ import { TrendingUp, Target, Award, Zap } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
 import { BoxDistributionChart } from './BoxDistributionChart'
 import { Card } from './ui/Card'
-import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
+import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING, SPACING_PATTERNS } from '../constants/spacing'
 
 /**
  * Statistics Component
