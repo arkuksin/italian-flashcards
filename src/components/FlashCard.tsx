@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
+import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
 
 interface FlashCardProps {
@@ -99,18 +100,18 @@ export const FlashCard: React.FC<FlashCardProps> = ({
       {/* Main Card */}
       <Card variant="elevated" size="comfortable" as={motion.div} layout>
         {/* Word Display */}
-        <div className="text-center mb-8">
+        <div className={`text-center ${MARGIN_BOTTOM.xl}`}>
           <motion.div
             key={word.id}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="mb-4"
+            className={MARGIN_BOTTOM.md}
           >
-            <p className="text-body-md font-medium text-gray-600 dark:text-gray-400 mb-2">
+            <p className={`text-body-md font-medium text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>
               {learningDirection === 'ru-it' ? t('flashcard.translateToItalian') : t('flashcard.translateToRussian')}
             </p>
             <h2
-              className="text-display-md text-gray-900 dark:text-white mb-2"
+              className={`text-display-md text-gray-900 dark:text-white ${MARGIN_BOTTOM.xs}`}
               data-testid="question-text"
             >
               {sourceWord}
@@ -123,7 +124,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
 
             {/* Mastery Level Indicator */}
             {wordProgress && (
-              <div className="mt-4 flex items-center justify-center gap-2" data-testid="mastery-indicator">
+              <div className={`mt-4 flex items-center justify-center ${SPACING_PATTERNS.iconText}`} data-testid="mastery-indicator">
                 <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                 <div className="flex gap-1">
                   {[0, 1, 2, 3, 4, 5].map((level) => (
@@ -147,8 +148,8 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="mb-6" data-testid="answer-form">
-          <div className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleSubmit} className={MARGIN_BOTTOM.lg} data-testid="answer-form">
+          <div className={`flex flex-col sm:flex-row ${GAP.sm}`}>
             <TextField
               type="text"
               value={userInput}
@@ -182,7 +183,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
+            className={MARGIN_BOTTOM.lg}
             data-testid="answer-feedback"
           >
             <div className={`p-6 rounded-2xl border-2 ${
@@ -190,7 +191,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600'
                 : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600'
             }`}>
-              <div className="flex items-center justify-center mb-4">
+              <div className={`flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
                     <Check className="w-6 h-6 mr-2" />
@@ -209,7 +210,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               </div>
 
               <div className="text-center">
-                <p className="text-body-md text-gray-600 dark:text-gray-400 mb-1">
+                <p className={`text-body-md text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
                   {t('flashcard.correctAnswer', 'Correct answer')}
                 </p>
                 <p className="text-headline-lg text-gray-900 dark:text-white" data-testid="correct-answer">
@@ -225,10 +226,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               {/* Phase 3: Difficulty Rating Buttons */}
               {onDifficultyRating && (
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                  <p className="text-body-md text-gray-600 dark:text-gray-400 mb-3 text-center">
+                  <p className={`text-body-md text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.sm} text-center`}>
                     {t('flashcard.difficulty.prompt', 'How well did you know this?')}
                   </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="difficulty-buttons">
+                  <div className={`grid grid-cols-2 md:grid-cols-4 ${GAP.sm}`} data-testid="difficulty-buttons">
                     {/* Again Button */}
                     <motion.button
                       onClick={() => handleDifficultyRating(1)}
@@ -355,7 +356,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="mt-6 text-center text-body-md text-gray-500 dark:text-gray-400"
+        className={`${MARGIN_BOTTOM.lg} text-center text-body-md text-gray-500 dark:text-gray-400`}
       >
         <p>{t('flashcard.shortcuts')}</p>
       </motion.div>

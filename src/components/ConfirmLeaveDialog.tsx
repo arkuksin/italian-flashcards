@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { X } from 'lucide-react'
+import { VERTICAL_SPACING, GAP } from '../constants/spacing'
 
 interface ConfirmLeaveDialogProps {
   open: boolean
@@ -61,7 +62,7 @@ export const ConfirmLeaveDialog: React.FC<ConfirmLeaveDialogProps> = ({
           </button>
         </div>
 
-        <div className="space-y-4 px-6 py-5 text-sm text-gray-600 dark:text-gray-300">
+        <div className={`${VERTICAL_SPACING.md} px-6 py-5 text-sm text-gray-600 dark:text-gray-300`}>
           <p>
             Du bist dabei, {destinationLabel} aufzurufen. Möchtest du den aktuellen Aufgabenfortschritt speichern, bevor du den
             Bereich verlässt?
@@ -71,7 +72,7 @@ export const ConfirmLeaveDialog: React.FC<ConfirmLeaveDialogProps> = ({
           </p>
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-gray-200 px-6 py-4 text-sm dark:border-gray-700 sm:flex-row sm:justify-end">
+        <div className={`flex flex-col ${GAP.xs} border-t border-gray-200 px-6 py-4 text-sm dark:border-gray-700 sm:flex-row sm:justify-end`}>
           <button
             type="button"
             onClick={onConfirmDiscard}

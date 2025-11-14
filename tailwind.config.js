@@ -6,6 +6,21 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+        display: ['Inter', 'system-ui', 'sans-serif'], // For headings
+        mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'monospace'],
+      },
       fontSize: {
         // Display - Large, expressive text
         'display-lg': [typography['display-large'].fontSize, {

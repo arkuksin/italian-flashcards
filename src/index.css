@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans; /* Uses Inter */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display; /* Uses Inter for headings */
+  }
+
+  code, pre {
+    @apply font-mono; /* Uses JetBrains Mono */
+  }
+}
