@@ -1,5 +1,6 @@
 import { useGamification } from '../hooks/useGamification'
 import { Card } from './ui/Card'
+import { AriaLabel } from './ui/AriaLabel'
 import { MARGIN_BOTTOM } from '../constants/spacing'
 
 export const DailyStreakWidget = () => {
@@ -23,7 +24,7 @@ export const DailyStreakWidget = () => {
             Daily Streak
           </h3>
           <div className="flex items-center space-x-2">
-            <span className="text-4xl">🔥</span>
+            <AriaLabel label="Fire" className="text-4xl">🔥</AriaLabel>
             <div>
               <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">
                 {current_streak}
@@ -37,7 +38,7 @@ export const DailyStreakWidget = () => {
         <div className="text-right">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Best Streak</p>
           <div className="flex items-center space-x-1">
-            <span className="text-2xl">👑</span>
+            <AriaLabel label="Crown" className="text-2xl">👑</AriaLabel>
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {longest_streak}
             </p>

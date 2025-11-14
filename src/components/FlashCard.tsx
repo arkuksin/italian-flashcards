@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
+import { AriaLabel } from './ui/AriaLabel';
 import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
 
@@ -124,9 +125,14 @@ export const FlashCard: React.FC<FlashCardProps> = ({
 
             {/* Mastery Level Indicator */}
             {wordProgress && (
-              <div className={`mt-4 flex items-center justify-center ${SPACING_PATTERNS.iconText}`} data-testid="mastery-indicator">
-                <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                <div className="flex gap-1">
+              <div
+                className={`mt-4 flex items-center justify-center ${SPACING_PATTERNS.iconText}`}
+                data-testid="mastery-indicator"
+                role="status"
+                aria-label={`${t('flashcard.mastery.title')}: ${getMasteryLabel(wordProgress.mastery_level)}`}
+              >
+                <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+                <div className="flex gap-1" aria-hidden="true">
                   {[0, 1, 2, 3, 4, 5].map((level) => (
                     <div
                       key={level}
@@ -170,8 +176,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 data-testid="answer-submit-button"
+                aria-label={t('flashcard.submit', 'Submit')}
               >
-                <Send className="w-5 h-5" />
+                <Send className="w-5 h-5" aria-hidden="true" />
                 <span className="hidden sm:inline">{t('flashcard.submit', 'Submit')}</span>
               </motion.button>
             )}
@@ -185,6 +192,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             animate={{ opacity: 1, y: 0 }}
             className={MARGIN_BOTTOM.lg}
             data-testid="answer-feedback"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
             <div className={`p-6 rounded-2xl border-2 ${
               isCorrect
@@ -194,14 +204,14 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               <div className={`flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
-                    <Check className="w-6 h-6 mr-2" />
+                    <Check className="w-6 h-6 mr-2" aria-hidden="true" />
                     <span className="text-lg font-semibold">
                       {t('flashcard.feedback.correct', 'Correct!')}
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-center text-red-700 dark:text-red-300">
-                    <X className="w-6 h-6 mr-2" />
+                    <X className="w-6 h-6 mr-2" aria-hidden="true" />
                     <span className="text-lg font-semibold">
                       {t('flashcard.feedback.incorrect', 'Not quite')}
                     </span>
@@ -243,8 +253,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
                       whileTap={difficultyRating === undefined ? { scale: 0.9, rotate: [-2, 2, -2, 2, 0] } : {}}
                       data-testid="difficulty-again"
+                      aria-label={t('flashcard.difficulty.again', 'Again')}
                     >
-                      <span className="text-2xl mb-1">👎</span>
+                      <AriaLabel label="Thumbs down" className="text-2xl mb-1">👎</AriaLabel>
                       <span className="text-sm">{t('flashcard.difficulty.again', 'Again')}</span>
                     </motion.button>
 
@@ -261,8 +272,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-hard"
+                      aria-label={t('flashcard.difficulty.hard', 'Hard')}
                     >
-                      <span className="text-2xl mb-1">🤔</span>
+                      <AriaLabel label="Thinking face" className="text-2xl mb-1">🤔</AriaLabel>
                       <span className="text-sm">{t('flashcard.difficulty.hard', 'Hard')}</span>
                     </motion.button>
 
@@ -279,8 +291,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-good"
+                      aria-label={t('flashcard.difficulty.good', 'Good')}
                     >
-                      <span className="text-2xl mb-1">🙂</span>
+                      <AriaLabel label="Slightly smiling face" className="text-2xl mb-1">🙂</AriaLabel>
                       <span className="text-sm">{t('flashcard.difficulty.good', 'Good')}</span>
                     </motion.button>
 
@@ -297,8 +310,9 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-easy"
+                      aria-label={t('flashcard.difficulty.easy', 'Easy')}
                     >
-                      <span className="text-2xl mb-1">😊</span>
+                      <AriaLabel label="Smiling face" className="text-2xl mb-1">😊</AriaLabel>
                       <span className="text-sm">{t('flashcard.difficulty.easy', 'Easy')}</span>
                     </motion.button>
                   </div>
@@ -326,12 +340,13 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             whileHover={canGoPrevious ? { scale: 1.05 } : {}}
             whileTap={canGoPrevious ? { scale: 0.95 } : {}}
             data-testid="previous-button"
+            aria-label={t('flashcard.navigation.previous')}
           >
-            <ChevronLeft className="w-5 h-5 mr-2" />
+            <ChevronLeft className="w-5 h-5 mr-2" aria-hidden="true" />
             {t('flashcard.navigation.previous')}
           </motion.button>
 
-          <div className="text-center">
+          <div className="text-center" role="status" aria-live="polite">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {t('flashcard.navigation.progress', { current: currentIndex + 1, total: totalWords })}
             </p>
@@ -344,9 +359,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             whileHover={canGoNext ? { scale: 1.05 } : {}}
             whileTap={canGoNext ? { scale: 0.95 } : {}}
             data-testid="next-button"
+            aria-label={t('flashcard.navigation.next')}
           >
             {t('flashcard.navigation.next')}
-            <ChevronRight className="w-5 h-5 ml-2" />
+            <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
           </motion.button>
         </div>
       </Card>
