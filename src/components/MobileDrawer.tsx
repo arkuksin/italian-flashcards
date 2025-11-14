@@ -107,7 +107,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label={t('labels.close')}
               >
                 <X className="w-5 h-5" />
