@@ -1,12 +1,14 @@
 import React from 'react';
 
-interface FocusableProps {
+interface FocusableBaseProps {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'inset' | 'thin';
-  as?: keyof JSX.IntrinsicElements;
-  [key: string]: any;
 }
+
+type FocusableProps<T extends keyof JSX.IntrinsicElements = 'div'> = FocusableBaseProps & {
+  as?: T;
+} & Omit<React.ComponentPropsWithoutRef<T>, keyof FocusableBaseProps | 'as'>;
 
 /**
  * A wrapper component that applies consistent focus styles to its children.
@@ -27,13 +29,15 @@ interface FocusableProps {
  * </Focusable>
  * ```
  */
-export const Focusable: React.FC<FocusableProps> = ({
+export const Focusable = <T extends keyof JSX.IntrinsicElements = 'div'>({
   children,
   className = '',
   variant = 'default',
-  as: Component = 'div',
+  as,
   ...props
-}) => {
+}: FocusableProps<T>) => {
+  const Component = (as || 'div') as keyof JSX.IntrinsicElements;
+
   const focusClasses = {
     default: 'focus-ring',
     inset: 'focus-ring-inset',
