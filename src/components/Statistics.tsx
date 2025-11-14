@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { TrendingUp, Target, Award, Zap } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
 import { BoxDistributionChart } from './BoxDistributionChart'
+import { Card } from './ui/Card'
 
 /**
  * Statistics Component
@@ -79,9 +80,11 @@ export const Statistics: React.FC = () => {
         {statCards.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <div
+            <Card
               key={index}
-              className={`${stat.bgColor} rounded-lg p-4 transition-transform hover:scale-105`}
+              variant="flat"
+              size="compact"
+              className={`${stat.bgColor} transition-transform hover:scale-105`}
             >
               <div className="flex items-center justify-between mb-2">
                 <Icon className={`w-5 h-5 ${stat.color}`} />
@@ -92,25 +95,25 @@ export const Statistics: React.FC = () => {
               <div className="text-xs text-gray-600 dark:text-gray-300">
                 {stat.label}
               </div>
-            </div>
+            </Card>
           )
         })}
       </div>
 
       {/* Additional Progress Details */}
       <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+        <Card variant="default" size="compact">
           <div className="text-gray-600 dark:text-gray-400 mb-1">{t('stats.totalAttempts')}</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-white">
             {stats.totalAttempts}
           </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+        </Card>
+        <Card variant="default" size="compact">
           <div className="text-gray-600 dark:text-gray-400 mb-1">{t('stats.inProgress')}</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-white">
             {stats.wordsInProgress}
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Phase 2: Leitner Box Distribution Chart */}
