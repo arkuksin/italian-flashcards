@@ -82,6 +82,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     onSelectionChange(Array.from(newSelected))
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent, category: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleToggle(category)
+    }
+  }
+
   const handleSelectAll = () => {
     const all = new Set(categories.map(c => c.category))
     setSelected(all)
@@ -216,6 +223,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
+            tabIndex={0}
+            onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, category.category)}
             className={`flex items-start gap-3 cursor-pointer transition-all duration-200 ${
               selected.has(category.category)
                 ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
