@@ -4,6 +4,21 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+        display: ['Inter', 'system-ui', 'sans-serif'], // For headings
+        mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'monospace'],
+      },
       perspective: {
         '1000': '1000px',
       },
