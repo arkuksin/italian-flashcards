@@ -36,7 +36,14 @@
   },
   "labels": {
     "accentCheckOn": "Akzentprüfung aktiv",
-    "accentCheckOff": "Akzentprüfung inaktiv"
+    "accentCheckOff": "Akzentprüfung inaktiv",
+    "menu": "Menü",
+    "close": "Schließen",
+    "on": "An",
+    "off": "Aus",
+    "lightMode": "Heller Modus",
+    "darkMode": "Dunkler Modus",
+    "language": "Sprache"
   },
   "tooltips": {
     "toggleDirection": "Lernrichtung wechseln (Strg+T)",

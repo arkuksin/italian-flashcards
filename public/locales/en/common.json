@@ -36,7 +36,14 @@
   },
   "labels": {
     "accentCheckOn": "Accent check on",
-    "accentCheckOff": "Accent check off"
+    "accentCheckOff": "Accent check off",
+    "menu": "Menu",
+    "close": "Close",
+    "on": "On",
+    "off": "Off",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "language": "Language"
   },
   "tooltips": {
     "toggleDirection": "Toggle learning direction (Ctrl+T)",
