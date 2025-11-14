@@ -24,11 +24,16 @@ export default {
       },
       animation: {
         'flip': 'flip 0.6s ease-in-out',
+        'shimmer': 'shimmer 1.5s infinite',
       },
       keyframes: {
         flip: {
           '0%': { transform: 'rotateY(0deg)' },
           '100%': { transform: 'rotateY(180deg)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
       },
     },
