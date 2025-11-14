@@ -75,8 +75,8 @@ export const Dashboard: React.FC = () => {
   const [sessionId, setSessionId] = useState<string | null>(session?.id ?? null)
   const [isSaving, setIsSaving] = useState(false)
   const [showStatistics, setShowStatistics] = useState(true)
-  const [showGamification, setShowGamification] = useState(false)
-  const [showLeitner, setShowLeitner] = useState(false)
+  const [showGamification, setShowGamification] = useState(true)
+  const [showLeitner, setShowLeitner] = useState(true)
   const ensureSessionId = useCallback(() => {
     if (sessionId) return sessionId
     const generatedId =
