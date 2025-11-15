@@ -21,12 +21,6 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 test.describe('Leitner System - Phase 5: Gamification', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 5 tests - missing credentials')
 
-  // Reset gamification data before all tests in this suite to ensure clean state
-  test.beforeAll(async () => {
-    console.log('🔄 Resetting gamification data for clean test environment...')
-    await resetGamificationData()
-  })
-
   test.beforeEach(async ({ page }) => {
     // Navigate to homepage - authentication is handled by global setup
     await page.goto('/', { timeout: 20000 })
