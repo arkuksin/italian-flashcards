@@ -100,5 +100,27 @@
     "cardsCompleted": "Карточек завершено",
     "correctAnswers": "Правильных ответов",
     "timeSpent": "Времени потрачено"
+  },
+  "wordOfTheDay": {
+    "title": "Слово дня",
+    "subtitle": "Ежедневное слово",
+    "learnNow": "Изучить сейчас",
+    "learnedToday": "Выучено сегодня!",
+    "last7Days": "Последние 7 дней:",
+    "description": "Описание",
+    "funFact": "Интересный факт",
+    "examples": "Примеры",
+    "relatedWords": "Связанные слова",
+    "markAsLearned": "Отметить как изученное",
+    "addNote": "Добавить заметку",
+    "practiceNow": "Практиковать сейчас",
+    "backToDashboard": "Вернуться к панели",
+    "noWordToday": "Сегодня слово недоступно",
+    "category": "Категория",
+    "difficultyLevel": "Уровень сложности",
+    "pronunciation": "Произношение",
+    "viewDetails": "Посмотреть детали",
+    "completed": "Завершено",
+    "notCompleted": "Еще не завершено"
   }
 }

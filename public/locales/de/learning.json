@@ -100,5 +100,27 @@
     "cardsCompleted": "Abgeschlossene Karten",
     "correctAnswers": "Richtige Antworten",
     "timeSpent": "Verbrachte Zeit"
+  },
+  "wordOfTheDay": {
+    "title": "Wort des Tages",
+    "subtitle": "Tägliches Wort",
+    "learnNow": "Jetzt lernen",
+    "learnedToday": "Heute gelernt!",
+    "last7Days": "Letzte 7 Tage:",
+    "description": "Beschreibung",
+    "funFact": "Wissenswertes",
+    "examples": "Beispiele",
+    "relatedWords": "Verwandte Wörter",
+    "markAsLearned": "Als gelernt markieren",
+    "addNote": "Notiz hinzufügen",
+    "practiceNow": "Jetzt üben",
+    "backToDashboard": "Zurück zum Dashboard",
+    "noWordToday": "Heute kein Wort verfügbar",
+    "category": "Kategorie",
+    "difficultyLevel": "Schwierigkeitsgrad",
+    "pronunciation": "Aussprache",
+    "viewDetails": "Details ansehen",
+    "completed": "Abgeschlossen",
+    "notCompleted": "Noch nicht abgeschlossen"
   }
 }

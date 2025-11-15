@@ -183,3 +183,30 @@ export interface CategoryFilter {
   selectedCategories: string[]
   excludedCategories: string[]
 }
+
+// Feature: Word of the Day Types
+
+export interface WordOfTheDay {
+  id: string
+  word_id: number
+  russian: string
+  italian: string
+  category: string
+  description: string
+  fun_fact?: string
+  difficulty_level: number
+  date: string
+}
+
+export interface WotDProgress {
+  id: string
+  user_id: string
+  wotd_id: string
+  viewed_at: string
+  completed_at?: string
+}
+
+export interface WotDHistoryDay {
+  date: string
+  completed: boolean
+}
