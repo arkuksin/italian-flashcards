@@ -49,9 +49,9 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 10000 });
 
-    // Should see mode selection
+    // Should see mode selection cards for both learning directions
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('Learn Russian from Italian')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('mode-it-ru')).toBeVisible({ timeout: 10000 });
   });
 
   test('should maintain authentication state across page refreshes', async ({ page }) => {
