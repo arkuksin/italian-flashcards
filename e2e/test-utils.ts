@@ -32,11 +32,10 @@ export async function goToHomePage(page: Page) {
 export async function startLearningSession(page: Page, mode: 'ru-it' | 'it-ru' = 'ru-it') {
   await goToHomePage(page);
 
-  const buttonText = mode === 'ru-it'
-    ? 'Learn Italian from Russian'
-    : 'Learn Russian from Italian';
-
-  await page.getByText(buttonText).click();
+  const modeTestId = mode === 'ru-it' ? 'mode-ru-it' : 'mode-it-ru';
+  const modeButton = page.getByTestId(modeTestId);
+  await expect(modeButton).toBeVisible({ timeout: 5000 });
+  await modeButton.click();
 
   // Wait for flashcard interface to load
   const expectText = mode === 'ru-it'
@@ -151,9 +150,9 @@ export async function expectModeSelection(page: Page) {
     return;
   }
 
-  await expect(page.getByRole('heading', { name: 'Italian FlashCards' })).toBeVisible();
-  await expect(page.getByText('Learn Italian from Russian')).toBeVisible();
-  await expect(page.getByText('Learn Russian from Italian')).toBeVisible();
+  await expect(page.getByTestId('mode-selection')).toBeVisible();
+  await expect(page.getByTestId('mode-ru-it')).toBeVisible();
+  await expect(page.getByTestId('mode-it-ru')).toBeVisible();
 }
 
 /**
