@@ -47,9 +47,10 @@ export async function resetGamificationData(): Promise<void> {
     }
 
     const userId = authData.user.id
+    console.log(`🔍 Resetting gamification data for user: ${userId}`)
 
     // Reset daily_goals
-    await supabase
+    const { data: goalsData, error: goalsError } = await supabase
       .from('daily_goals')
       .upsert({
         user_id: userId,
@@ -62,24 +63,62 @@ export async function resetGamificationData(): Promise<void> {
       }, {
         onConflict: 'user_id'
       })
+      .select()
+
+    if (goalsError) {
+      console.error('❌ Failed to reset daily_goals:', goalsError)
+      throw goalsError
+    }
+    console.log('✅ Reset daily_goals to level 1')
 
     // Delete all achievements
-    await supabase
+    const { error: achievementsError } = await supabase
       .from('achievements')
       .delete()
       .eq('user_id', userId)
 
+    if (achievementsError) {
+      console.error('❌ Failed to delete achievements:', achievementsError)
+      throw achievementsError
+    }
+    console.log('✅ Deleted all achievements')
+
     // Delete user progress
-    await supabase
+    const { error: progressError } = await supabase
       .from('user_progress')
       .delete()
       .eq('user_id', userId)
 
+    if (progressError) {
+      console.error('❌ Failed to delete user_progress:', progressError)
+      throw progressError
+    }
+    console.log('✅ Deleted user progress')
+
     // Delete review history
-    await supabase
+    const { error: reviewError } = await supabase
       .from('review_history')
       .delete()
       .eq('user_id', userId)
+
+    if (reviewError) {
+      console.error('❌ Failed to delete review_history:', reviewError)
+      throw reviewError
+    }
+    console.log('✅ Deleted review history')
+
+    // Verify the reset worked
+    const { data: verifyData, error: verifyError } = await supabase
+      .from('daily_goals')
+      .select('level, total_xp, current_streak')
+      .eq('user_id', userId)
+      .single()
+
+    if (verifyError) {
+      console.error('⚠️  Could not verify reset:', verifyError)
+    } else {
+      console.log(`📊 Verified reset - Level: ${verifyData.level}, XP: ${verifyData.total_xp}, Streak: ${verifyData.current_streak}`)
+    }
 
     // Sign out
     await supabase.auth.signOut()

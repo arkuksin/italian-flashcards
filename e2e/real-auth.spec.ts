@@ -22,6 +22,9 @@ const hasRealAuthConfig = process.env.TEST_USER_EMAIL &&
 test.describe('Real Authentication Flow', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
 
+  // Override shared authentication state - these tests need to start unauthenticated
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL!;
   const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD!;
 
@@ -140,6 +143,9 @@ test.describe('Real Authentication Flow', () => {
 
 test.describe('Real Authentication - Error Scenarios', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
+
+  // Override shared authentication state - these tests need to start unauthenticated
+  test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
     await page.context().clearCookies();
