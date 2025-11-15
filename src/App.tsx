@@ -7,6 +7,7 @@ import { Analytics } from './pages/Analytics'
 import { Callback } from './pages/Callback'
 import { PrivacyPolicy } from './pages/PrivacyPolicy'
 import { DemoDeck } from './pages/DemoDeck'
+import { WordOfTheDayDetail } from './pages/WordOfTheDayDetail'
 import { LoadingSpinner } from './components/ui/LoadingSpinner'
 
 /**
@@ -68,6 +69,16 @@ function App() {
         element={
           user ? (
             <Analytics />
+          ) : (
+            <Navigate to="/login" replace state={{ from: location }} />
+          )
+        }
+      />
+      <Route
+        path="/word-of-the-day/:id"
+        element={
+          user ? (
+            <WordOfTheDayDetail />
           ) : (
             <Navigate to="/login" replace state={{ from: location }} />
           )
