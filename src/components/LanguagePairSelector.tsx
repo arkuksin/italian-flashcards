@@ -46,6 +46,7 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
     }
   ]);
   const [stats, setStats] = useState<LanguagePairStats[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadLanguagePairs();
@@ -55,6 +56,7 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        setLoading(false);
         return;
       }
 
@@ -95,6 +97,19 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
     const direction = `${pair.source_lang}-${pair.target_lang}` as LearningDirection;
     onSelect(pair.id, direction);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg">
+        <div className="text-center py-8">
+          <Globe className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3 animate-pulse" />
+          <p className="text-gray-600 dark:text-gray-300">
+            {t('modeSelection.loading', 'Loading language pairs...')}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const suggestion = getSuggestion();
 
