@@ -43,7 +43,10 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete (AnimatePresence has 0.3s transition)
+    await page.waitForTimeout(500)
 
     // Verify all 6 levels are present (0-5)
     for (let level = 0; level <= 5; level++) {
@@ -56,7 +59,10 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete
+    await page.waitForTimeout(500)
 
     // Verify mastery badges for all levels
     for (let level = 0; level <= 5; level++) {
@@ -72,7 +78,10 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete
+    await page.waitForTimeout(500)
 
     // Check review intervals
     const intervals = [
@@ -95,7 +104,10 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete
+    await page.waitForTimeout(500)
 
     // Check word counts exist for all levels
     for (let level = 0; level <= 5; level++) {
@@ -112,7 +124,10 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete
+    await page.waitForTimeout(500)
 
     // Check percentages exist for all levels
     for (let level = 0; level <= 5; level++) {
@@ -277,7 +292,10 @@ test.describe('Leitner System - Phase 2: MasteryLevelBadge', () => {
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 5000 })
 
     const visualizer = page.locator('[data-testid="leitner-box-visualizer"]')
-    await expect(visualizer).toBeVisible()
+    await expect(visualizer).toBeVisible({ timeout: 5000 })
+
+    // Wait for animation to complete
+    await page.waitForTimeout(500)
 
     // Verify badges show level numbers and labels
     const expectedLabels = [
