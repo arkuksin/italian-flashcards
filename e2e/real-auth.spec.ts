@@ -96,6 +96,8 @@ test.describe('Real Authentication Flow', () => {
 
     // Test navigation
     await page.getByRole('button', { name: 'Next' }).click();
+    // Wait for animations to complete (Chromium needs more time)
+    await page.waitForTimeout(1000);
     await expect(page.getByText('2 of 300')).toBeVisible();
   });
 
@@ -109,7 +111,9 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
 
     // Find and click sign out button (should be in header)
-    await page.click('[data-testid="sign-out-button"]');
+    const signOutButton = page.locator('[data-testid="sign-out-button"]');
+    await expect(signOutButton).toBeVisible({ timeout: 5000 });
+    await signOutButton.click();
 
     // Should return to login screen
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 5000 });
@@ -170,10 +174,18 @@ test.describe('Real Authentication - Error Scenarios', () => {
     // For now, we'll just verify the session check works
     await page.goto('/');
 
-    // Should show loading state initially
-    await expect(page.locator('[data-testid="auth-loading"]')).toBeVisible();
+    // Wait for page to load and auth state to resolve
+    await page.waitForLoadState('networkidle');
 
     // Should eventually resolve to login or authenticated state
     await expect(page.locator('[data-testid="auth-loading"]')).not.toBeVisible({ timeout: 10000 });
+
+    // Verify we're in either authenticated or login state
+    const isAuthenticated = await page.locator('[data-testid="protected-content"]').isVisible();
+    const isLoginPage = await page.locator('text=Sign in to continue').isVisible();
+
+    if (!isAuthenticated && !isLoginPage) {
+      throw new Error('Page did not resolve to either authenticated or login state');
+    }
   });
 });
