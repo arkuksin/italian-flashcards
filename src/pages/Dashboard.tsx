@@ -16,6 +16,8 @@ import { DailyStreakWidget } from '../components/DailyStreakWidget'
 import { XPProgressBar } from '../components/XPProgressBar'
 import { AchievementBadges } from '../components/AchievementBadges'
 import { DailyGoalProgress } from '../components/DailyGoalProgress'
+import { DueWordsWidget } from '../components/DueWordsWidget'
+import { ReminderSettings } from '../components/ReminderSettings'
 import { Container } from '../components/layout'
 import { SkipLink } from '../components/ui/SkipLink'
 import { useKeyboard } from '../hooks/useKeyboard'
@@ -79,6 +81,7 @@ export const Dashboard: React.FC = () => {
   const [showStatistics, setShowStatistics] = useState(true)
   const [showGamification, setShowGamification] = useState(true)
   const [showLeitner, setShowLeitner] = useState(true)
+  const [showReminders, setShowReminders] = useState(false)
   const derivePendingProgress = useCallback(() => {
     if (!session || session.status !== 'active') return false
     return Boolean(session.state.showAnswer && session.difficultyRating === undefined && session.isCorrect !== null)
@@ -715,6 +718,18 @@ export const Dashboard: React.FC = () => {
               <QuickStats />
             </motion.div>
 
+            {/* Due Words Reminder Widget */}
+            {user && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.35 }}
+                className="mb-8"
+              >
+                <DueWordsWidget />
+              </motion.div>
+            )}
+
             {/* SECONDARY CONTENT: Collapsible Sections with Clear Headers */}
 
             {/* Detailed Statistics Section */}
@@ -858,6 +873,50 @@ export const Dashboard: React.FC = () => {
                     className="overflow-hidden"
                   >
                     <LeitnerBoxVisualizer />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Reminder Settings Section */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.7 }}
+              className="mb-8"
+            >
+              <button
+                onClick={() => setShowReminders(!showReminders)}
+                className="w-full flex items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 rounded-lg border border-gray-200/50 dark:border-gray-700/50 transition-all mb-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
+                  <div className="text-left">
+                    <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                      Erinnerungseinstellungen
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Konfiguriere deine Benachrichtigungen
+                    </p>
+                  </div>
+                </div>
+                {showReminders ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showReminders && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <ReminderSettings />
                   </motion.div>
                 )}
               </AnimatePresence>
