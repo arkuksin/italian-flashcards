@@ -1,10 +1,17 @@
 import { Database } from '../lib/database-types'
 
+// Export language types
+export * from './languages'
+export type { LanguageCode, LanguagePair, LanguagePairStats, MultilingualWord, ExtendedLearningDirection } from './languages'
+
 // Base Word interface - matches database schema
+// Note: For multi-language support, use MultilingualWord from './languages'
 export interface Word {
   id: number;
   russian: string;
   italian: string;
+  german?: string;
+  english?: string;
   category: string;
   created_at?: string;
 }
@@ -26,7 +33,15 @@ export type DbUserPreferences = Database['public']['Tables']['user_preferences']
 export type DbUserPreferencesInsert = Database['public']['Tables']['user_preferences']['Insert']
 export type DbUserPreferencesUpdate = Database['public']['Tables']['user_preferences']['Update']
 
-export type LearningDirection = 'ru-it' | 'it-ru';
+// LearningDirection now supports all language pairs
+export type LearningDirection =
+  | 'ru-it'
+  | 'it-ru'
+  | 'de-it'
+  | 'it-de'
+  | 'en-it'
+  | 'it-en';
+
 export type SupportedLanguage = 'en' | 'ru' | 'it' | 'de';
 
 export interface AppState {
@@ -48,6 +63,7 @@ export interface WordProgress {
   wrong_count: number
   last_practiced: string
   mastery_level: number // 0-5 (Leitner System levels)
+  language_pair_id?: number
 }
 
 export interface LearningSession {
@@ -57,7 +73,8 @@ export interface LearningSession {
   ended_at: string | null
   words_studied: number
   correct_answers: number
-  learning_direction: 'ru-it' | 'it-ru'
+  learning_direction: LearningDirection
+  language_pair_id?: number
 }
 
 export interface ProgressStats {
@@ -92,6 +109,7 @@ export interface ReviewHistory {
   difficulty_rating?: DifficultyRating
   previous_level: number
   new_level: number
+  language_pair_id?: number
 }
 
 export type DbReviewHistory = Database['public']['Tables']['review_history']['Row']
