@@ -51,7 +51,11 @@
     },
     "feedback": {
       "correct": "Correct!",
-      "incorrect": "Not quite right"
+      "incorrect": "Not quite right",
+      "screenReader": {
+        "correct": "Well done! Your answer was correct.",
+        "incorrect": "The correct answer is"
+      }
     },
     "navigation": {
       "previous": "Previous",

@@ -51,7 +51,11 @@
     },
     "feedback": {
       "correct": "Правильно!",
-      "incorrect": "Не совсем верно"
+      "incorrect": "Не совсем верно",
+      "screenReader": {
+        "correct": "Отлично! Ваш ответ был правильным.",
+        "incorrect": "Правильный ответ"
+      }
     },
     "navigation": {
       "previous": "Предыдущее",
