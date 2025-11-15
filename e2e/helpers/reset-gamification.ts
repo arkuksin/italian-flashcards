@@ -50,7 +50,7 @@ export async function resetGamificationData(): Promise<void> {
     console.log(`🔍 Resetting gamification data for user: ${userId}`)
 
     // Reset daily_goals
-    const { data: goalsData, error: goalsError } = await supabase
+    const { error: goalsError } = await supabase
       .from('daily_goals')
       .upsert({
         user_id: userId,
