@@ -100,5 +100,17 @@
     "cardsCompleted": "Карточек завершено",
     "correctAnswers": "Правильных ответов",
     "timeSpent": "Времени потрачено"
+  },
+  "languagePairs": {
+    "subtitle": "Выберите направление обучения",
+    "recommendation": "Рекомендация",
+    "lowestAccuracy": "имеет самую низкую точность",
+    "new": "Новое",
+    "wordsLearned": "{{count}} слов изучено",
+    "wordsLearned_one": "{{count}} слово изучено",
+    "wordsLearned_other": "{{count}} слов изучено",
+    "level": "Уровень {{level}}",
+    "ready": "Готово к началу обучения",
+    "noPairs": "Языковые пары недоступны"
   }
 }
