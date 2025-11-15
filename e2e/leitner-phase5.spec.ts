@@ -199,6 +199,14 @@ test.describe('Leitner System - Phase 5: Gamification', () => {
   })
 
   test('should maintain gamification state across navigation', async ({ page }) => {
+    // Reset gamification before this test to ensure clean state
+    // (Previous tests in suite may have accumulated XP)
+    console.log('🔄 Resetting gamification for navigation test...')
+    await resetGamificationData()
+
+    // Reload page to get fresh data after reset
+    await page.reload()
+
     // Wait for initial page load and data to stabilize
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1000)
