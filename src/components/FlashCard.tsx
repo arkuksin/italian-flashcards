@@ -8,6 +8,7 @@ import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
 import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
+import { WordImage } from './WordImage';
 
 interface FlashCardProps {
   word: Word;
@@ -121,6 +122,16 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                 {word.category}
               </span>
             )}
+
+            {/* Word Image */}
+            <div className="mt-4 flex justify-center">
+              <WordImage
+                wordId={word.id}
+                wordText={learningDirection === 'ru-it' ? word.italian : word.russian}
+                hasAnswered={showAnswer}
+                className="transition-all duration-300"
+              />
+            </div>
 
             {/* Mastery Level Indicator */}
             {wordProgress && (

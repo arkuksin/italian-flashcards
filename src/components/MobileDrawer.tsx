@@ -4,6 +4,7 @@ import { X, Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight, Check, X as XIcon } f
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ImageSettings } from './settings/ImageSettings';
 import { VERTICAL_SPACING, GAP, MARGIN_BOTTOM } from '../constants/spacing';
 
 interface MobileDrawerProps {
@@ -155,6 +156,11 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   {t('labels.language')}
                 </div>
                 <LanguageSwitcher />
+              </div>
+
+              {/* Image Settings */}
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <ImageSettings />
               </div>
             </div>
           </motion.div>

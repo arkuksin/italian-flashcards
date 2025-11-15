@@ -57,5 +57,27 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "signOut": "Abmelden",
     "signingOut": "Abmeldung..."
+  },
+  "settings": {
+    "images": {
+      "title": "Visuelles Lernen",
+      "description": "Bildanzeige für Wörter konfigurieren",
+      "showImages": "Wortbilder anzeigen",
+      "showImagesHint": "Zeige Bilder zur Unterstützung des visuellen Lernens",
+      "whenToShow": "Wann anzeigen:",
+      "timing": {
+        "always": "Immer anzeigen",
+        "afterAnswer": "Nur nach Antwort anzeigen",
+        "never": "Nie anzeigen"
+      },
+      "imageSize": "Bildgröße:",
+      "size": {
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Groß"
+      },
+      "preview": "Vorschau:",
+      "previewHint": "Bilder werden in {{size}} Größe angezeigt"
+    }
   }
 }
