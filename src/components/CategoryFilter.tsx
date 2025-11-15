@@ -6,6 +6,7 @@ import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 import { Card } from './ui/Card'
 import { VERTICAL_SPACING, GAP } from '../constants/spacing'
+import { useRovingTabIndex } from '../hooks/useRovingTabIndex'
 
 interface CategoryFilterProps {
   userId: string
@@ -30,6 +31,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [saving, setSaving] = useState(false)
   const [retryKey, setRetryKey] = useState(0)
   const hasNotifiedRef = useRef(false)
+
+  // Keyboard navigation with roving tabindex
+  const { currentIndex, setCurrentIndex, handleKeyDown } = useRovingTabIndex({
+    itemCount: categories.length,
+    columns: 2, // Grid has 2 columns on sm screens and above
+    loop: true,
+  })
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -206,28 +214,48 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       )}
 
       {/* Category Grid */}
-      <div className={`grid grid-cols-1 sm:grid-cols-2 ${GAP.xs} max-h-80 overflow-y-auto pr-1`}>
+      <div
+        role="grid"
+        aria-label={t('filter.title')}
+        className={`grid grid-cols-1 sm:grid-cols-2 ${GAP.xs} max-h-80 overflow-y-auto pr-1`}
+      >
         {categories.map((category, index) => (
           <Card
             key={category.category}
             variant="outlined"
             size="compact"
-            as={motion.label}
+            as={motion.div}
+            role="gridcell"
+            tabIndex={currentIndex === index ? 0 : -1}
+            onFocus={() => setCurrentIndex(index)}
+            onKeyDown={(e) => {
+              handleKeyDown(e, index)
+              // Handle selection with Space or Enter
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault()
+                handleToggle(category.category)
+              }
+            }}
+            onClick={() => handleToggle(category.category)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
-            className={`flex items-start gap-3 cursor-pointer transition-all duration-200 ${
+            className={`flex items-start gap-3 cursor-pointer transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               selected.has(category.category)
                 ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
                 : 'hover:!border-gray-300 dark:hover:!border-gray-600'
             }`}
+            aria-checked={selected.has(category.category)}
             data-testid={`category-option-${category.category}`}
           >
             <input
               type="checkbox"
               checked={selected.has(category.category)}
               onChange={() => handleToggle(category.category)}
-              className="mt-1 w-5 h-5 text-blue-600 rounded"
+              tabIndex={-1}
+              className="mt-1 w-5 h-5 text-blue-600 rounded pointer-events-none"
+              aria-hidden="true"
             />
             <div className="flex-1 min-w-0">
               <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
