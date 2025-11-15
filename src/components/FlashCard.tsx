@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Send, CheckCircle, XCircle, TrendingUp, AlertCircle, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
@@ -186,30 +186,63 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             className={MARGIN_BOTTOM.lg}
             data-testid="answer-feedback"
           >
-            <div className={`p-6 rounded-2xl border-2 ${
-              isCorrect
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600'
-                : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600'
-            }`}>
-              <div className={`flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
+            <motion.div
+              initial={isCorrect ? { scale: 0.95, opacity: 0 } : { x: 0 }}
+              animate={
+                isCorrect
+                  ? { scale: 1, opacity: 1 }
+                  : { x: [-10, 10, -10, 10, 0], opacity: 1 }
+              }
+              transition={
+                isCorrect
+                  ? { type: 'spring', stiffness: 300, damping: 20 }
+                  : { duration: 0.4 }
+              }
+              className={`relative p-6 rounded-2xl border-2 ${
+                isCorrect
+                  ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600'
+                  : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600'
+              }`}
+              role="alert"
+              aria-live="assertive"
+            >
+              {/* Background pattern for additional visual distinction */}
+              <div
+                className="absolute inset-0 opacity-5 pointer-events-none rounded-2xl"
+                style={{
+                  backgroundImage: isCorrect
+                    ? 'repeating-linear-gradient(45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)'
+                    : 'repeating-linear-gradient(-45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)',
+                }}
+                aria-hidden="true"
+              />
+
+              {/* Screen reader announcement */}
+              <span className="sr-only">
+                {isCorrect
+                  ? `${t('flashcard.feedback.correct', 'Correct!')} ${t('flashcard.feedback.screenReader.correct', 'Well done! Your answer was correct.')}`
+                  : `${t('flashcard.feedback.incorrect', 'Not quite')} ${t('flashcard.feedback.screenReader.incorrect', 'The correct answer is')} ${targetWord}.`}
+              </span>
+
+              <div className={`relative z-10 flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
-                    <Check className="w-6 h-6 mr-2" />
+                    <CheckCircle className="w-7 h-7 mr-3 flex-shrink-0" aria-hidden="true" />
                     <span className="text-lg font-semibold">
-                      {t('flashcard.feedback.correct', 'Correct!')}
+                      ✓ {t('flashcard.feedback.correct', 'Correct!')}
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-center text-red-700 dark:text-red-300">
-                    <X className="w-6 h-6 mr-2" />
+                    <XCircle className="w-7 h-7 mr-3 flex-shrink-0" aria-hidden="true" />
                     <span className="text-lg font-semibold">
-                      {t('flashcard.feedback.incorrect', 'Not quite')}
+                      ✗ {t('flashcard.feedback.incorrect', 'Not quite')}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="text-center">
+              <div className="relative z-10 text-center">
                 <p className={`text-sm text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
                   {t('flashcard.correctAnswer', 'Correct answer')}
                 </p>
@@ -235,6 +268,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(1)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.again', 'Review this card soon (same session)')}
+                      aria-label={`${t('flashcard.difficulty.again', 'Again')} - ${t('flashcard.difficulty.tooltip.again', 'Review this card soon (same session)')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 1
                           ? 'bg-red-500 text-white ring-2 ring-red-400'
@@ -244,7 +278,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileTap={difficultyRating === undefined ? { scale: 0.9, rotate: [-2, 2, -2, 2, 0] } : {}}
                       data-testid="difficulty-again"
                     >
-                      <span className="text-2xl mb-1">👎</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <XCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">👎</span>
+                      </div>
                       <span className="text-sm">{t('flashcard.difficulty.again', 'Again')}</span>
                     </motion.button>
 
@@ -253,6 +290,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(2)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.hard', 'Show again in a few minutes')}
+                      aria-label={`${t('flashcard.difficulty.hard', 'Hard')} - ${t('flashcard.difficulty.tooltip.hard', 'Show again in a few minutes')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 2
                           ? 'bg-orange-500 text-white ring-2 ring-orange-400'
@@ -262,7 +300,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-hard"
                     >
-                      <span className="text-2xl mb-1">🤔</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <AlertCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">🤔</span>
+                      </div>
                       <span className="text-sm">{t('flashcard.difficulty.hard', 'Hard')}</span>
                     </motion.button>
 
@@ -271,6 +312,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(3)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.good', 'Show again in ~1 day')}
+                      aria-label={`${t('flashcard.difficulty.good', 'Good')} - ${t('flashcard.difficulty.tooltip.good', 'Show again in ~1 day')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 3
                           ? 'bg-blue-500 text-white ring-2 ring-blue-400'
@@ -280,7 +322,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-good"
                     >
-                      <span className="text-2xl mb-1">🙂</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <CheckCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">🙂</span>
+                      </div>
                       <span className="text-sm">{t('flashcard.difficulty.good', 'Good')}</span>
                     </motion.button>
 
@@ -289,6 +334,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(4)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.easy', 'Show again in several days')}
+                      aria-label={`${t('flashcard.difficulty.easy', 'Easy')} - ${t('flashcard.difficulty.tooltip.easy', 'Show again in several days')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 4
                           ? 'bg-green-500 text-white ring-2 ring-green-400'
@@ -298,7 +344,10 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-easy"
                     >
-                      <span className="text-2xl mb-1">😊</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Star className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">😊</span>
+                      </div>
                       <span className="text-sm">{t('flashcard.difficulty.easy', 'Easy')}</span>
                     </motion.button>
                   </div>
@@ -313,7 +362,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                   )}
                 </div>
               )}
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
