@@ -98,7 +98,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         animate={{ opacity: 1, scale: 1 }}
       >
       {/* Main Card */}
-      <Card variant="elevated" size="comfortable" as={motion.div} layout>
+      <Card variant="elevated" size="comfortable" as={motion.div}>
         {/* Word Display */}
         <div className={`text-center ${MARGIN_BOTTOM.xl}`}>
           <motion.div

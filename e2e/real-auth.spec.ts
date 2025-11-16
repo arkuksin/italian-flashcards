@@ -97,7 +97,8 @@ test.describe('Real Authentication Flow', () => {
     // Test navigation
     await page.getByRole('button', { name: 'Next' }).click();
     // Wait for card navigation to complete and counter to update
-    await expect(page.getByText('2 of 300')).toBeVisible({ timeout: 15000 });
+    // Use regex to match any total word count (database may have different totals)
+    await expect(page.getByText(/2 of \d+/)).toBeVisible({ timeout: 15000 });
   });
 
   test('should successfully sign out', async ({ page }) => {
