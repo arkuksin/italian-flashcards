@@ -260,7 +260,8 @@ export const Dashboard: React.FC = () => {
   })
 
   const handleNext = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex < words.length - 1) {
       setState(prev => ({
@@ -277,7 +278,8 @@ export const Dashboard: React.FC = () => {
   }
 
   const handlePrevious = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex > 0) {
       setState(prev => ({
