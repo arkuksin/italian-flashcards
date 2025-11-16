@@ -96,9 +96,8 @@ test.describe('Real Authentication Flow', () => {
 
     // Test navigation
     await page.getByRole('button', { name: 'Next' }).click();
-    // Wait for animations to complete (Chromium needs more time)
-    await page.waitForTimeout(2000);
-    await expect(page.getByText('2 of 300')).toBeVisible();
+    // Wait for card navigation to complete and counter to update
+    await expect(page.getByText('2 of 300')).toBeVisible({ timeout: 15000 });
   });
 
   test('should successfully sign out', async ({ page }) => {
