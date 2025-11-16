@@ -53,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({
             {t('app.shortTitle')}
           </motion.h1>
           <motion.div
-            className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-xs md:text-sm font-medium"
+            className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-label-md"
             whileHover={{ scale: 1.05 }}
           >
             <ArrowLeftRight className="w-3 h-3 md:w-4 md:h-4" />
@@ -75,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={t('tooltips.toggleDirection')}
               >
                 <ArrowLeftRight className="w-5 h-5" />
-                <span className="hidden lg:inline text-sm">{t('direction.toggle')}</span>
+                <span className="hidden lg:inline text-label-md">{t('direction.toggle')}</span>
               </motion.button>
 
               <motion.button
@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={t('tooltips.toggleShuffle')}
               >
                 <Shuffle className="w-5 h-5" />
-                <span className="hidden lg:inline text-sm">{t('tooltips.toggleShuffle').split(' (')[0]}</span>
+                <span className="hidden lg:inline text-label-md">{t('tooltips.toggleShuffle').split(' (')[0]}</span>
               </motion.button>
 
               <motion.button
@@ -107,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label={`${t('tooltips.toggleAccentCheck')} - ${accentLabel}`}
               >
                 {accentSensitive ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
-                <span className="hidden lg:inline text-sm">{accentLabel}</span>
+                <span className="hidden lg:inline text-label-md">{accentLabel}</span>
               </motion.button>
 
               <motion.button
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
                 data-testid="restart-button"
               >
                 <RotateCcw className="w-5 h-5" />
-                <span className="hidden lg:inline text-sm">{t('actions.restart')}</span>
+                <span className="hidden lg:inline text-label-md">{t('actions.restart')}</span>
               </motion.button>
             </div>
 
@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={t('tooltips.toggleDarkMode')}
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                <span className="hidden lg:inline text-sm">
+                <span className="hidden lg:inline text-label-md">
                   {darkMode ? t('labels.lightMode') : t('labels.darkMode')}
                 </span>
               </motion.button>
