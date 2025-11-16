@@ -1,17 +1,13 @@
 import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Send, Check, X, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Send, CheckCircle, XCircle, TrendingUp, AlertCircle, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Word, LearningDirection, WordProgress, DifficultyRating } from '../types';
 import { Card } from './ui/Card';
 import { TextField } from './ui/TextField';
-import { AriaLabel } from './ui/AriaLabel';
 import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { ANIMATION_DURATIONS } from '../constants/animations';
-import { getMasteryIndicatorColor, getMasteryLabel as getMasteryLabelFromConstants } from '../constants/masteryColors';
 
 interface FlashCardProps {
   word: Word;
@@ -47,18 +43,26 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   difficultyRating,
 }) => {
   const { t } = useTranslation('learning');
-  const prefersReducedMotion = useReducedMotion();
   const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
   const targetWord = learningDirection === 'ru-it' ? word.italian : word.russian;
   const canGoNext = currentIndex < totalWords - 1;
   const canGoPrevious = currentIndex > 0;
 
-  // Mastery level label - use translation if available, otherwise use constant
+  // Mastery level colors
+  const getMasteryColor = (level: number) => {
+    const colors = [
+      'bg-gray-200 dark:bg-gray-700', // Level 0
+      'bg-red-200 dark:bg-red-900/50', // Level 1
+      'bg-orange-200 dark:bg-orange-900/50', // Level 2
+      'bg-yellow-200 dark:bg-yellow-900/50', // Level 3
+      'bg-green-200 dark:bg-green-900/50', // Level 4
+      'bg-blue-200 dark:bg-blue-900/50', // Level 5
+    ]
+    return colors[Math.min(level, 5)]
+  }
+
   const getMasteryLabel = (level: number) => {
-    const translationKey = `flashcard.mastery.levels.${Math.min(level, 5)}`;
-    const translated = t(translationKey);
-    // If translation is same as key (not found), use constant
-    return translated !== translationKey ? translated : getMasteryLabelFromConstants(level);
+    return t(`flashcard.mastery.levels.${Math.min(level, 5)}`)
   }
 
   const handleDifficultyRating = useCallback((rating: DifficultyRating) => {
@@ -90,22 +94,20 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   return (
     <Container width="content">
       <motion.div
-        initial={prefersReducedMotion ? {} : { opacity: 0 }}
-        animate={prefersReducedMotion ? {} : { opacity: 1 }}
-        transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
       >
       {/* Main Card */}
-      <Card variant="elevated" size="comfortable" as={motion.div}>
+      <Card variant="elevated" size="comfortable" as={motion.div} layout>
         {/* Word Display */}
         <div className={`text-center ${MARGIN_BOTTOM.xl}`}>
           <motion.div
             key={word.id}
-            initial={prefersReducedMotion ? {} : { opacity: 0 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1 }}
-            transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             className={MARGIN_BOTTOM.md}
           >
-            <p className={`text-body-md font-medium text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>
+            <p className={`text-sm font-medium text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>
               {learningDirection === 'ru-it' ? t('flashcard.translateToItalian') : t('flashcard.translateToRussian')}
             </p>
             <h2
@@ -115,34 +117,29 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               {sourceWord}
             </h2>
             {word.category && (
-              <span className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-body-md font-medium rounded-full">
+              <span className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full">
                 {word.category}
               </span>
             )}
 
             {/* Mastery Level Indicator */}
             {wordProgress && (
-              <div
-                className={`mt-4 flex items-center justify-center ${SPACING_PATTERNS.iconText}`}
-                data-testid="mastery-indicator"
-                role="status"
-                aria-label={`${t('flashcard.mastery.title')}: ${getMasteryLabel(wordProgress.mastery_level)}`}
-              >
-                <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
-                <div className="flex gap-1" aria-hidden="true">
+              <div className={`mt-4 flex items-center justify-center ${SPACING_PATTERNS.iconText}`} data-testid="mastery-indicator">
+                <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <div className="flex gap-1">
                   {[0, 1, 2, 3, 4, 5].map((level) => (
                     <div
                       key={level}
                       className={`w-2 h-6 rounded ${
                         level <= wordProgress.mastery_level
-                          ? getMasteryIndicatorColor(wordProgress.mastery_level)
+                          ? getMasteryColor(wordProgress.mastery_level)
                           : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                       title={`${t('flashcard.mastery.title')}: ${getMasteryLabel(wordProgress.mastery_level)}`}
                     />
                   ))}
                 </div>
-                <span className="text-body-sm text-gray-600 dark:text-gray-400 ml-1">
+                <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
                   {getMasteryLabel(wordProgress.mastery_level)}
                 </span>
               </div>
@@ -169,13 +166,12 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               <motion.button
                 type="submit"
                 disabled={!userInput.trim()}
-                className="flex-shrink-0 w-full sm:w-auto px-8 py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed text-label-lg min-h-[64px] flex items-center justify-center gap-2"
-                whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
-                transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+                className="flex-shrink-0 w-full sm:w-auto px-8 py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed font-medium text-base min-h-[64px] flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 data-testid="answer-submit-button"
-                aria-label={t('flashcard.submit', 'Submit')}
               >
-                <Send className="w-5 h-5" aria-hidden="true" />
+                <Send className="w-5 h-5" />
                 <span className="hidden sm:inline">{t('flashcard.submit', 'Submit')}</span>
               </motion.button>
             )}
@@ -185,47 +181,76 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         {/* Answer Display */}
         {showAnswer && (
           <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1 }}
-            transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className={MARGIN_BOTTOM.lg}
             data-testid="answer-feedback"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
           >
-            <div className={`p-6 rounded-2xl border-2 ${
-              isCorrect
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600'
-                : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600'
-            }`}>
-              <div className={`flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
+            <motion.div
+              initial={isCorrect ? { scale: 0.95, opacity: 0 } : { x: 0 }}
+              animate={
+                isCorrect
+                  ? { scale: 1, opacity: 1 }
+                  : { x: [-10, 10, -10, 10, 0], opacity: 1 }
+              }
+              transition={
+                isCorrect
+                  ? { type: 'spring', stiffness: 300, damping: 20 }
+                  : { duration: 0.4 }
+              }
+              className={`relative p-6 rounded-2xl border-2 ${
+                isCorrect
+                  ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600'
+                  : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600'
+              }`}
+              role="alert"
+              aria-live="assertive"
+            >
+              {/* Background pattern for additional visual distinction */}
+              <div
+                className="absolute inset-0 opacity-5 pointer-events-none rounded-2xl"
+                style={{
+                  backgroundImage: isCorrect
+                    ? 'repeating-linear-gradient(45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)'
+                    : 'repeating-linear-gradient(-45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)',
+                }}
+                aria-hidden="true"
+              />
+
+              {/* Screen reader announcement */}
+              <span className="sr-only">
+                {isCorrect
+                  ? `${t('flashcard.feedback.correct', 'Correct!')} ${t('flashcard.feedback.screenReader.correct', 'Well done! Your answer was correct.')}`
+                  : `${t('flashcard.feedback.incorrect', 'Not quite')} ${t('flashcard.feedback.screenReader.incorrect', 'The correct answer is')} ${targetWord}.`}
+              </span>
+
+              <div className={`relative z-10 flex items-center justify-center ${MARGIN_BOTTOM.md}`}>
                 {isCorrect ? (
                   <div className="flex items-center text-green-700 dark:text-green-300">
-                    <Check className="w-6 h-6 mr-2" aria-hidden="true" />
+                    <CheckCircle className="w-7 h-7 mr-3 flex-shrink-0" aria-hidden="true" />
                     <span className="text-lg font-semibold">
-                      {t('flashcard.feedback.correct', 'Correct!')}
+                      ✓ {t('flashcard.feedback.correct', 'Correct!')}
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-center text-red-700 dark:text-red-300">
-                    <X className="w-6 h-6 mr-2" aria-hidden="true" />
+                    <XCircle className="w-7 h-7 mr-3 flex-shrink-0" aria-hidden="true" />
                     <span className="text-lg font-semibold">
-                      {t('flashcard.feedback.incorrect', 'Not quite')}
+                      ✗ {t('flashcard.feedback.incorrect', 'Not quite')}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="text-center">
-                <p className={`text-body-md text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
+              <div className="relative z-10 text-center">
+                <p className={`text-sm text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
                   {t('flashcard.correctAnswer', 'Correct answer')}
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
                   {targetWord}
                 </p>
                 {!isCorrect && userInput.trim() && (
-                  <p className="text-body-md text-gray-500 dark:text-gray-400 mt-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     {t('flashcard.yourAnswer', 'Your answer')}: <span className="font-medium">{userInput}</span>
                   </p>
                 )}
@@ -234,7 +259,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               {/* Phase 3: Difficulty Rating Buttons */}
               {onDifficultyRating && (
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                  <p className={`text-body-md text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.sm} text-center`}>
+                  <p className={`text-sm text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.sm} text-center`}>
                     {t('flashcard.difficulty.prompt', 'How well did you know this?')}
                   </p>
                   <div className={`grid grid-cols-2 md:grid-cols-4 ${GAP.sm}`} data-testid="difficulty-buttons">
@@ -243,18 +268,21 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(1)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.again', 'Review this card soon (same session)')}
+                      aria-label={`${t('flashcard.difficulty.again', 'Again')} - ${t('flashcard.difficulty.tooltip.again', 'Review this card soon (same session)')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 1
                           ? 'bg-red-500 text-white ring-2 ring-red-400'
                           : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      whileTap={!prefersReducedMotion && difficultyRating === undefined ? { scale: 0.95 } : {}}
-                      transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9, rotate: [-2, 2, -2, 2, 0] } : {}}
                       data-testid="difficulty-again"
-                      aria-label={t('flashcard.difficulty.again', 'Again')}
                     >
-                      <AriaLabel label="Thumbs down" className="text-2xl mb-1">👎</AriaLabel>
-                      <span className="text-body-md">{t('flashcard.difficulty.again', 'Again')}</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <XCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">👎</span>
+                      </div>
+                      <span className="text-sm">{t('flashcard.difficulty.again', 'Again')}</span>
                     </motion.button>
 
                     {/* Hard Button */}
@@ -262,18 +290,21 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(2)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.hard', 'Show again in a few minutes')}
+                      aria-label={`${t('flashcard.difficulty.hard', 'Hard')} - ${t('flashcard.difficulty.tooltip.hard', 'Show again in a few minutes')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 2
                           ? 'bg-orange-500 text-white ring-2 ring-orange-400'
                           : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      whileTap={!prefersReducedMotion && difficultyRating === undefined ? { scale: 0.95 } : {}}
-                      transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-hard"
-                      aria-label={t('flashcard.difficulty.hard', 'Hard')}
                     >
-                      <AriaLabel label="Thinking face" className="text-2xl mb-1">🤔</AriaLabel>
-                      <span className="text-body-md">{t('flashcard.difficulty.hard', 'Hard')}</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <AlertCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">🤔</span>
+                      </div>
+                      <span className="text-sm">{t('flashcard.difficulty.hard', 'Hard')}</span>
                     </motion.button>
 
                     {/* Good Button */}
@@ -281,18 +312,21 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(3)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.good', 'Show again in ~1 day')}
+                      aria-label={`${t('flashcard.difficulty.good', 'Good')} - ${t('flashcard.difficulty.tooltip.good', 'Show again in ~1 day')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 3
                           ? 'bg-blue-500 text-white ring-2 ring-blue-400'
                           : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      whileTap={!prefersReducedMotion && difficultyRating === undefined ? { scale: 0.95 } : {}}
-                      transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-good"
-                      aria-label={t('flashcard.difficulty.good', 'Good')}
                     >
-                      <AriaLabel label="Slightly smiling face" className="text-2xl mb-1">🙂</AriaLabel>
-                      <span className="text-body-md">{t('flashcard.difficulty.good', 'Good')}</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <CheckCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">🙂</span>
+                      </div>
+                      <span className="text-sm">{t('flashcard.difficulty.good', 'Good')}</span>
                     </motion.button>
 
                     {/* Easy Button */}
@@ -300,33 +334,35 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       onClick={() => handleDifficultyRating(4)}
                       disabled={difficultyRating !== undefined}
                       title={t('flashcard.difficulty.tooltip.easy', 'Show again in several days')}
+                      aria-label={`${t('flashcard.difficulty.easy', 'Easy')} - ${t('flashcard.difficulty.tooltip.easy', 'Show again in several days')}`}
                       className={`flex flex-col items-center justify-center min-h-[56px] px-4 py-3 rounded-xl font-semibold transition-all ${
                         difficultyRating === 4
                           ? 'bg-green-500 text-white ring-2 ring-green-400'
                           : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      whileTap={!prefersReducedMotion && difficultyRating === undefined ? { scale: 0.95 } : {}}
-                      transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+                      whileHover={difficultyRating === undefined ? { scale: 1.05 } : {}}
+                      whileTap={difficultyRating === undefined ? { scale: 0.9 } : {}}
                       data-testid="difficulty-easy"
-                      aria-label={t('flashcard.difficulty.easy', 'Easy')}
                     >
-                      <AriaLabel label="Smiling face" className="text-2xl mb-1">😊</AriaLabel>
-                      <span className="text-body-md">{t('flashcard.difficulty.easy', 'Easy')}</span>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Star className="w-5 h-5" aria-hidden="true" />
+                        <span className="text-xl">😊</span>
+                      </div>
+                      <span className="text-sm">{t('flashcard.difficulty.easy', 'Easy')}</span>
                     </motion.button>
                   </div>
                   {difficultyRating && (
                     <motion.p
-                      initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                      animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                      transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
-                      className="text-body-sm text-center text-gray-500 dark:text-gray-400 mt-2"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2"
                     >
                       {t('flashcard.difficulty.saved', 'Rating saved! You can continue to the next word.')}
                     </motion.p>
                   )}
                 </div>
               )}
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
@@ -336,17 +372,16 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             onClick={onPrevious}
             disabled={!canGoPrevious}
             className="flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
-            whileTap={!prefersReducedMotion && canGoPrevious ? { scale: 0.97 } : {}}
-            transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+            whileHover={canGoPrevious ? { scale: 1.05 } : {}}
+            whileTap={canGoPrevious ? { scale: 0.95 } : {}}
             data-testid="previous-button"
-            aria-label={t('flashcard.navigation.previous')}
           >
-            <ChevronLeft className="w-5 h-5 mr-2" aria-hidden="true" />
+            <ChevronLeft className="w-5 h-5 mr-2" />
             {t('flashcard.navigation.previous')}
           </motion.button>
 
-          <div className="text-center" role="status" aria-live="polite">
-            <p className="text-body-md text-gray-600 dark:text-gray-400">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {t('flashcard.navigation.progress', { current: currentIndex + 1, total: totalWords })}
             </p>
           </div>
@@ -355,23 +390,22 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             onClick={onNext}
             disabled={!canGoNext}
             className="flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
-            whileTap={!prefersReducedMotion && canGoNext ? { scale: 0.97 } : {}}
-            transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
+            whileHover={canGoNext ? { scale: 1.05 } : {}}
+            whileTap={canGoNext ? { scale: 0.95 } : {}}
             data-testid="next-button"
-            aria-label={t('flashcard.navigation.next')}
           >
             {t('flashcard.navigation.next')}
-            <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
+            <ChevronRight className="w-5 h-5 ml-2" />
           </motion.button>
         </div>
       </Card>
 
       {/* Keyboard Shortcuts Help */}
       <motion.div
-        initial={prefersReducedMotion ? {} : { opacity: 0 }}
-        animate={prefersReducedMotion ? {} : { opacity: 1 }}
-        transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
-        className={`${MARGIN_BOTTOM.lg} text-center text-body-md text-gray-500 dark:text-gray-400`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className={`${MARGIN_BOTTOM.lg} text-center text-sm text-gray-500 dark:text-gray-400`}
       >
         <p>{t('flashcard.shortcuts')}</p>
       </motion.div>
