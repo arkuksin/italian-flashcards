@@ -78,7 +78,7 @@ export const Analytics: React.FC = () => {
   }, [user])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+    <main id="main-content" className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow">
         <Container width="analytics" className="py-4">
@@ -313,6 +313,6 @@ export const Analytics: React.FC = () => {
           </div>
         )}
       </Container>
-    </div>
+    </main>
   )
 }

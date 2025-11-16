@@ -618,7 +618,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div data-testid="protected-content">
+    <main id="main-content" data-testid="protected-content">
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
@@ -948,6 +948,6 @@ export const Dashboard: React.FC = () => {
         isSaving={isSaving}
         destinationLabel={destinationLabel}
       />
-    </div>
+    </main>
   )
 }

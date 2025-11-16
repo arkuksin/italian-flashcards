@@ -6,6 +6,7 @@ import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 import { Card } from './ui/Card'
 import { VERTICAL_SPACING, GAP } from '../constants/spacing'
+import { useRovingTabIndex } from '../hooks/useRovingTabIndex'
 
 interface CategoryFilterProps {
   userId: string
@@ -30,6 +31,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [saving, setSaving] = useState(false)
   const [retryKey, setRetryKey] = useState(0)
   const hasNotifiedRef = useRef(false)
+
+  // Keyboard navigation with roving tabindex
+  const { currentIndex, setCurrentIndex, handleKeyDown } = useRovingTabIndex({
+    itemCount: categories.length,
+    columns: 2, // Grid has 2 columns on sm screens and above
+    loop: true,
+  })
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -121,21 +129,20 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8" data-testid="category-filter" role="status">
-        <Loader2 className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" aria-hidden="true" />
-        <span className="ml-2 text-body-md text-gray-500 dark:text-gray-400">{t('filter.loading')}</span>
+      <div className="flex items-center justify-center py-8" data-testid="category-filter">
+        <Loader2 className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
+        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{t('filter.loading')}</span>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" data-testid="category-filter" role="alert">
-        <p className="text-body-md text-red-800 dark:text-red-200">{t('filter.error')}</p>
+      <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" data-testid="category-filter">
+        <p className="text-sm text-red-800 dark:text-red-200">{t('filter.error')}</p>
         <button
           onClick={handleRetry}
-          className="mt-2 text-label-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 underline"
-          aria-label={t('filter.retry')}
+          className="mt-2 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium underline"
         >
           {t('filter.retry')}
         </button>
@@ -153,28 +160,26 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Tag className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Tag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 className="font-semibold text-gray-800 dark:text-gray-200">
             {t('filter.title')}
           </h3>
-          <span className="text-body-sm text-gray-500 dark:text-gray-400" role="status">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             ({t('filter.selected', { count: selected.size })})
           </span>
         </div>
-        <div className="flex gap-2" role="group" aria-label="Category selection controls">
+        <div className="flex gap-2">
           <button
             onClick={handleSelectAll}
-            className="text-label-md px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
+            className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
             data-testid="select-all-categories"
-            aria-label="Select all categories"
           >
             {t('filter.all')}
           </button>
           <button
             onClick={handleSelectNone}
-            className="text-label-md px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
+            className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded transition-colors"
             data-testid="select-none-categories"
-            aria-label="Deselect all categories"
           >
             {t('filter.none')}
           </button>
@@ -188,12 +193,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           animate={{ opacity: 1, scale: 1 }}
           className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg"
           data-testid="category-suggestion"
-          role="status"
-          aria-live="polite"
         >
           <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
-            <div className="flex-1 text-body-md">
+            <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+            <div className="flex-1 text-sm">
               <span className="font-medium text-gray-800 dark:text-gray-200">{t('filter.suggestion')}: </span>
               <span className="text-gray-700 dark:text-gray-300">
                 {t('filter.suggestionText', { category: getCategoryLabel(suggestion) })}
@@ -202,7 +205,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 onClick={() => handleToggle(suggestion)}
                 className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                 data-testid="toggle-suggested-category"
-                aria-label={selected.has(suggestion) ? `Remove ${getCategoryLabel(suggestion)} from selection` : `Add ${getCategoryLabel(suggestion)} to selection`}
               >
                 {selected.has(suggestion) ? t('filter.selected_label') : t('filter.select')}
               </button>
@@ -212,36 +214,54 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       )}
 
       {/* Category Grid */}
-      <div className={`grid grid-cols-1 sm:grid-cols-2 ${GAP.xs} max-h-80 overflow-y-auto pr-1`}>
+      <div
+        role="grid"
+        aria-label={t('filter.title')}
+        className={`grid grid-cols-1 sm:grid-cols-2 ${GAP.xs} max-h-80 overflow-y-auto pr-1`}
+      >
         {categories.map((category, index) => (
           <Card
             key={category.category}
             variant="outlined"
             size="compact"
-            as={motion.label}
+            as={motion.div}
+            role="gridcell"
+            tabIndex={currentIndex === index ? 0 : -1}
+            onFocus={() => setCurrentIndex(index)}
+            onKeyDown={(e) => {
+              handleKeyDown(e, index)
+              // Handle selection with Space or Enter
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault()
+                handleToggle(category.category)
+              }
+            }}
+            onClick={() => handleToggle(category.category)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
-            className={`flex items-start gap-3 cursor-pointer transition-all duration-200 ${
+            className={`flex items-start gap-3 cursor-pointer transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               selected.has(category.category)
                 ? '!border-blue-500 !bg-blue-50 dark:!bg-blue-900/20 dark:!border-blue-400'
                 : 'hover:!border-gray-300 dark:hover:!border-gray-600'
             }`}
+            aria-checked={selected.has(category.category)}
             data-testid={`category-option-${category.category}`}
           >
             <input
               type="checkbox"
               checked={selected.has(category.category)}
               onChange={() => handleToggle(category.category)}
-              className="mt-1 w-5 h-5 text-blue-600 rounded"
-              id={`category-checkbox-${category.category}`}
-              aria-label={getCategoryLabel(category.category)}
+              tabIndex={-1}
+              className="mt-1 w-5 h-5 text-blue-600 rounded pointer-events-none"
+              aria-hidden="true"
             />
             <div className="flex-1 min-w-0">
-              <div className="font-medium text-gray-800 dark:text-gray-200 truncate" id={`category-label-${category.category}`}>
+              <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
                 {getCategoryLabel(category.category)}
               </div>
-              <div className="text-body-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                 <div>{t('filter.wordsCount', { count: category.total_words })}</div>
                 {category.learned_words > 0 && (
                   <div>
@@ -256,7 +276,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               </div>
             </div>
             {selected.has(category.category) && (
-              <Check className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" aria-hidden="true" />
+              <Check className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
             )}
           </Card>
         ))}
@@ -266,13 +286,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       <button
         onClick={handleSavePreferences}
         disabled={saving}
-        className="flex items-center gap-2 text-body-md text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 underline disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 underline disabled:opacity-50 disabled:cursor-not-allowed"
         data-testid="save-category-preferences"
-        aria-label={saving ? t('filter.saving') : t('filter.saveAsDefault')}
       >
         {saving ? (
           <>
-            <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+            <Loader2 className="w-3 h-3 animate-spin" />
             {t('filter.saving')}
           </>
         ) : (
