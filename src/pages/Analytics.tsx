@@ -105,33 +105,24 @@ export const Analytics: React.FC = () => {
 
       {/* Main Content */}
       <Container width="analytics" className="py-8">
-        {loading ? (
-          <div className="grid lg:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <div className="animate-pulse space-y-4">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-                  <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                </div>
-              </div>
-            ))}
+        <div className="space-y-6">
+          {/* Learning Velocity */}
+          <div data-testid="learning-velocity-section">
+            <LearningVelocityChart data={velocityData} loading={loading} />
           </div>
-        ) : (
-          <div className="space-y-6">
-            {/* Learning Velocity */}
-            <div data-testid="learning-velocity-section">
-              <LearningVelocityChart data={velocityData} />
-            </div>
 
-            {/* Retention Analysis and Review Heatmap */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              <div data-testid="retention-analysis-section">
-                <RetentionAnalysis data={retentionData} />
-              </div>
-              <div data-testid="review-heatmap-section">
-                <ReviewHeatmap data={heatmapData} />
-              </div>
+          {/* Retention Analysis and Review Heatmap */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div data-testid="retention-analysis-section">
+              <RetentionAnalysis data={retentionData} loading={loading} />
             </div>
+            <div data-testid="review-heatmap-section">
+              <ReviewHeatmap data={heatmapData} loading={loading} />
+            </div>
+          </div>
+
+          {!loading && (
+            <>
 
             {/* Category Performance */}
             {categoryData.length > 0 && (
@@ -289,29 +280,31 @@ export const Analytics: React.FC = () => {
               </div>
             )}
 
-            {/* Empty State */}
-            {velocityData.length === 0 &&
-              retentionData.retentionByLevel.length === 0 &&
-              categoryData.length === 0 &&
-              heatmapData.length === 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center">
-                  <BarChart3 className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    No Analytics Data Yet
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    Start practicing to see detailed analytics about your learning progress!
-                  </p>
-                  <button
-                    onClick={() => navigate('/')}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    Start Practicing
-                  </button>
-                </div>
-              )}
-          </div>
-        )}
+          {/* Empty State */}
+          {!loading &&
+            velocityData.length === 0 &&
+            retentionData.retentionByLevel.length === 0 &&
+            categoryData.length === 0 &&
+            heatmapData.length === 0 && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center">
+                <BarChart3 className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  No Analytics Data Yet
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Start practicing to see detailed analytics about your learning progress!
+                </p>
+                <button
+                  onClick={() => navigate('/')}
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Start Practicing
+                </button>
+              </div>
+            )}
+            </>
+          )}
+        </div>
       </Container>
     </main>
   )
