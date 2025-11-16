@@ -50,6 +50,8 @@ const config = defineConfig({
     storageState: 'playwright-auth-state.json',
     /* Force English locale for consistent test assertions */
     locale: 'en-US',
+    /* Disable animations to prevent AnimatePresence timing issues */
+    reducedMotion: 'reduce',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Take screenshots on failure */
