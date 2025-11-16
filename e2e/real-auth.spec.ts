@@ -97,7 +97,7 @@ test.describe('Real Authentication Flow', () => {
     // Test navigation
     await page.getByRole('button', { name: 'Next' }).click();
     // Wait for animations to complete (Chromium needs more time)
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     await expect(page.getByText('2 of 300')).toBeVisible();
   });
 
@@ -110,10 +110,13 @@ test.describe('Real Authentication Flow', () => {
     // Wait for authentication
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
 
-    // Find and click sign out button (should be in header)
-    const signOutButton = page.locator('[data-testid="sign-out-button"]');
-    await expect(signOutButton).toBeVisible({ timeout: 5000 });
-    await signOutButton.click();
+    // Open user profile dropdown
+    await page.click('[data-testid="user-profile-button"]');
+
+    // Find and click logout button in dropdown
+    const logoutButton = page.locator('[data-testid="logout-button"]');
+    await expect(logoutButton).toBeVisible({ timeout: 5000 });
+    await logoutButton.click();
 
     // Should return to login screen
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 5000 });
