@@ -259,7 +259,8 @@ export const Dashboard: React.FC = () => {
   })
 
   const handleNext = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex < words.length - 1) {
       setState(prev => ({
@@ -276,7 +277,8 @@ export const Dashboard: React.FC = () => {
   }
 
   const handlePrevious = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex > 0) {
       setState(prev => ({
@@ -616,7 +618,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div data-testid="protected-content">
+    <main id="main-content" data-testid="protected-content">
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
@@ -946,6 +948,6 @@ export const Dashboard: React.FC = () => {
         isSaving={isSaving}
         destinationLabel={destinationLabel}
       />
-    </div>
+    </main>
   )
 }

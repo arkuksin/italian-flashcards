@@ -1,6 +1,7 @@
 import React from 'react'
 import { Brain, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { RetentionMetrics } from '../services/analyticsService'
+import { getMasteryBadgeColors } from '../constants/masteryColors'
 import { MARGIN_BOTTOM, VERTICAL_SPACING, PADDING } from '../constants/spacing'
 
 interface RetentionAnalysisProps {
@@ -119,15 +120,7 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
               <div key={level.level}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <div className={`
-                      w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold
-                      ${level.level === 0 ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' : ''}
-                      ${level.level === 1 ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : ''}
-                      ${level.level === 2 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : ''}
-                      ${level.level === 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : ''}
-                      ${level.level === 4 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : ''}
-                      ${level.level === 5 ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : ''}
-                    `}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${getMasteryBadgeColors(level.level)}`}>
                       L{level.level}
                     </div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
