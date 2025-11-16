@@ -20,7 +20,11 @@ interface RetentionAnalysisProps {
  */
 export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, loading }) => {
   if (loading) {
-    return <ChartSkeleton height="h-32" />
+    return (
+      <div data-testid="retention-analysis">
+        <ChartSkeleton height="h-32" />
+      </div>
+    )
   }
 
   const getTrendIcon = () => {

@@ -19,12 +19,16 @@ interface LearningVelocityChartProps {
  */
 export const LearningVelocityChart: React.FC<LearningVelocityChartProps> = ({ data, loading }) => {
   if (loading) {
-    return <ChartSkeleton />
+    return (
+      <div data-testid="learning-velocity-chart">
+        <ChartSkeleton />
+      </div>
+    )
   }
 
   if (data.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" data-testid="learning-velocity-chart">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

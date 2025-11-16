@@ -19,7 +19,11 @@ interface ReviewHeatmapProps {
  */
 export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) => {
   if (loading) {
-    return <ChartSkeleton height="h-48" />
+    return (
+      <div data-testid="review-heatmap">
+        <ChartSkeleton height="h-48" />
+      </div>
+    )
   }
 
   // Create a map of dates to data
