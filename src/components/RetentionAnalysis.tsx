@@ -1,7 +1,7 @@
 import React from 'react'
 import { Brain, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { RetentionMetrics } from '../services/analyticsService'
-import { MARGIN_BOTTOM, VERTICAL_SPACING, PADDING } from '../constants/spacing'
+import { MARGIN_BOTTOM, PADDING } from '../constants/spacing'
 import { ChartSkeleton } from './ui/skeletons/ChartSkeleton'
 
 interface RetentionAnalysisProps {

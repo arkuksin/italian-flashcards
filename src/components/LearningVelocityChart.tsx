@@ -1,7 +1,7 @@
 import React from 'react'
 import { TrendingUp } from 'lucide-react'
 import { LearningVelocityData } from '../services/analyticsService'
-import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
+import { MARGIN_BOTTOM, GAP, PADDING } from '../constants/spacing'
 import { ChartSkeleton } from './ui/skeletons/ChartSkeleton'
 
 interface LearningVelocityChartProps {
