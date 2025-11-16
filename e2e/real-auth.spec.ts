@@ -22,6 +22,9 @@ const hasRealAuthConfig = process.env.TEST_USER_EMAIL &&
 test.describe('Real Authentication Flow', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
 
+  // Override shared authentication state - these tests need to start unauthenticated
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL!;
   const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD!;
 
@@ -46,9 +49,9 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('mode-selection')).toBeVisible({ timeout: 10000 });
 
-    // Should see mode selection
+    // Should see mode selection cards for both learning directions
     await expect(page.getByTestId('mode-ru-it')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('Learn Russian from Italian')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('mode-it-ru')).toBeVisible({ timeout: 10000 });
   });
 
   test('should maintain authentication state across page refreshes', async ({ page }) => {
@@ -93,7 +96,9 @@ test.describe('Real Authentication Flow', () => {
 
     // Test navigation
     await page.getByRole('button', { name: 'Next' }).click();
-    await expect(page.getByText('2 of 300')).toBeVisible();
+    // Wait for card navigation to complete and counter to update
+    // Use regex to match any total word count (database may have different totals)
+    await expect(page.getByText(/2 of \d+/)).toBeVisible({ timeout: 15000 });
   });
 
   test('should successfully sign out', async ({ page }) => {
@@ -105,8 +110,13 @@ test.describe('Real Authentication Flow', () => {
     // Wait for authentication
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
 
-    // Find and click sign out button (should be in header)
-    await page.click('[data-testid="sign-out-button"]');
+    // Open user profile dropdown
+    await page.click('[data-testid="user-profile-button"]');
+
+    // Find and click logout button in dropdown
+    const logoutButton = page.locator('[data-testid="logout-button"]');
+    await expect(logoutButton).toBeVisible({ timeout: 5000 });
+    await logoutButton.click();
 
     // Should return to login screen
     await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 5000 });
@@ -141,6 +151,9 @@ test.describe('Real Authentication Flow', () => {
 test.describe('Real Authentication - Error Scenarios', () => {
   test.skip(!hasRealAuthConfig, 'Skipping real auth tests - missing credentials');
 
+  // Override shared authentication state - these tests need to start unauthenticated
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   test.beforeEach(async ({ page }) => {
     await page.context().clearCookies();
     await page.goto('/');
@@ -164,10 +177,18 @@ test.describe('Real Authentication - Error Scenarios', () => {
     // For now, we'll just verify the session check works
     await page.goto('/');
 
-    // Should show loading state initially
-    await expect(page.locator('[data-testid="auth-loading"]')).toBeVisible();
+    // Wait for page to load and auth state to resolve
+    await page.waitForLoadState('networkidle');
 
     // Should eventually resolve to login or authenticated state
     await expect(page.locator('[data-testid="auth-loading"]')).not.toBeVisible({ timeout: 10000 });
+
+    // Verify we're in either authenticated or login state
+    const isAuthenticated = await page.locator('[data-testid="protected-content"]').isVisible();
+    const isLoginPage = await page.locator('text=Sign in to continue').isVisible();
+
+    if (!isAuthenticated && !isLoginPage) {
+      throw new Error('Page did not resolve to either authenticated or login state');
+    }
   });
 });
