@@ -48,6 +48,8 @@ const config = defineConfig({
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:5173',
     /* Use shared authentication state for all tests */
     storageState: 'playwright-auth-state.json',
+    /* Force English locale for consistent test assertions */
+    locale: 'en-US',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Take screenshots on failure */
