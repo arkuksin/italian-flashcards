@@ -79,7 +79,7 @@ export const Login: React.FC = () => {
         ))}
       </div>
 
-      <main className="relative z-10 space-y-20 pb-16">
+      <main id="main-content" className="relative z-10 space-y-20 pb-16">
         <Container width="analytics" className="pt-12 lg:pt-20">
           <section className="flex flex-col gap-12 lg:gap-16 lg:flex-row items-stretch">
           <div className="flex-1 flex flex-col justify-center">
