@@ -102,7 +102,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
       >
       {/* Main Card */}
-      <Card variant="elevated" size="comfortable" as={motion.div} layout>
+      <Card variant="elevated" size="comfortable" as={motion.div}>
         {/* Word Display */}
         <div className={`text-center ${MARGIN_BOTTOM.xl}`}>
           <motion.div
@@ -112,7 +112,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
             transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
             className={MARGIN_BOTTOM.md}
           >
-            <p className={`text-sm font-medium text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>
+            <p className={`text-body-md font-medium text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.xs}`}>
               {learningDirection === 'ru-it' ? t('flashcard.translateToItalian') : t('flashcard.translateToRussian')}
             </p>
             <h2
@@ -122,7 +122,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               {sourceWord}
             </h2>
             {word.category && (
-              <span className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full">
+              <span className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-body-md font-medium rounded-full">
                 {word.category}
               </span>
             )}
@@ -144,7 +144,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
+                <span className="text-body-sm text-gray-600 dark:text-gray-400 ml-1">
                   {getMasteryLabel(wordProgress.mastery_level)}
                 </span>
               </div>
@@ -171,7 +171,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               <motion.button
                 type="submit"
                 disabled={!userInput.trim()}
-                className="flex-shrink-0 w-full sm:w-auto px-8 py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed font-medium text-base min-h-[64px] flex items-center justify-center gap-2"
+                className="flex-shrink-0 w-full sm:w-auto px-8 py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed text-label-lg min-h-[64px] flex items-center justify-center gap-2"
                 whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
                 transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
                 data-testid="answer-submit-button"
@@ -216,14 +216,14 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               </div>
 
               <div className="text-center">
-                <p className={`text-sm text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
+                <p className={`text-body-md text-gray-600 dark:text-gray-400 ${SPACING_PATTERNS.listItem}`}>
                   {t('flashcard.correctAnswer', 'Correct answer')}
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="correct-answer">
                   {targetWord}
                 </p>
                 {!isCorrect && userInput.trim() && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  <p className="text-body-md text-gray-500 dark:text-gray-400 mt-2">
                     {t('flashcard.yourAnswer', 'Your answer')}: <span className="font-medium">{userInput}</span>
                   </p>
                 )}
@@ -232,7 +232,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
               {/* Phase 3: Difficulty Rating Buttons */}
               {onDifficultyRating && (
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                  <p className={`text-sm text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.sm} text-center`}>
+                  <p className={`text-body-md text-gray-600 dark:text-gray-400 ${MARGIN_BOTTOM.sm} text-center`}>
                     {t('flashcard.difficulty.prompt', 'How well did you know this?')}
                   </p>
                   <div className={`grid grid-cols-2 md:grid-cols-4 ${GAP.sm}`} data-testid="difficulty-buttons">
@@ -251,7 +251,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       data-testid="difficulty-again"
                     >
                       <span className="text-2xl mb-1">👎</span>
-                      <span className="text-sm">{t('flashcard.difficulty.again', 'Again')}</span>
+                      <span className="text-body-md">{t('flashcard.difficulty.again', 'Again')}</span>
                     </motion.button>
 
                     {/* Hard Button */}
@@ -269,7 +269,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       data-testid="difficulty-hard"
                     >
                       <span className="text-2xl mb-1">🤔</span>
-                      <span className="text-sm">{t('flashcard.difficulty.hard', 'Hard')}</span>
+                      <span className="text-body-md">{t('flashcard.difficulty.hard', 'Hard')}</span>
                     </motion.button>
 
                     {/* Good Button */}
@@ -287,7 +287,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       data-testid="difficulty-good"
                     >
                       <span className="text-2xl mb-1">🙂</span>
-                      <span className="text-sm">{t('flashcard.difficulty.good', 'Good')}</span>
+                      <span className="text-body-md">{t('flashcard.difficulty.good', 'Good')}</span>
                     </motion.button>
 
                     {/* Easy Button */}
@@ -305,7 +305,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       data-testid="difficulty-easy"
                     >
                       <span className="text-2xl mb-1">😊</span>
-                      <span className="text-sm">{t('flashcard.difficulty.easy', 'Easy')}</span>
+                      <span className="text-body-md">{t('flashcard.difficulty.easy', 'Easy')}</span>
                     </motion.button>
                   </div>
                   {difficultyRating && (
@@ -313,7 +313,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
                       initial={prefersReducedMotion ? {} : { opacity: 0 }}
                       animate={prefersReducedMotion ? {} : { opacity: 1 }}
                       transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
-                      className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2"
+                      className="text-body-sm text-center text-gray-500 dark:text-gray-400 mt-2"
                     >
                       {t('flashcard.difficulty.saved', 'Rating saved! You can continue to the next word.')}
                     </motion.p>
@@ -339,7 +339,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
           </motion.button>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-body-md text-gray-600 dark:text-gray-400">
               {t('flashcard.navigation.progress', { current: currentIndex + 1, total: totalWords })}
             </p>
           </div>
@@ -363,7 +363,7 @@ export const FlashCard: React.FC<FlashCardProps> = ({
         initial={prefersReducedMotion ? {} : { opacity: 0 }}
         animate={prefersReducedMotion ? {} : { opacity: 1 }}
         transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
-        className={`${MARGIN_BOTTOM.lg} text-center text-sm text-gray-500 dark:text-gray-400`}
+        className={`${MARGIN_BOTTOM.lg} text-center text-body-md text-gray-500 dark:text-gray-400`}
       >
         <p>{t('flashcard.shortcuts')}</p>
       </motion.div>
