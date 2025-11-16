@@ -7,6 +7,8 @@ import { useProgress } from '../hooks/useProgress';
 import { Card } from './ui/Card';
 import { AriaLabel } from './ui/AriaLabel';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { ANIMATION_DURATIONS } from '../constants/animations';
 
 interface ModeSelectionProps {
   onModeSelect: (direction: LearningDirection, selectedCategories?: string[]) => void;
@@ -15,6 +17,7 @@ interface ModeSelectionProps {
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, selectedCategories }) => {
   const { t } = useTranslation('dashboard');
+  const prefersReducedMotion = useReducedMotion();
   const { getStats } = useProgress();
 
   const stats = getStats();
@@ -28,10 +31,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
       {/* Hero Header */}
       <div className={`text-center ${MARGIN_BOTTOM.md} md:${MARGIN_BOTTOM.lg}`}>
         <Globe className={`w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto ${MARGIN_BOTTOM.sm} md:${MARGIN_BOTTOM.md}`} aria-hidden="true" />
-        <h2 className={`text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 ${MARGIN_BOTTOM.xs}`}>
+        <h2 className={`text-headline-lg text-gray-800 dark:text-gray-100 ${MARGIN_BOTTOM.xs}`}>
           {t('modeSelection.title')}
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
+        <p className="text-gray-600 dark:text-gray-300 text-body-lg">
           {t('modeSelection.subtitle')}
         </p>
       </div>
@@ -47,8 +50,8 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           onClick={() => handleModeSelect('ru-it')}
           aria-label={`${t('modeSelection.ruToIt.title')} - ${t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} - ${t('modeSelection.accuracy', { accuracy: stats.accuracy })}`}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+          transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">
@@ -56,10 +59,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
                 🇷🇺
               </AriaLabel>
               <div className="text-left">
-                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
+                <div className="text-headline-sm text-gray-800 dark:text-gray-100">
                   {t('modeSelection.ruToIt.title')}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
+                <div className="text-gray-600 dark:text-gray-400 mt-1 text-body-sm">
                   {t('modeSelection.ruToIt.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
@@ -77,8 +80,8 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
           onClick={() => handleModeSelect('it-ru')}
           aria-label={`${t('modeSelection.itToRu.title')} - ${t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} - ${t('modeSelection.accuracy', { accuracy: stats.accuracy })}`}
           className="w-full min-h-[120px] !border-blue-300 dark:!border-blue-700 hover:!border-blue-500 dark:hover:!border-blue-500 hover:shadow-xl transition-all group"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+          transition={{ duration: ANIMATION_DURATIONS.fast / 1000 }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 md:gap-4">
@@ -86,10 +89,10 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onModeSelect, sele
                 🇮🇹
               </AriaLabel>
               <div className="text-left">
-                <div className="font-bold text-gray-800 dark:text-gray-100" style={{ fontSize: 'clamp(1.125rem, 4vw, 1.5rem)' }}>
+                <div className="text-headline-sm text-gray-800 dark:text-gray-100">
                   {t('modeSelection.itToRu.title')}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 mt-1" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
+                <div className="text-gray-600 dark:text-gray-400 mt-1 text-body-sm">
                   {t('modeSelection.itToRu.words', { count: stats.totalWordsStudied })} · {t('modeSelection.accuracy', { accuracy: stats.accuracy })}
                 </div>
               </div>
