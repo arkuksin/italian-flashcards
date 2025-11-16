@@ -171,7 +171,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true)
 
     try {
-      const { error } = await supabase.auth.signOut()
+      // Use local scope so signing out from one browser doesn't revoke other sessions (e.g. Playwright global auth state)
+      const { error } = await supabase.auth.signOut({ scope: 'local' })
       if (error) {
         console.error('Error signing out:', error)
         throw error
