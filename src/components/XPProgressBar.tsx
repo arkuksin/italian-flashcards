@@ -20,10 +20,12 @@ export const XPProgressBar = () => {
     <div
       className={`bg-white dark:bg-gray-800 rounded-lg shadow-md ${PADDING.comfortable}`}
       data-testid="xp-progress-bar"
+      role="region"
+      aria-label={`Level ${level} experience progress`}
     >
       <div className={`flex items-center justify-between ${MARGIN_BOTTOM.xs}`}>
         <div className="flex items-center space-x-2">
-          <span className="text-2xl">⭐</span>
+          <span className="text-2xl" role="img" aria-label="Star">⭐</span>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Level {level}
           </h3>
@@ -35,7 +37,14 @@ export const XPProgressBar = () => {
         </div>
       </div>
 
-      <div className="relative w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+      <div
+        className="relative w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden"
+        role="progressbar"
+        aria-label="Experience points progress to next level"
+        aria-valuenow={xpInCurrentLevel}
+        aria-valuemin={0}
+        aria-valuemax={xpNeededForNext}
+      >
         <div
           className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-500 ease-out"
           style={{ width: `${progress * 100}%` }}
