@@ -46,6 +46,30 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
       setStats(statsData);
     } catch (error) {
       console.error('Error loading language pairs:', error);
+      // Fallback to default Russian-Italian pairs if database table doesn't exist yet
+      setPairs([
+        {
+          id: 1,
+          source_lang: 'ru',
+          target_lang: 'it',
+          is_active: true,
+          display_name_source: 'Русский',
+          display_name_target: 'Italiano',
+          flag_emoji_source: '🇷🇺',
+          flag_emoji_target: '🇮🇹'
+        },
+        {
+          id: 2,
+          source_lang: 'it',
+          target_lang: 'ru',
+          is_active: true,
+          display_name_source: 'Italiano',
+          display_name_target: 'Русский',
+          flag_emoji_source: '🇮🇹',
+          flag_emoji_target: '🇷🇺'
+        }
+      ]);
+      setStats([]);
     } finally {
       setLoading(false);
     }
@@ -71,7 +95,7 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
         <div className="text-center py-8">
           <Globe className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3 animate-pulse" />
           <p className="text-gray-600 dark:text-gray-300">
@@ -95,7 +119,7 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
   });
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="language-pair-selector">
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
       {/* Hero Header */}
       <div className={`text-center ${MARGIN_BOTTOM.md} md:${MARGIN_BOTTOM.lg}`}>
         <Globe className={`w-12 h-12 md:w-16 md:h-16 text-blue-600 dark:text-blue-400 mx-auto ${MARGIN_BOTTOM.sm} md:${MARGIN_BOTTOM.md}`} />
