@@ -21,7 +21,30 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
   onSelect
 }) => {
   const { t } = useTranslation('dashboard');
-  const [pairs, setPairs] = useState<LanguagePair[]>([]);
+
+  // Initialize with fallback data to ensure component always renders
+  const [pairs, setPairs] = useState<LanguagePair[]>([
+    {
+      id: 1,
+      source_lang: 'ru',
+      target_lang: 'it',
+      is_active: true,
+      display_name_source: 'Русский',
+      display_name_target: 'Italiano',
+      flag_emoji_source: '🇷🇺',
+      flag_emoji_target: '🇮🇹'
+    },
+    {
+      id: 2,
+      source_lang: 'it',
+      target_lang: 'ru',
+      is_active: true,
+      display_name_source: 'Italiano',
+      display_name_target: 'Русский',
+      flag_emoji_source: '🇮🇹',
+      flag_emoji_target: '🇷🇺'
+    }
+  ]);
   const [stats, setStats] = useState<LanguagePairStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,34 +65,18 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
         languageService.getLanguagePairStats(user.id)
       ]);
 
-      setPairs(pairsData);
-      setStats(statsData);
+      // Only update if we got valid data from the database
+      if (pairsData && pairsData.length > 0) {
+        setPairs(pairsData);
+      }
+      // Always update stats (can be empty array)
+      if (statsData) {
+        setStats(statsData);
+      }
     } catch (error) {
       console.error('Error loading language pairs:', error);
-      // Fallback to default Russian-Italian pairs if database table doesn't exist yet
-      setPairs([
-        {
-          id: 1,
-          source_lang: 'ru',
-          target_lang: 'it',
-          is_active: true,
-          display_name_source: 'Русский',
-          display_name_target: 'Italiano',
-          flag_emoji_source: '🇷🇺',
-          flag_emoji_target: '🇮🇹'
-        },
-        {
-          id: 2,
-          source_lang: 'it',
-          target_lang: 'ru',
-          is_active: true,
-          display_name_source: 'Italiano',
-          display_name_target: 'Русский',
-          flag_emoji_source: '🇮🇹',
-          flag_emoji_target: '🇷🇺'
-        }
-      ]);
-      setStats([]);
+      // Keep using the default fallback data already in state
+      console.log('Using fallback language pairs (ru-it, it-ru)');
     } finally {
       setLoading(false);
     }
