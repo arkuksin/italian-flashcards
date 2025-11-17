@@ -130,8 +130,12 @@ const useProvideGamification = (): GamificationContextValue => {
     setError(null)
 
     try {
-      await Promise.all([loadDailyGoals(), loadAchievements()])
+      // Use Promise.allSettled to ensure loading completes even if individual queries fail
+      await Promise.allSettled([loadDailyGoals(), loadAchievements()])
+    } catch (error) {
+      console.warn('Error during gamification load, continuing with degraded functionality:', error)
     } finally {
+      // Always set loading to false to prevent blocking Dashboard render
       setLoading(false)
     }
   }, [loadDailyGoals, loadAchievements])
