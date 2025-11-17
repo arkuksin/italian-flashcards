@@ -3,12 +3,13 @@ import { ACHIEVEMENT_DEFINITIONS } from '../utils/gamification'
 import { AchievementType } from '../types'
 import { Card } from './ui/Card'
 import { MARGIN_BOTTOM, GAP } from '../constants/spacing'
+import { AchievementBadgesSkeleton } from './ui/skeletons/AchievementBadgesSkeleton'
 
 export const AchievementBadges = ({ maxDisplay = 6 }: { maxDisplay?: number }) => {
   const { achievements, loading } = useGamification()
 
   if (loading) {
-    return null
+    return <AchievementBadgesSkeleton />
   }
 
   const recentAchievements = achievements.slice(0, maxDisplay)

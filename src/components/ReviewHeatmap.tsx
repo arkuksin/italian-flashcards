@@ -1,7 +1,7 @@
 import React from 'react'
 import { Calendar } from 'lucide-react'
 import { ReviewHeatmapData } from '../services/analyticsService'
-import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING } from '../constants/spacing'
+import { MARGIN_BOTTOM, GAP, PADDING } from '../constants/spacing'
 
 interface ReviewHeatmapProps {
   data: ReviewHeatmapData[]
@@ -17,60 +17,55 @@ interface ReviewHeatmapProps {
  * - Activity patterns over time
  */
 export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) => {
-  if (loading) {
-    return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`}>
-        <div className={`animate-pulse ${VERTICAL_SPACING.md}`}>
-          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        </div>
-      </div>
-    )
+  // Create a map of dates to data (only if not loading)
+  const dataMap = !loading ? new Map<string, ReviewHeatmapData>() : new Map()
+  if (!loading) {
+    data.forEach(item => {
+      dataMap.set(item.date, item)
+    })
   }
 
-  // Create a map of dates to data
-  const dataMap = new Map<string, ReviewHeatmapData>()
-  data.forEach(item => {
-    dataMap.set(item.date, item)
-  })
-
-  // Get date range
+  // Get date range (only if not loading)
   const today = new Date()
   const startDate = new Date()
   startDate.setDate(today.getDate() - 89) // Last 90 days
 
-  // Generate all dates in range
+  // Generate all dates in range (only if not loading)
   const dates: Date[] = []
-  const currentDate = new Date(startDate)
-  while (currentDate <= today) {
-    dates.push(new Date(currentDate))
-    currentDate.setDate(currentDate.getDate() + 1)
-  }
-
-  // Group by weeks
-  const weeks: Date[][] = []
-  let currentWeek: Date[] = []
-
-  // Add empty cells at the beginning to align with the week
-  const firstDayOfWeek = dates[0].getDay()
-  for (let i = 0; i < firstDayOfWeek; i++) {
-    currentWeek.push(new Date(0)) // Placeholder date
-  }
-
-  dates.forEach(date => {
-    currentWeek.push(date)
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek)
-      currentWeek = []
+  if (!loading) {
+    const currentDate = new Date(startDate)
+    while (currentDate <= today) {
+      dates.push(new Date(currentDate))
+      currentDate.setDate(currentDate.getDate() + 1)
     }
-  })
+  }
 
-  // Add remaining days
-  if (currentWeek.length > 0) {
-    while (currentWeek.length < 7) {
+  // Group by weeks (only if not loading)
+  const weeks: Date[][] = []
+  if (!loading && dates.length > 0) {
+    let currentWeek: Date[] = []
+
+    // Add empty cells at the beginning to align with the week
+    const firstDayOfWeek = dates[0].getDay()
+    for (let i = 0; i < firstDayOfWeek; i++) {
       currentWeek.push(new Date(0)) // Placeholder date
     }
-    weeks.push(currentWeek)
+
+    dates.forEach(date => {
+      currentWeek.push(date)
+      if (currentWeek.length === 7) {
+        weeks.push(currentWeek)
+        currentWeek = []
+      }
+    })
+
+    // Add remaining days
+    if (currentWeek.length > 0) {
+      while (currentWeek.length < 7) {
+        currentWeek.push(new Date(0)) // Placeholder date
+      }
+      weeks.push(currentWeek)
+    }
   }
 
   const getIntensityClass = (reviewCount: number, accuracy: number) => {
@@ -101,9 +96,9 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
-  const maxReviews = Math.max(...data.map(d => d.reviewCount), 1)
-  const totalReviews = data.reduce((sum, d) => sum + d.reviewCount, 0)
-  const activeDays = data.filter(d => d.reviewCount > 0).length
+  const maxReviews = !loading && data.length > 0 ? Math.max(...data.map(d => d.reviewCount), 1) : 1
+  const totalReviews = !loading ? data.reduce((sum, d) => sum + d.reviewCount, 0) : 0
+  const activeDays = !loading ? data.filter(d => d.reviewCount > 0).length : 0
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="review-heatmap">
@@ -114,13 +109,24 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
             Review Activity
           </h3>
         </div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          Last 90 days
-        </div>
+        {!loading && (
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Last 90 days
+          </div>
+        )}
       </div>
 
-      {/* Summary */}
-      <div className={`grid grid-cols-3 ${GAP.md} ${MARGIN_BOTTOM.lg}`}>
+      {loading ? (
+        <div className="h-64 flex items-center justify-center">
+          <div className="animate-pulse space-y-4 w-full">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Summary */}
+          <div className={`grid grid-cols-3 ${GAP.md} ${MARGIN_BOTTOM.lg}`}>
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
           <div className="text-xs text-blue-600 dark:text-blue-400 mb-1">Total Reviews</div>
           <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalReviews}</div>
@@ -196,23 +202,25 @@ export const ReviewHeatmap: React.FC<ReviewHeatmapProps> = ({ data, loading }) =
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
-          <span>Less</span>
-          <div className="flex gap-1">
-            <div className="w-3 h-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-300 dark:bg-green-200 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-400 dark:bg-green-300 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-500 dark:bg-green-400 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-600 dark:bg-green-500 rounded-sm"></div>
+          {/* Legend */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+              <span>Less</span>
+              <div className="flex gap-1">
+                <div className="w-3 h-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-sm"></div>
+                <div className="w-3 h-3 bg-green-300 dark:bg-green-200 rounded-sm"></div>
+                <div className="w-3 h-3 bg-green-400 dark:bg-green-300 rounded-sm"></div>
+                <div className="w-3 h-3 bg-green-500 dark:bg-green-400 rounded-sm"></div>
+                <div className="w-3 h-3 bg-green-600 dark:bg-green-500 rounded-sm"></div>
+              </div>
+              <span>More</span>
+            </div>
+            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+              Green = High accuracy (≥80%), Yellow = Medium (60-79%), Red = Needs improvement (&lt;60%)
+            </div>
           </div>
-          <span>More</span>
-        </div>
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-          Green = High accuracy (≥80%), Yellow = Medium (60-79%), Red = Needs improvement (&lt;60%)
-        </div>
-      </div>
+        </>
+      )}
     </div>
   )
 }
