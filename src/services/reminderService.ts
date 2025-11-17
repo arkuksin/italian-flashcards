@@ -31,6 +31,11 @@ export class ReminderService {
       })
 
       if (error) {
+        // If function doesn't exist (migration not run), return empty array
+        if (error.message?.includes('function') || error.code === '42883') {
+          console.warn('get_due_words function not found - migration may not be applied yet')
+          return []
+        }
         console.error('Error fetching due words:', error)
         throw error
       }
@@ -38,7 +43,8 @@ export class ReminderService {
       return data || []
     } catch (error) {
       console.error('Failed to get due words:', error)
-      throw new Error('Failed to load due words')
+      // Return empty array instead of throwing to prevent crashes
+      return []
     }
   }
 
@@ -71,7 +77,13 @@ export class ReminderService {
       }
     } catch (error) {
       console.error('Failed to get due words breakdown:', error)
-      throw new Error('Failed to load due words breakdown')
+      // Return empty breakdown instead of throwing to prevent crashes
+      return {
+        overdue: [],
+        dueToday: [],
+        dueSoon: [],
+        total: 0
+      }
     }
   }
 
@@ -89,6 +101,11 @@ export class ReminderService {
         .maybeSingle()
 
       if (error) {
+        // If table doesn't exist (migration not run), return null
+        if (error.message?.includes('relation') || error.code === '42P01') {
+          console.warn('user_reminder_settings table not found - migration may not be applied yet')
+          return null
+        }
         console.error('Error fetching reminder settings:', error)
         throw error
       }
@@ -96,7 +113,8 @@ export class ReminderService {
       return data
     } catch (error) {
       console.error('Failed to get reminder settings:', error)
-      throw new Error('Failed to load reminder settings')
+      // Return null instead of throwing to prevent crashes
+      return null
     }
   }
 
