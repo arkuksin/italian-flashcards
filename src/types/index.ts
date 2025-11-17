@@ -210,3 +210,27 @@ export interface WotDHistoryDay {
   date: string
   completed: boolean
 }
+
+// Word Images Types
+
+export type ImageSource = 'unsplash' | 'pexels' | 'custom' | 'ai'
+export type ImageTiming = 'always' | 'after_answer' | 'never'
+export type ImageSize = 'small' | 'medium' | 'large'
+
+export interface WordImage {
+  id: string
+  word_id: number
+  image_url: string
+  thumbnail_url?: string | null
+  source: ImageSource
+  source_attribution?: string | null
+  alt_text: string
+  is_primary: boolean
+  created_at?: string
+}
+
+export interface ImagePreferences {
+  show_images: boolean
+  image_timing: ImageTiming
+  image_size: ImageSize
+}
