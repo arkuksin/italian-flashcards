@@ -18,6 +18,7 @@ import { AchievementBadges } from '../components/AchievementBadges'
 import { DailyGoalProgress } from '../components/DailyGoalProgress'
 import { WordOfTheDayWidget } from '../components/WordOfTheDayWidget'
 import { Container } from '../components/layout'
+import { SkipLink } from '../components/ui/SkipLink'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
@@ -79,6 +80,11 @@ export const Dashboard: React.FC = () => {
   const [showStatistics, setShowStatistics] = useState(true)
   const [showGamification, setShowGamification] = useState(true)
   const [showLeitner, setShowLeitner] = useState(true)
+  const derivePendingProgress = useCallback(() => {
+    if (!session || session.status !== 'active') return false
+    return Boolean(session.state.showAnswer && session.difficultyRating === undefined && session.isCorrect !== null)
+  }, [session])
+  const [hasPendingProgress, setHasPendingProgress] = useState<boolean>(() => derivePendingProgress())
   const ensureSessionId = useCallback(() => {
     if (sessionId) return sessionId
     const generatedId =
@@ -120,6 +126,7 @@ export const Dashboard: React.FC = () => {
       if (!hasSelectedMode) {
         setSessionId(null)
       }
+      setHasPendingProgress(false)
       return
     }
 
@@ -139,10 +146,12 @@ export const Dashboard: React.FC = () => {
       } else {
         document.documentElement.classList.remove('dark')
       }
+      setHasPendingProgress(derivePendingProgress())
     } else if (!hasSelectedMode && session.status === 'suspended') {
       setSessionId(session.id)
+      setHasPendingProgress(false)
     }
-  }, [hasSelectedMode, session])
+  }, [derivePendingProgress, hasSelectedMode, session])
 
   const currentWord = words[state.currentWordIndex]
 
@@ -218,34 +227,22 @@ export const Dashboard: React.FC = () => {
   }
 
   const savePendingProgress = useCallback(async () => {
-    if (!currentWord) return
-
-    if (!(state.showAnswer && difficultyRating === undefined && isCorrect !== null)) {
-      return
-    }
+    if (!currentWord || !hasPendingProgress || isCorrect === null) return
 
     setIsSaving(true)
+    setHasPendingProgress(false)
     try {
       await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
       await updateDailyProgress(isCorrect)
     } catch (error) {
       console.error('Error saving progress:', error)
+      setHasPendingProgress(true)
     } finally {
       setIsSaving(false)
     }
-  }, [
-    currentWord,
-    difficultyRating,
-    isCorrect,
-    responseTimeMs,
-    state.showAnswer,
-    updateDailyProgress,
-    updateProgress,
-  ])
+  }, [currentWord, hasPendingProgress, isCorrect, responseTimeMs, updateDailyProgress, updateProgress])
 
-  const hasUnsavedProgress =
-    (state.showAnswer && difficultyRating === undefined && isCorrect !== null) ||
-    (!state.showAnswer && state.userInput.trim().length > 0)
+  const hasUnsavedProgress = hasPendingProgress || (!state.showAnswer && state.userInput.trim().length > 0)
 
   const {
     isDialogOpen,
@@ -260,7 +257,8 @@ export const Dashboard: React.FC = () => {
   })
 
   const handleNext = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex < words.length - 1) {
       setState(prev => ({
@@ -277,7 +275,8 @@ export const Dashboard: React.FC = () => {
   }
 
   const handlePrevious = async () => {
-    await savePendingProgress()
+    // Save progress in background without blocking UI navigation
+    savePendingProgress()
 
     if (state.currentWordIndex > 0) {
       setState(prev => ({
@@ -316,6 +315,7 @@ export const Dashboard: React.FC = () => {
     const correct = userAnswer === targetWord
 
     setIsCorrect(correct)
+    setHasPendingProgress(true)
 
     setState(prev => ({
       ...prev,
@@ -325,12 +325,18 @@ export const Dashboard: React.FC = () => {
 
   const handleDifficultyRating = async (rating: DifficultyRating) => {
     setDifficultyRating(rating)
+    setHasPendingProgress(false)
 
-    // Update progress in database with response time and difficulty rating
-    await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating)
+    try {
+      // Update progress in database with response time and difficulty rating
+      await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating)
 
-    // Update gamification (XP, streaks, achievements)
-    await updateDailyProgress(isCorrect ?? false)
+      // Update gamification (XP, streaks, achievements)
+      await updateDailyProgress(isCorrect ?? false)
+    } catch (error) {
+      console.error('Error applying difficulty rating:', error)
+      setHasPendingProgress(true)
+    }
   }
 
   const handleToggleDarkMode = () => {
@@ -424,6 +430,7 @@ export const Dashboard: React.FC = () => {
     setSelectedCategories([])
     setSessionId(null)
     clearSession()
+    setHasPendingProgress(false)
 
     // Reset to all words
     if (state.shuffleMode) {
@@ -479,6 +486,7 @@ export const Dashboard: React.FC = () => {
         setHasSelectedMode(false)
         setSessionId(null)
         clearSession()
+        setHasPendingProgress(false)
       },
     })
   }, [
@@ -530,6 +538,7 @@ export const Dashboard: React.FC = () => {
           updatedAt: Date.now(),
         })
         navigate('/analytics')
+        setHasPendingProgress(false)
       },
     })
   }, [
@@ -558,6 +567,7 @@ export const Dashboard: React.FC = () => {
     setSessionId(session.id)
     setHasSelectedMode(true)
     setQuestionStartTime(Date.now())
+    setHasPendingProgress(Boolean(session.state.showAnswer && session.difficultyRating === undefined && session.isCorrect !== null))
 
     if (session.state.darkMode) {
       document.documentElement.classList.add('dark')
@@ -618,6 +628,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div data-testid="protected-content">
+      <SkipLink />
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
@@ -633,7 +644,7 @@ export const Dashboard: React.FC = () => {
             <UserProfile />
           </div>
 
-          <Container width="dashboard" className="py-2">
+          <Container width="dashboard" className="py-2" id="main-content">
             {/* PRIMARY ACTION: Mode Selection + Category Filter - Enhanced Visual Weight */}
             <motion.section
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -890,7 +901,7 @@ export const Dashboard: React.FC = () => {
               onRestart={handleRestart}
             />
 
-            <Container width="dashboard" className="py-8" data-testid="flashcard-app">
+            <Container width="dashboard" className="py-8" id="main-content" data-testid="flashcard-app">
               {currentSession && (
                 <div className="mb-4 flex justify-center">
                   <span

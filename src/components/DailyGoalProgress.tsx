@@ -2,6 +2,7 @@ import { useGamification } from '../hooks/useGamification'
 import { useProgress } from '../hooks/useProgress'
 import { useMemo } from 'react'
 import { Card } from './ui/Card'
+import { AriaLabel } from './ui/AriaLabel'
 import { MARGIN_BOTTOM } from '../constants/spacing'
 
 export const DailyGoalProgress = () => {
@@ -48,11 +49,20 @@ export const DailyGoalProgress = () => {
       </h3>
 
       <div className="flex flex-col items-center">
-        <div className="relative" style={{ width: size, height: size }}>
+        <div
+          className="relative"
+          style={{ width: size, height: size }}
+          role="progressbar"
+          aria-label="Daily goal progress"
+          aria-valuenow={todayProgress}
+          aria-valuemin={0}
+          aria-valuemax={target}
+        >
           <svg
             width={size}
             height={size}
             className="transform -rotate-90"
+            aria-hidden="true"
           >
             {/* Background circle */}
             <circle
@@ -95,8 +105,8 @@ export const DailyGoalProgress = () => {
         </div>
 
         {isComplete ? (
-          <div className="mt-4 flex items-center space-x-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full">
-            <span className="text-2xl">🎉</span>
+          <div className="mt-4 flex items-center space-x-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full" role="status">
+            <AriaLabel label="Party popper" className="text-2xl">🎉</AriaLabel>
             <p className="text-sm font-semibold text-green-800 dark:text-green-200">
               Goal Complete!
             </p>

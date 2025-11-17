@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import { Login } from './pages/Login'
@@ -9,6 +9,10 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy'
 import { DemoDeck } from './pages/DemoDeck'
 import { WordOfTheDayDetail } from './pages/WordOfTheDayDetail'
 import { LoadingSpinner } from './components/ui/LoadingSpinner'
+import { SkipLink } from './components/layout/SkipLink'
+import { Modal } from './components/ui/Modal'
+import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
+import { useGlobalShortcuts } from './hooks/useGlobalShortcuts'
 
 /**
  * Main App Component with React Router
@@ -25,6 +29,12 @@ function App() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
+
+  // Global keyboard shortcuts (? to show help)
+  useGlobalShortcuts({
+    onShowHelp: () => setShowShortcutsHelp(true),
+  })
 
   // Redirect authenticated users away from login page
   useEffect(() => {
@@ -46,48 +56,61 @@ function App() {
   }
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/auth/callback" element={<Callback />} />
-      <Route path="/privacy" element={<PrivacyPolicy />} />
-      <Route path="/demo" element={<DemoDeck />} />
+    <>
+      <SkipLink />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/auth/callback" element={<Callback />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/demo" element={<DemoDeck />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          user ? (
-            <Dashboard />
-          ) : (
-            <Navigate to="/login" replace state={{ from: location }} />
-          )
-        }
-      />
-      <Route
-        path="/analytics"
-        element={
-          user ? (
-            <Analytics />
-          ) : (
-            <Navigate to="/login" replace state={{ from: location }} />
-          )
-        }
-      />
-      <Route
-        path="/word-of-the-day/:id"
-        element={
-          user ? (
-            <WordOfTheDayDetail />
-          ) : (
-            <Navigate to="/login" replace state={{ from: location }} />
-          )
-        }
-      />
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Dashboard />
+            ) : (
+              <Navigate to="/login" replace state={{ from: location }} />
+            )
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            user ? (
+              <Analytics />
+            ) : (
+              <Navigate to="/login" replace state={{ from: location }} />
+            )
+          }
+        />
+        <Route
+          path="/word-of-the-day/:id"
+          element={
+            user ? (
+              <WordOfTheDayDetail />
+            ) : (
+              <Navigate to="/login" replace state={{ from: location }} />
+            )
+          }
+        />
 
-      {/* Catch all - redirect to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <Modal
+        isOpen={showShortcutsHelp}
+        onClose={() => setShowShortcutsHelp(false)}
+        title="Keyboard Shortcuts"
+        maxWidth="2xl"
+      >
+        <KeyboardShortcutsHelp />
+      </Modal>
+    </>
   )
 }
 
