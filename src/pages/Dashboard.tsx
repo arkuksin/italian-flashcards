@@ -142,6 +142,14 @@ export const Dashboard: React.FC = () => {
       setHasSelectedMode(true)
       setQuestionStartTime(Date.now())
 
+      // Set language pair ID based on restored learning direction
+      languageService.languageDirectionToPairId(session.state.learningDirection)
+        .then(pairId => setLanguagePairId(pairId))
+        .catch(error => {
+          console.error('Error getting language pair ID during session restore:', error)
+          setLanguagePairId(1) // Fallback to Russian-Italian
+        })
+
       if (session.state.darkMode) {
         document.documentElement.classList.add('dark')
       } else {
