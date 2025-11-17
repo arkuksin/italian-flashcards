@@ -60,7 +60,10 @@ const useProvideGamification = (): GamificationContextValue => {
         .single()
 
       if (supabaseError && supabaseError.code !== 'PGRST116') {
-        throw supabaseError
+        // Table might not exist (migration not run) - gracefully degrade
+        console.warn('Daily goals table not available, gamification features disabled:', supabaseError)
+        setDailyGoals(null)
+        return
       }
 
       if (!data) {
@@ -78,14 +81,19 @@ const useProvideGamification = (): GamificationContextValue => {
           .select()
           .single()
 
-        if (insertError) throw insertError
+        if (insertError) {
+          console.warn('Cannot create daily goals (table may not exist):', insertError)
+          setDailyGoals(null)
+          return
+        }
         setDailyGoals(newGoals)
       } else {
         setDailyGoals(data)
       }
     } catch (err) {
-      console.error('Error loading daily goals:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load daily goals')
+      // Gracefully degrade instead of showing error
+      console.warn('Daily goals unavailable, continuing without gamification:', err)
+      setDailyGoals(null)
     }
   }, [user])
 
@@ -102,12 +110,18 @@ const useProvideGamification = (): GamificationContextValue => {
         .eq('user_id', user.id)
         .order('unlocked_at', { ascending: false })
 
-      if (supabaseError) throw supabaseError
+      if (supabaseError) {
+        // Table might not exist (migration not run) - gracefully degrade
+        console.warn('Achievements table not available, continuing without achievements:', supabaseError)
+        setAchievements([])
+        return
+      }
 
       setAchievements(data || [])
     } catch (err) {
-      console.error('Error loading achievements:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load achievements')
+      // Gracefully degrade instead of showing error
+      console.warn('Achievements unavailable, continuing without them:', err)
+      setAchievements([])
     }
   }, [user])
 
@@ -185,8 +199,9 @@ const useProvideGamification = (): GamificationContextValue => {
           await unlockAchievement('CHAMPION')
         }
       } catch (err) {
-        console.error('Error updating daily progress:', err)
-        setError(err instanceof Error ? err.message : 'Failed to update daily progress')
+        // Gracefully handle errors (table may not exist in preview environments)
+        console.warn('Unable to update daily progress (gamification may be unavailable):', err)
+        // Don't set error state - just continue without gamification
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
