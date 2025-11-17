@@ -14,6 +14,7 @@ export const WordOfTheDayWidget = () => {
   const [completed, setCompleted] = useState(false)
   const [last7Days, setLast7Days] = useState<WotDHistoryDay[]>([])
   const [loading, setLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     loadWotd()
@@ -35,7 +36,12 @@ export const WordOfTheDayWidget = () => {
       const history = await wordOfTheDayService.getLast7Days()
       setLast7Days(history)
     } catch (error) {
-      console.error('Error loading WotD:', error)
+      // Silently fail if database tables don't exist yet (migration not run)
+      // This prevents the widget from breaking the Dashboard
+      console.debug('Word of the Day feature not available:', error)
+      setHasError(true)
+      setWotd(null)
+      setLast7Days([])
     } finally {
       setLoading(false)
     }
@@ -55,6 +61,11 @@ export const WordOfTheDayWidget = () => {
       month: 'long',
       day: 'numeric'
     })
+  }
+
+  // Don't render if there was an error (e.g., migration not run yet)
+  if (hasError) {
+    return null
   }
 
   if (loading) {
