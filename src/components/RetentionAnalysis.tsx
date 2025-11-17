@@ -60,7 +60,7 @@ export const RetentionAnalysis: React.FC<RetentionAnalysisProps> = ({ data, load
     return 'text-red-600 dark:text-red-400'
   }
 
-  const maxRetentionRate = Math.max(...data.retentionByLevel.map(l => l.retentionRate), 100)
+  const maxRetentionRate = !loading && data ? Math.max(...data.retentionByLevel.map(l => l.retentionRate), 100) : 100
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${PADDING.comfortable}`} data-testid="retention-analysis">
