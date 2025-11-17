@@ -79,5 +79,40 @@
       "preview": "Anteprima:",
       "previewHint": "Le immagini appariranno in dimensione {{size}}"
     }
+  },
+  "reminders": {
+    "dueWords": "Parole da rivedere",
+    "allCaughtUp": "Tutto in pari!",
+    "noDueWords": "Nessuna parola da rivedere. Ottimo lavoro!",
+    "wordsWaiting": "parole in attesa di revisione",
+    "overdue": "In ritardo",
+    "dueToday": "Da rivedere oggi",
+    "dueSoon": "Da rivedere presto",
+    "practiceNow": "Ripassa ora",
+    "overdueWarning": "Hai {{count}} parole in ritardo. La pratica regolare migliora la ritenzione!",
+    "settings": {
+      "title": "Impostazioni promemoria",
+      "notAvailable": "Impostazioni promemoria non disponibili",
+      "enableReminders": "Abilita promemoria",
+      "enableDescription": "Ricevi notifiche quando le parole sono da rivedere",
+      "reminderTime": "Ora del promemoria",
+      "reminderDays": "Giorni del promemoria",
+      "notificationMethods": "Metodi di notifica",
+      "pushNotifications": "Notifiche push",
+      "emailNotifications": "Notifiche email",
+      "smsNotifications": "Notifiche SMS",
+      "premium": "Premium",
+      "minimumWords": "Numero minimo di parole per promemoria",
+      "minimumWordsDescription": "Invia promemoria solo se almeno questo numero di parole è da rivedere",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mer",
+        "thursday": "Gio",
+        "friday": "Ven",
+        "saturday": "Sab",
+        "sunday": "Dom"
+      }
+    }
   }
 }

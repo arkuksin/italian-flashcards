@@ -6,6 +6,7 @@ import { categoryService } from '../services/categoryService'
 import type { CategoryInfo } from '../types'
 import { Card } from './ui/Card'
 import { VERTICAL_SPACING, GAP } from '../constants/spacing'
+import { CategoryFilterSkeleton } from './ui/skeletons/CategoryFilterSkeleton'
 import { useRovingTabIndex } from '../hooks/useRovingTabIndex'
 
 interface CategoryFilterProps {
@@ -129,9 +130,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8" data-testid="category-filter">
-        <Loader2 className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
-        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{t('filter.loading')}</span>
+      <div data-testid="category-filter">
+        <CategoryFilterSkeleton />
       </div>
     )
   }

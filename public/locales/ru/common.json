@@ -79,5 +79,40 @@
       "preview": "Предпросмотр:",
       "previewHint": "Изображения будут отображаться в размере {{size}}"
     }
+  },
+  "reminders": {
+    "dueWords": "Слова для повторения",
+    "allCaughtUp": "Все актуально!",
+    "noDueWords": "Нет слов для повторения. Отличная работа!",
+    "wordsWaiting": "слов ожидают повторения",
+    "overdue": "Просрочено",
+    "dueToday": "Сегодня",
+    "dueSoon": "Скоро",
+    "practiceNow": "Повторить сейчас",
+    "overdueWarning": "У вас {{count}} просроченных слов. Регулярная практика улучшает запоминание!",
+    "settings": {
+      "title": "Настройки напоминаний",
+      "notAvailable": "Настройки напоминаний недоступны",
+      "enableReminders": "Включить напоминания",
+      "enableDescription": "Получать уведомления, когда слова готовы к повторению",
+      "reminderTime": "Время напоминания",
+      "reminderDays": "Дни напоминаний",
+      "notificationMethods": "Методы уведомлений",
+      "pushNotifications": "Push-уведомления",
+      "emailNotifications": "Email-уведомления",
+      "smsNotifications": "SMS-уведомления",
+      "premium": "Премиум",
+      "minimumWords": "Минимум слов для напоминания",
+      "minimumWordsDescription": "Отправлять напоминания только если хотя бы столько слов готовы к повторению",
+      "days": {
+        "monday": "Пн",
+        "tuesday": "Вт",
+        "wednesday": "Ср",
+        "thursday": "Чт",
+        "friday": "Пт",
+        "saturday": "Сб",
+        "sunday": "Вс"
+      }
+    }
   }
 }

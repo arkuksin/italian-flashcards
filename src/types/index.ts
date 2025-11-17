@@ -234,3 +234,61 @@ export interface ImagePreferences {
   image_timing: ImageTiming
   image_size: ImageSize
 }
+
+// Phase 10: Due Words Reminders Types
+
+/**
+ * Represents a word that is due for review
+ */
+export interface DueWord {
+  word_id: number
+  russian: string
+  italian: string
+  category: string
+  mastery_level: number
+  last_practiced: string
+  due_date: string
+  days_overdue: number
+}
+
+/**
+ * User settings for reminder notifications
+ */
+export interface ReminderSettings {
+  user_id: string
+  enabled: boolean
+  reminder_time: string // HH:MM:SS format
+  timezone: string
+  min_due_words: number
+  push_enabled: boolean
+  email_enabled: boolean
+  sms_enabled: boolean
+  reminder_days: number[] // 1-7 (1=Monday, 7=Sunday)
+  last_reminder_sent?: string
+  created_at?: string
+  updated_at?: string
+}
+
+/**
+ * Breakdown of due words by urgency
+ */
+export interface DueWordsBreakdown {
+  overdue: DueWord[] // Words past their due date
+  dueToday: DueWord[] // Words due today
+  dueSoon: DueWord[] // Words due in next 2 days
+  total: number
+}
+
+/**
+ * History of sent reminders
+ */
+export interface ReminderHistory {
+  id: string
+  user_id: string
+  sent_at: string
+  due_words_count: number
+  method: 'push' | 'email' | 'sms'
+  opened: boolean
+  opened_at?: string
+  snoozed_until?: string
+}

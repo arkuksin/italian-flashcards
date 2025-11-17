@@ -79,5 +79,40 @@
       "preview": "Vorschau:",
       "previewHint": "Bilder werden in {{size}} Größe angezeigt"
     }
+  },
+  "reminders": {
+    "dueWords": "Fällige Wörter",
+    "allCaughtUp": "Alles aktuell!",
+    "noDueWords": "Keine Wörter zur Wiederholung fällig. Gut gemacht!",
+    "wordsWaiting": "Wörter warten auf Wiederholung",
+    "overdue": "Überfällig",
+    "dueToday": "Heute fällig",
+    "dueSoon": "Bald fällig",
+    "practiceNow": "Jetzt wiederholen",
+    "overdueWarning": "Sie haben {{count}} überfällige Wörter. Regelmäßige Wiederholung verbessert Ihre Retention!",
+    "settings": {
+      "title": "Erinnerungseinstellungen",
+      "notAvailable": "Erinnerungseinstellungen nicht verfügbar",
+      "enableReminders": "Erinnerungen aktivieren",
+      "enableDescription": "Benachrichtigungen erhalten, wenn Wörter fällig sind",
+      "reminderTime": "Erinnerungszeit",
+      "reminderDays": "Erinnerungstage",
+      "notificationMethods": "Benachrichtigungsmethoden",
+      "pushNotifications": "Push-Benachrichtigungen",
+      "emailNotifications": "E-Mail-Benachrichtigungen",
+      "smsNotifications": "SMS-Benachrichtigungen",
+      "premium": "Premium",
+      "minimumWords": "Mindestanzahl Wörter für Erinnerung",
+      "minimumWordsDescription": "Erinnerungen nur senden, wenn mindestens so viele Wörter fällig sind",
+      "days": {
+        "monday": "Mo",
+        "tuesday": "Di",
+        "wednesday": "Mi",
+        "thursday": "Do",
+        "friday": "Fr",
+        "saturday": "Sa",
+        "sunday": "So"
+      }
+    }
   }
 }

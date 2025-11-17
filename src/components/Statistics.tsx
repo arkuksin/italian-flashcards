@@ -4,7 +4,8 @@ import { TrendingUp, Target, Award, Zap } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
 import { BoxDistributionChart } from './BoxDistributionChart'
 import { Card } from './ui/Card'
-import { MARGIN_BOTTOM, GAP, VERTICAL_SPACING, PADDING, SPACING_PATTERNS } from '../constants/spacing'
+import { MARGIN_BOTTOM, GAP, PADDING, SPACING_PATTERNS } from '../constants/spacing'
+import { StatisticsSkeleton } from './ui/skeletons/StatisticsSkeleton'
 
 /**
  * Statistics Component
@@ -20,12 +21,7 @@ export const Statistics: React.FC = () => {
   const { getStats, loading, error, isOnline } = useProgress()
 
   if (loading) {
-    return (
-      <div className={`animate-pulse ${VERTICAL_SPACING.md}`}>
-        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-      </div>
-    )
+    return <StatisticsSkeleton />
   }
 
   const stats = getStats()

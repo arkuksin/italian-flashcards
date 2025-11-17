@@ -112,6 +112,7 @@ export default {
       },
       animation: {
         'flip': 'flip 0.6s ease-in-out',
+        'shimmer': 'shimmer 1.5s infinite',
         'fade-in': 'fadeIn 0.2s ease-out',
         'slide-up': 'slideUp 0.2s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
@@ -120,6 +121,10 @@ export default {
         flip: {
           '0%': { transform: 'rotateY(0deg)' },
           '100%': { transform: 'rotateY(180deg)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
         fadeIn: {
           from: { opacity: '0' },

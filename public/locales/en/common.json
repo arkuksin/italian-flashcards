@@ -79,5 +79,40 @@
       "preview": "Preview:",
       "previewHint": "Images will appear in {{size}} size"
     }
+  },
+  "reminders": {
+    "dueWords": "Due Words",
+    "allCaughtUp": "All caught up!",
+    "noDueWords": "No words are due for review. Great job!",
+    "wordsWaiting": "words waiting for review",
+    "overdue": "Overdue",
+    "dueToday": "Due today",
+    "dueSoon": "Due soon",
+    "practiceNow": "Practice Now",
+    "overdueWarning": "You have {{count}} overdue words. Regular practice improves retention!",
+    "settings": {
+      "title": "Reminder Settings",
+      "notAvailable": "Reminder settings not available",
+      "enableReminders": "Enable Reminders",
+      "enableDescription": "Receive notifications when words are due",
+      "reminderTime": "Reminder Time",
+      "reminderDays": "Reminder Days",
+      "notificationMethods": "Notification Methods",
+      "pushNotifications": "Push Notifications",
+      "emailNotifications": "Email Notifications",
+      "smsNotifications": "SMS Notifications",
+      "premium": "Premium",
+      "minimumWords": "Minimum Words for Reminder",
+      "minimumWordsDescription": "Only send reminders if at least this many words are due",
+      "days": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
+    }
   }
 }
