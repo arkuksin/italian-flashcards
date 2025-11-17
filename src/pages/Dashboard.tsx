@@ -143,11 +143,18 @@ export const Dashboard: React.FC = () => {
       setQuestionStartTime(Date.now())
 
       // Set language pair ID based on restored learning direction
+      let isCancelled = false
       languageService.languageDirectionToPairId(session.state.learningDirection)
-        .then(pairId => setLanguagePairId(pairId))
+        .then(pairId => {
+          if (!isCancelled) {
+            setLanguagePairId(pairId)
+          }
+        })
         .catch(error => {
-          console.error('Error getting language pair ID during session restore:', error)
-          setLanguagePairId(1) // Fallback to Russian-Italian
+          if (!isCancelled) {
+            console.error('Error getting language pair ID during session restore:', error)
+            setLanguagePairId(1) // Fallback to Russian-Italian
+          }
         })
 
       if (session.state.darkMode) {
@@ -156,6 +163,10 @@ export const Dashboard: React.FC = () => {
         document.documentElement.classList.remove('dark')
       }
       setHasPendingProgress(derivePendingProgress())
+
+      return () => {
+        isCancelled = true
+      }
     } else if (!hasSelectedMode && session.status === 'suspended') {
       setSessionId(session.id)
       setHasPendingProgress(false)
