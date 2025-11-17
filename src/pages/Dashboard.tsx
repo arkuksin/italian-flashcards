@@ -726,7 +726,7 @@ export const Dashboard: React.FC = () => {
                 transition={{ duration: 0.4, delay: 0.35 }}
                 className="mb-8"
               >
-                <DueWordsWidget />
+                <DueWordsWidget user={user} />
               </motion.div>
             )}
 

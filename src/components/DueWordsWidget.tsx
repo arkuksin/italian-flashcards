@@ -2,17 +2,21 @@ import { useState, useEffect } from 'react'
 import { Clock, AlertCircle, TrendingUp } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { supabase } from '../lib/supabase'
 import { reminderService } from '../services/reminderService'
 import type { DueWordsBreakdown } from '../types'
+import type { User } from '@supabase/supabase-js'
 import { Card } from './ui/Card'
 import { MARGIN_BOTTOM } from '../constants/spacing'
+
+interface DueWordsWidgetProps {
+  user: User | null
+}
 
 /**
  * Widget that displays due words breakdown on the dashboard
  * Shows overdue, due today, and due soon words with urgency color coding
  */
-export const DueWordsWidget = () => {
+export const DueWordsWidget = ({ user }: DueWordsWidgetProps) => {
   const [breakdown, setBreakdown] = useState<DueWordsBreakdown | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -21,14 +25,13 @@ export const DueWordsWidget = () => {
 
   useEffect(() => {
     loadDueWords()
-  }, [])
+  }, [user])
 
   const loadDueWords = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         setLoading(false)
         return
