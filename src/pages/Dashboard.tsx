@@ -25,6 +25,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useTaskSession } from '../contexts/TaskSessionContext'
 import { WORDS, getShuffledWords } from '../data/words'
 import { wordService } from '../services/wordService'
+import { languageService } from '../services/languageService'
 import { AppState, LearningDirection, Word, DifficultyRating } from '../types'
 import { TaskModeAppBar } from '../components/TaskModeAppBar'
 import { ConfirmLeaveDialog } from '../components/ConfirmLeaveDialog'
@@ -75,6 +76,7 @@ export const Dashboard: React.FC = () => {
   const [responseTimeMs, setResponseTimeMs] = useState<number | undefined>(session?.responseTimeMs)
   const [difficultyRating, setDifficultyRating] = useState<DifficultyRating | undefined>(session?.difficultyRating)
   const [sessionId, setSessionId] = useState<string | null>(session?.id ?? null)
+  const [languagePairId, setLanguagePairId] = useState<number>(1) // Default to Russian-Italian
   const [isSaving, setIsSaving] = useState(false)
   const [showStatistics, setShowStatistics] = useState(true)
   const [showGamification, setShowGamification] = useState(true)
@@ -192,6 +194,16 @@ export const Dashboard: React.FC = () => {
     setSessionId(newSessionId)
     setState(prev => ({ ...prev, learningDirection: direction }))
 
+    // Get language pair ID for the selected direction
+    try {
+      const pairId = await languageService.languageDirectionToPairId(direction)
+      setLanguagePairId(pairId)
+    } catch (error) {
+      console.error('Error getting language pair ID:', error)
+      // Default to 1 (Russian-Italian) if there's an error
+      setLanguagePairId(1)
+    }
+
     // If categories are selected, filter words by categories
     if (categories && categories.length > 0) {
       try {
@@ -231,7 +243,7 @@ export const Dashboard: React.FC = () => {
     setIsSaving(true)
     setHasPendingProgress(false)
     try {
-      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined)
+      await updateProgress(currentWord.id, isCorrect, responseTimeMs, undefined, languagePairId)
       await updateDailyProgress(isCorrect)
     } catch (error) {
       console.error('Error saving progress:', error)
@@ -239,7 +251,7 @@ export const Dashboard: React.FC = () => {
     } finally {
       setIsSaving(false)
     }
-  }, [currentWord, hasPendingProgress, isCorrect, responseTimeMs, updateDailyProgress, updateProgress])
+  }, [currentWord, hasPendingProgress, isCorrect, responseTimeMs, updateDailyProgress, updateProgress, languagePairId])
 
   const hasUnsavedProgress = hasPendingProgress || (!state.showAnswer && state.userInput.trim().length > 0)
 
@@ -328,7 +340,7 @@ export const Dashboard: React.FC = () => {
 
     try {
       // Update progress in database with response time and difficulty rating
-      await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating)
+      await updateProgress(currentWord.id, isCorrect ?? false, responseTimeMs, rating, languagePairId)
 
       // Update gamification (XP, streaks, achievements)
       await updateDailyProgress(isCorrect ?? false)

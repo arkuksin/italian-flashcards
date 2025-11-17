@@ -33,7 +33,8 @@ interface ProgressContextValue {
     wordId: number,
     correct: boolean,
     responseTimeMs?: number,
-    difficultyRating?: DifficultyRating
+    difficultyRating?: DifficultyRating,
+    languagePairId?: number
   ) => Promise<void>
   startSession: (learningDirection: 'ru-it' | 'it-ru') => Promise<string | null>
   endSession: () => Promise<void>
@@ -107,9 +108,14 @@ const useProvideProgress = (): ProgressContextValue => {
       try {
         if (item.type === 'progress') {
           const progressData = item.data as Partial<WordProgress>
+          // Ensure language_pair_id is present (default to 1 for backward compatibility)
+          const dataWithLanguagePair = {
+            ...progressData,
+            language_pair_id: progressData.language_pair_id ?? 1
+          }
           await supabase
             .from('user_progress')
-            .upsert(progressData, { onConflict: 'user_id,word_id' })
+            .upsert(dataWithLanguagePair, { onConflict: 'user_id,word_id,language_pair_id' })
         }
       } catch (queueError) {
         console.error('Error processing offline queue:', queueError)
@@ -198,9 +204,13 @@ const useProvideProgress = (): ProgressContextValue => {
       wordId: number,
       correct: boolean,
       responseTimeMs?: number,
-      difficultyRating?: DifficultyRating
+      difficultyRating?: DifficultyRating,
+      languagePairId?: number
     ) => {
       if (!user) return
+
+      // Default to Russian-Italian (id=1) for backward compatibility
+      const effectiveLanguagePairId = languagePairId ?? 1
 
       const currentProgress = progress.get(wordId)
       const newCorrectCount = currentProgress
@@ -227,6 +237,7 @@ const useProvideProgress = (): ProgressContextValue => {
         id: currentProgress?.id,
         user_id: user.id,
         word_id: wordId,
+        language_pair_id: effectiveLanguagePairId,
         correct_count: newCorrectCount,
         wrong_count: newWrongCount,
         mastery_level: masteryLevel,
@@ -254,7 +265,7 @@ const useProvideProgress = (): ProgressContextValue => {
         const { data, error: supabaseError } = await supabase
           .from('user_progress')
           .upsert(updatedProgress, {
-            onConflict: 'user_id,word_id',
+            onConflict: 'user_id,word_id,language_pair_id',
           })
           .select()
           .single()
@@ -276,6 +287,7 @@ const useProvideProgress = (): ProgressContextValue => {
           difficultyRating,
           previousLevel: currentLevel,
           newLevel: masteryLevel,
+          languagePairId: effectiveLanguagePairId,
         })
       } catch (updateError) {
         const errorMessage = updateError instanceof Error ? updateError.message : 'Failed to update progress'

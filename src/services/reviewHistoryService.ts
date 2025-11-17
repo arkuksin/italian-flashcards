@@ -28,6 +28,7 @@ export class ReviewHistoryService {
     difficultyRating?: DifficultyRating
     previousLevel: number
     newLevel: number
+    languagePairId?: number
   }): Promise<ReviewHistory | null> {
     try {
       const { data, error } = await supabase
@@ -40,6 +41,7 @@ export class ReviewHistoryService {
           difficulty_rating: params.difficultyRating,
           previous_level: params.previousLevel,
           new_level: params.newLevel,
+          language_pair_id: params.languagePairId,
           review_date: new Date().toISOString(),
         })
         .select()
