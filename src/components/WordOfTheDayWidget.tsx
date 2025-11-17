@@ -63,17 +63,10 @@ export const WordOfTheDayWidget = () => {
     })
   }
 
-  // Don't render if there was an error (e.g., migration not run yet)
-  if (hasError) {
+  // Don't render anything (including loading state) if there was an error
+  // This prevents layout shifts when database tables don't exist (migration not run)
+  if (hasError || loading) {
     return null
-  }
-
-  if (loading) {
-    return (
-      <Card variant="default" size="default">
-        <div className="h-64 animate-pulse bg-gray-100 dark:bg-gray-700 rounded-lg" />
-      </Card>
-    )
   }
 
   if (!wotd) {
