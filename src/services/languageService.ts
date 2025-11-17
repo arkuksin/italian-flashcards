@@ -27,6 +27,7 @@ export class LanguageService {
 
   /**
    * Get all active language pairs
+   * Falls back to hardcoded pairs if database is unavailable
    */
   async getActiveLanguagePairs(): Promise<LanguagePair[]> {
     if (this.cachedLanguagePairs) {
@@ -42,20 +43,50 @@ export class LanguageService {
         .order('target_lang');
 
       if (error) {
-        console.error('Error fetching language pairs:', error);
-        throw error;
+        console.warn('Language pairs table not available, using fallback data:', error);
+        return this.getFallbackLanguagePairs();
       }
 
       this.cachedLanguagePairs = data || [];
       return this.cachedLanguagePairs;
     } catch (error) {
-      console.error('Failed to fetch language pairs:', error);
-      throw new Error('Failed to load language pairs');
+      console.warn('Failed to fetch language pairs, using fallback data:', error);
+      return this.getFallbackLanguagePairs();
     }
   }
 
   /**
+   * Fallback language pairs (matches default data)
+   * Used when database is not available or migration hasn't run
+   */
+  private getFallbackLanguagePairs(): LanguagePair[] {
+    return [
+      {
+        id: 1,
+        source_lang: 'ru',
+        target_lang: 'it',
+        is_active: true,
+        display_name_source: 'Русский',
+        display_name_target: 'Italiano',
+        flag_emoji_source: '🇷🇺',
+        flag_emoji_target: '🇮🇹'
+      },
+      {
+        id: 2,
+        source_lang: 'it',
+        target_lang: 'ru',
+        is_active: true,
+        display_name_source: 'Italiano',
+        display_name_target: 'Русский',
+        flag_emoji_source: '🇮🇹',
+        flag_emoji_target: '🇷🇺'
+      }
+    ];
+  }
+
+  /**
    * Get statistics for all language pairs for a specific user
+   * Returns empty array if database query fails (graceful degradation)
    */
   async getLanguagePairStats(userId: string): Promise<LanguagePairStats[]> {
     try {
@@ -65,13 +96,13 @@ export class LanguageService {
         .eq('user_id', userId);
 
       if (error) {
-        console.error('Error fetching language pair stats:', error);
-        throw error;
+        console.warn('Language pair stats view not available, returning empty stats:', error);
+        return []; // Graceful degradation
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch language pair stats:', error);
+      console.warn('Failed to fetch language pair stats, returning empty array:', error);
       return [];
     }
   }
