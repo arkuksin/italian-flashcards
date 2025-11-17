@@ -48,7 +48,10 @@ export const Analytics: React.FC = () => {
 
   useEffect(() => {
     const loadAnalytics = async () => {
-      if (!user) return
+      if (!user) {
+        setLoading(false)
+        return
+      }
 
       setLoading(true)
 
