@@ -3,6 +3,7 @@
     "title": "Italian FlashCards",
     "subtitle": "Master 300 essential Italian words with interactive flashcards",
     "chooseDirection": "Choose your learning direction:",
+    "loading": "Loading language pairs...",
     "modes": {
       "ruToIt": {
         "title": "Russian to Italian",
@@ -51,11 +52,7 @@
     },
     "feedback": {
       "correct": "Correct!",
-      "incorrect": "Not quite right",
-      "screenReader": {
-        "correct": "Well done! Your answer was correct.",
-        "incorrect": "The correct answer is"
-      }
+      "incorrect": "Not quite right"
     },
     "navigation": {
       "previous": "Previous",
@@ -104,5 +101,17 @@
     "cardsCompleted": "Cards Completed",
     "correctAnswers": "Correct Answers",
     "timeSpent": "Time Spent"
+  },
+  "languagePairs": {
+    "subtitle": "Choose your learning direction",
+    "recommendation": "Recommendation",
+    "lowestAccuracy": "has the lowest accuracy",
+    "new": "New",
+    "wordsLearned": "{{count}} words learned",
+    "wordsLearned_one": "{{count}} word learned",
+    "wordsLearned_other": "{{count}} words learned",
+    "level": "Level {{level}}",
+    "ready": "Ready to start learning",
+    "noPairs": "No language pairs available"
   }
 }

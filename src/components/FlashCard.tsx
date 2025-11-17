@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Send, CheckCircle, XCircle, TrendingUp, AlertCircle, Star } from 'lucide-react';
@@ -9,6 +9,7 @@ import { TextField } from './ui/TextField';
 import { MARGIN_BOTTOM, GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { Container } from './layout';
 import { WordImage } from './WordImage';
+import { languageService } from '../services/languageService';
 
 interface FlashCardProps {
   word: Word;
@@ -44,8 +45,24 @@ export const FlashCard: React.FC<FlashCardProps> = ({
   difficultyRating,
 }) => {
   const { t } = useTranslation('learning');
-  const sourceWord = learningDirection === 'ru-it' ? word.russian : word.italian;
-  const targetWord = learningDirection === 'ru-it' ? word.italian : word.russian;
+
+  // Parse learning direction to get source and target languages
+  const { source: sourceLang, target: targetLang } = useMemo(
+    () => languageService.parseLearningDirection(learningDirection),
+    [learningDirection]
+  );
+
+  // Get source and target words based on language direction
+  const sourceWord = useMemo(
+    () => languageService.getWordTranslation(word, sourceLang),
+    [word, sourceLang]
+  );
+
+  const targetWord = useMemo(
+    () => languageService.getWordTranslation(word, targetLang),
+    [word, targetLang]
+  );
+
   const canGoNext = currentIndex < totalWords - 1;
   const canGoPrevious = currentIndex > 0;
 

@@ -3,6 +3,7 @@
     "title": "Italienische Lernkarten",
     "subtitle": "Meistern Sie 300 wichtige italienische Wörter mit interaktiven Lernkarten",
     "chooseDirection": "Wählen Sie Ihre Lernrichtung:",
+    "loading": "Lade Sprachpaare...",
     "modes": {
       "ruToIt": {
         "title": "Russisch zu Italienisch",
@@ -51,11 +52,7 @@
     },
     "feedback": {
       "correct": "Richtig!",
-      "incorrect": "Nicht ganz richtig",
-      "screenReader": {
-        "correct": "Gut gemacht! Ihre Antwort war richtig.",
-        "incorrect": "Die richtige Antwort ist"
-      }
+      "incorrect": "Nicht ganz richtig"
     },
     "navigation": {
       "previous": "Zurück",
@@ -104,5 +101,17 @@
     "cardsCompleted": "Abgeschlossene Karten",
     "correctAnswers": "Richtige Antworten",
     "timeSpent": "Verbrachte Zeit"
+  },
+  "languagePairs": {
+    "subtitle": "Wählen Sie Ihre Lernrichtung",
+    "recommendation": "Empfehlung",
+    "lowestAccuracy": "hat die niedrigste Genauigkeit",
+    "new": "Neu",
+    "wordsLearned": "{{count}} Wörter gelernt",
+    "wordsLearned_one": "{{count}} Wort gelernt",
+    "wordsLearned_other": "{{count}} Wörter gelernt",
+    "level": "Level {{level}}",
+    "ready": "Bereit zum Lernen",
+    "noPairs": "Keine Sprachpaare verfügbar"
   }
 }
