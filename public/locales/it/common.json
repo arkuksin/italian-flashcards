@@ -57,5 +57,27 @@
     "privacyPolicy": "Politica sulla privacy",
     "signOut": "Esci",
     "signingOut": "Disconnessione..."
+  },
+  "settings": {
+    "images": {
+      "title": "Apprendimento visivo",
+      "description": "Configura la visualizzazione delle immagini per le parole",
+      "showImages": "Mostra immagini delle parole",
+      "showImagesHint": "Visualizza immagini per migliorare l'apprendimento visivo",
+      "whenToShow": "Quando mostrare:",
+      "timing": {
+        "always": "Mostra sempre",
+        "afterAnswer": "Mostra solo dopo la risposta",
+        "never": "Non mostrare mai"
+      },
+      "imageSize": "Dimensione immagine:",
+      "size": {
+        "small": "Piccola",
+        "medium": "Media",
+        "large": "Grande"
+      },
+      "preview": "Anteprima:",
+      "previewHint": "Le immagini appariranno in dimensione {{size}}"
+    }
   }
 }

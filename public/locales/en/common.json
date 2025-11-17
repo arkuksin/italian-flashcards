@@ -57,5 +57,27 @@
     "privacyPolicy": "Privacy Policy",
     "signOut": "Sign Out",
     "signingOut": "Signing out..."
+  },
+  "settings": {
+    "images": {
+      "title": "Visual Learning",
+      "description": "Configure image display for words",
+      "showImages": "Show word images",
+      "showImagesHint": "Display images to enhance visual learning",
+      "whenToShow": "When to show images:",
+      "timing": {
+        "always": "Always show images",
+        "afterAnswer": "Show only after answering",
+        "never": "Never show images"
+      },
+      "imageSize": "Image size:",
+      "size": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "preview": "Preview:",
+      "previewHint": "Images will appear in {{size}} size"
+    }
   }
 }
