@@ -101,10 +101,44 @@ export class LanguageService {
 
   /**
    * Convert learning direction string to language pair ID
+   * Uses a fallback mapping if database query fails
    */
   async languageDirectionToPairId(direction: LearningDirection): Promise<number> {
     const [source, target] = direction.split('-') as [LanguageCode, LanguageCode];
-    return this.getPairIdByLanguages(source, target);
+
+    // Try database query first
+    try {
+      return await this.getPairIdByLanguages(source, target);
+    } catch (error) {
+      // Fallback to hardcoded mapping if database query fails
+      console.warn('Database query failed, using fallback mapping for language pair ID:', error);
+      return this.getFallbackPairId(source, target);
+    }
+  }
+
+  /**
+   * Fallback mapping for language pairs (matches migration defaults)
+   * Used when database is not available or migration hasn't run
+   */
+  private getFallbackPairId(source: LanguageCode, target: LanguageCode): number {
+    const fallbackMap: Record<string, number> = {
+      'ru-it': 1,
+      'it-ru': 2,
+      'de-it': 3,
+      'it-de': 4,
+      'en-it': 5,
+      'it-en': 6,
+    };
+
+    const key = `${source}-${target}`;
+    const pairId = fallbackMap[key];
+
+    if (!pairId) {
+      console.warn(`No fallback mapping for ${key}, defaulting to 1`);
+      return 1; // Default to Russian-Italian
+    }
+
+    return pairId;
   }
 
   /**
