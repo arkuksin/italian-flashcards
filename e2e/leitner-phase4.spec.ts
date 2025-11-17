@@ -119,6 +119,17 @@ test.describe('Leitner System - Phase 4: Analytics Dashboard', () => {
     const velocityChart = page.locator('[data-testid="learning-velocity-chart"]')
     await expect(velocityChart).toBeVisible({ timeout: 5000 })
 
+    // Wait for loading to complete by checking for either data or empty state
+    await page.waitForFunction(
+      () => {
+        const chart = document.querySelector('[data-testid="learning-velocity-chart"]')
+        if (!chart) return false
+        const text = chart.textContent || ''
+        return text.includes('Total Reviewed') || text.includes('No data available yet')
+      },
+      { timeout: 10000 }
+    )
+
     // Check if either data is shown or empty state message
     const hasData = await velocityChart.locator('text=Total Reviewed').isVisible().catch(() => false)
     const hasEmptyState = await velocityChart.locator('text=No data available yet').isVisible().catch(() => false)
@@ -138,6 +149,17 @@ test.describe('Leitner System - Phase 4: Analytics Dashboard', () => {
     // Verify section title
     await expect(retentionAnalysis.getByText('Retention Analysis')).toBeVisible({ timeout: 2000 })
 
+    // Wait for loading to complete
+    await page.waitForFunction(
+      () => {
+        const component = document.querySelector('[data-testid="retention-analysis"]')
+        if (!component) return false
+        const text = component.textContent || ''
+        return text.includes('Overall Retention Rate') || text.includes('No retention data available')
+      },
+      { timeout: 10000 }
+    )
+
     // Check if either data is shown or empty state message
     const hasData = await retentionAnalysis.locator('text=Overall Retention Rate').isVisible().catch(() => false)
     const hasEmptyState = await retentionAnalysis.locator('text=No retention data available').isVisible().catch(() => false)
@@ -156,6 +178,17 @@ test.describe('Leitner System - Phase 4: Analytics Dashboard', () => {
 
     // Verify section title
     await expect(heatmap.getByText('Review Activity')).toBeVisible({ timeout: 2000 })
+
+    // Wait for loading to complete
+    await page.waitForFunction(
+      () => {
+        const component = document.querySelector('[data-testid="review-heatmap"]')
+        if (!component) return false
+        const text = component.textContent || ''
+        return text.includes('Total Reviews')
+      },
+      { timeout: 10000 }
+    )
 
     // Check if summary cards are present
     const hasSummary = await heatmap.locator('text=Total Reviews').isVisible().catch(() => false)
@@ -214,6 +247,17 @@ test.describe('Leitner System - Phase 4: Analytics with Practice Data', () => {
     // Verify that analytics shows some data (not empty state)
     const velocityChart = page.locator('[data-testid="learning-velocity-chart"]')
     await expect(velocityChart).toBeVisible({ timeout: 5000 })
+
+    // Wait for loading to complete
+    await page.waitForFunction(
+      () => {
+        const chart = document.querySelector('[data-testid="learning-velocity-chart"]')
+        if (!chart) return false
+        const text = chart.textContent || ''
+        return text.includes('Total Reviewed') || text.includes('No data available yet')
+      },
+      { timeout: 10000 }
+    )
 
     // Data should be visible (even if minimal)
     const hasNoDataMessage = await velocityChart.locator('text=No data available yet').isVisible().catch(() => false)
