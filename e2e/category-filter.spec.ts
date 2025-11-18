@@ -12,7 +12,7 @@ test.describe('Category Filter Feature', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
     await page.goto('/', { timeout: 30000 })
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
 
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
     await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
