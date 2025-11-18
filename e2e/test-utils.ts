@@ -177,8 +177,8 @@ export async function verifyTestAuthenticationActive(page: Page) {
   // Check that we can see the protected content
   await expect(page.locator('[data-testid="protected-content"]')).toBeVisible();
 
-  // Check that we're not seeing the login form
-  await expect(page.locator('text=Sign in to continue')).not.toBeVisible();
+  // Check that we're not seeing the login form subtitle (works across locales)
+  await expect(page.getByTestId('auth-form-subtitle')).not.toBeVisible();
 
   // Check for test mode indicator in console (optional)
   const logs = await page.evaluate(() => {

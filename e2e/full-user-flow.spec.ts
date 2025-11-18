@@ -15,7 +15,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     // Step 1: Initial Login
     // ========================
     await page.goto('/', { timeout: 30000 })
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
 
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
     await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
@@ -133,7 +133,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
 
     // Should be redirected to login - wait for form to be fully rendered
     await expect(page.getByTestId('email-input')).toBeVisible({ timeout: 15000 })
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 10000 })
     console.log('✅ Logged out successfully')
 
     // ========================
@@ -172,7 +172,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     test.setTimeout(120000) // Increase timeout to 120 seconds for slower browsers
     // Login
     await page.goto('/')
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
     await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
     await page.click('[data-testid="submit-button"]')
@@ -236,7 +236,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     test.setTimeout(120000) // Increase timeout to 120 seconds for slower browsers
     // Login first
     await page.goto('/')
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
     await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
     await page.click('[data-testid="submit-button"]')
@@ -264,7 +264,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     test.setTimeout(120000) // Increase timeout to 120 seconds for slower browsers
     // Login
     await page.goto('/')
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
     await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
     await page.click('[data-testid="submit-button"]')
