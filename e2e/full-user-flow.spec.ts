@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { ensureModeSelectionVisible, selectLearningMode } from './helpers/mode-selection'
 
 // Test configuration
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
@@ -38,7 +39,8 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     // ========================
     // Step 3: Start Learning Session
     // ========================
-    await page.getByTestId('mode-ru-it').click()
+    await ensureModeSelectionVisible(page)
+    await selectLearningMode(page, ['ru-it'])
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10000 })
 
     // ========================
@@ -180,7 +182,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 15000 })
 
     // Start learning
-    await page.getByTestId('mode-ru-it').click()
+    await selectLearningMode(page, ['ru-it'])
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10000 })
 
     // Answer one question to create progress
@@ -200,7 +202,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     await expect(page.locator('text=Welcome back')).toBeVisible({ timeout: 15000 })
 
     // Start learning again
-    await page.getByTestId('mode-ru-it').click()
+    await selectLearningMode(page, ['ru-it'])
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10000 })
 
     // Check if mastery indicator is visible (may not be on first word if no progress yet)
@@ -276,7 +278,7 @@ test.describe('Complete User Flow with Progress Tracking', () => {
     console.log('Initial stats before session:', initialStats)
 
     // Start learning
-    await page.getByTestId('mode-ru-it').click()
+    await selectLearningMode(page, ['ru-it'])
     await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 10000 })
 
     // Answer 2 questions
