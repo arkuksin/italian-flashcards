@@ -287,9 +287,28 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await page.getByTestId('answer-submit-button').click()
       // Wait for feedback
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
+      // Pick a difficulty option to unlock the Next button
+      const difficultyButtons = [
+        'difficulty-again',
+        'difficulty-hard',
+        'difficulty-good',
+        'difficulty-easy',
+      ]
+      for (const testId of difficultyButtons) {
+        const option = page.getByTestId(testId)
+        try {
+          if (await option.isVisible()) {
+            await option.click()
+            break
+          }
+        } catch {
+          // Option not available, try next
+        }
+      }
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible()) {
+        await expect(nextButton).toBeEnabled({ timeout: 5000 })
         await nextButton.click()
         // Wait for next question
         await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })
