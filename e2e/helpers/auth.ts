@@ -2,65 +2,72 @@ import { expect, type Page } from '@playwright/test'
 
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
 const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'TestPassword123!'
-const PROTECTED_SELECTOR = '[data-testid="protected-content"]'
 
-function resolveBaseUrl(page: Page): string | undefined {
+const PROTECTED_SELECTOR = '[data-testid="protected-content"]'
+const AUTH_SELECTOR = '[data-testid="auth-form-subtitle"]'
+
+const getBaseUrl = (page: Page): string | undefined => {
   if (process.env.PLAYWRIGHT_TEST_BASE_URL) {
     return process.env.PLAYWRIGHT_TEST_BASE_URL
   }
 
   const currentUrl = page.url()
-  if (currentUrl && currentUrl !== 'about:blank') {
-    try {
-      return new URL(currentUrl).origin
-    } catch {
-      return undefined
-    }
+  if (!currentUrl || currentUrl === 'about:blank') {
+    return undefined
   }
 
-  return undefined
+  try {
+    return new URL(currentUrl).origin
+  } catch {
+    return undefined
+  }
 }
 
-async function applyVercelBypassIfNeeded(page: Page, baseURL?: string): Promise<void> {
-  const targetUrl = baseURL || resolveBaseUrl(page)
+async function applyVercelBypass(page: Page): Promise<void> {
+  const baseUrl = getBaseUrl(page)
   const bypassToken = process.env.VERCEL_BYPASS_TOKEN
 
-  if (!targetUrl || !bypassToken || !targetUrl.includes('vercel.app')) {
+  if (!baseUrl || !bypassToken || !baseUrl.includes('vercel.app')) {
     return
   }
 
-  const bypassUrl = `${targetUrl}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`
-  await page.goto(bypassUrl, { waitUntil: 'networkidle', timeout: 15000 })
-  await page.waitForTimeout(1000)
+  const target = `${baseUrl}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`
+  await page.goto(target, { waitUntil: 'networkidle', timeout: 20000 })
+  await page.waitForTimeout(500)
 }
 
-async function loginThroughUi(page: Page): Promise<void> {
-  await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 })
-  await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
-  await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
-  await page.click('[data-testid="submit-button"]')
-}
-
-async function waitForProtectedContent(page: Page, timeout = 10000): Promise<boolean> {
+async function waitForProtectedContent(page: Page, timeout = 15000): Promise<boolean> {
+  const protectedLocator = page.locator(PROTECTED_SELECTOR)
   try {
-    await page.locator(PROTECTED_SELECTOR).waitFor({ timeout })
+    await protectedLocator.waitFor({ timeout, state: 'visible' })
     return true
   } catch {
     return false
   }
 }
 
-export async function ensureAuthenticated(page: Page): Promise<void> {
-  await page.goto('/', { timeout: 30000 })
-  const baseURL = resolveBaseUrl(page)
+async function loginThroughUi(page: Page): Promise<void> {
+  await expect(page.locator(AUTH_SELECTOR)).toBeVisible({ timeout: 20000 })
+  await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
+  await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
+  await page.click('[data-testid="submit-button"]')
+  await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 20000 })
+}
 
-  if (await waitForProtectedContent(page, 8000)) {
+export async function ensureAuthenticated(page: Page): Promise<void> {
+  await applyVercelBypass(page)
+  await page.goto('/', { waitUntil: 'networkidle', timeout: 30000 })
+
+  if (await waitForProtectedContent(page)) {
     return
   }
 
-  console.log('🔐 ensureAuthenticated: falling back to manual login')
-  await applyVercelBypassIfNeeded(page, baseURL)
-  await page.goto('/login', { timeout: 30000 })
+  console.log('🔐 ensureAuthenticated: signing in through UI')
+  await applyVercelBypass(page)
+  await page.goto('/login', { waitUntil: 'networkidle', timeout: 30000 })
   await loginThroughUi(page)
-  await expect(page.locator(PROTECTED_SELECTOR)).toBeVisible({ timeout: 15000 })
+
+  if (!(await waitForProtectedContent(page, 20000))) {
+    throw new Error('Failed to authenticate test user - protected content not visible')
+  }
 }
