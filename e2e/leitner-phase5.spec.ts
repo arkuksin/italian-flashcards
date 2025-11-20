@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { ensureAuthenticated } from './helpers/auth'
 import { resetGamificationData } from './helpers/reset-gamification'
 
 /**
@@ -20,11 +21,10 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
 test.describe('Leitner System - Phase 5: Gamification', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 5 tests - missing credentials')
+  test.use({ storageState: 'playwright-auth-state.json' })
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to homepage - authentication is handled by global setup
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('should display Daily Streak Widget on dashboard', async ({ page }) => {

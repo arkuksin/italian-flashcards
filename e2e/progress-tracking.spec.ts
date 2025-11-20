@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { ensureAuthenticated } from './helpers/auth'
 
 // Test configuration
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
@@ -9,13 +10,11 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
 test.describe('Progress Tracking - Hook Integration', () => {
   test.skip(!hasRealAuthConfig, 'Skipping progress tests - missing credentials')
+  test.use({ storageState: 'playwright-auth-state.json' })
 
-  // Simplified beforeEach - authentication is already handled by global setup
+  // Ensure we always have an authenticated session before each test
   test.beforeEach(async ({ page }) => {
-    // Just navigate to homepage - we're already authenticated via storageState
-    await page.goto('/', { timeout: 20000 })
-    // Wait for app to be ready
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('@smoke should successfully authenticate and load the application', async ({ page }) => {
