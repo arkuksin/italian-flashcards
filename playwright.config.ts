@@ -21,11 +21,6 @@ const smokeTag = /@smoke/;
  */
 const config = defineConfig({
   testDir: './e2e',
-  /* Temporary focus: only run the suites under investigation */
-  testMatch: [
-    'e2e/progress-tracking.spec.ts',
-    'e2e/leitner-phase5.spec.ts',
-  ],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
