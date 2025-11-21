@@ -51,11 +51,7 @@
     },
     "feedback": {
       "correct": "Corretto!",
-      "incorrect": "Non del tutto corretto",
-      "screenReader": {
-        "correct": "Ben fatto! La tua risposta era corretta.",
-        "incorrect": "La risposta corretta è"
-      }
+      "incorrect": "Non del tutto corretto"
     },
     "navigation": {
       "previous": "Precedente",
@@ -116,5 +112,27 @@
     "level": "Livello {{level}}",
     "ready": "Pronto per iniziare l'apprendimento",
     "noPairs": "Nessuna coppia di lingue disponibile"
+  },
+  "wordOfTheDay": {
+    "title": "Parola del Giorno",
+    "subtitle": "Parola quotidiana",
+    "learnNow": "Impara ora",
+    "learnedToday": "Imparato oggi!",
+    "last7Days": "Ultimi 7 giorni:",
+    "description": "Descrizione",
+    "funFact": "Curiosità",
+    "examples": "Esempi",
+    "relatedWords": "Parole correlate",
+    "markAsLearned": "Segna come imparato",
+    "addNote": "Aggiungi nota",
+    "practiceNow": "Pratica ora",
+    "backToDashboard": "Torna alla Dashboard",
+    "noWordToday": "Nessuna parola disponibile oggi",
+    "category": "Categoria",
+    "difficultyLevel": "Livello di difficoltà",
+    "pronunciation": "Pronuncia",
+    "viewDetails": "Visualizza dettagli",
+    "completed": "Completato",
+    "notCompleted": "Non ancora completato"
   }
 }

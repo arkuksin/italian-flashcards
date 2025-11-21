@@ -52,11 +52,7 @@
     },
     "feedback": {
       "correct": "Correct!",
-      "incorrect": "Not quite right",
-      "screenReader": {
-        "correct": "Well done! Your answer was correct.",
-        "incorrect": "The correct answer is"
-      }
+      "incorrect": "Not quite right"
     },
     "navigation": {
       "previous": "Previous",
@@ -117,5 +113,27 @@
     "level": "Level {{level}}",
     "ready": "Ready to start learning",
     "noPairs": "No language pairs available"
+  },
+  "wordOfTheDay": {
+    "title": "Word of the Day",
+    "subtitle": "Daily Word",
+    "learnNow": "Learn Now",
+    "learnedToday": "Learned today!",
+    "last7Days": "Last 7 days:",
+    "description": "Description",
+    "funFact": "Fun Fact",
+    "examples": "Examples",
+    "relatedWords": "Related Words",
+    "markAsLearned": "Mark as Learned",
+    "addNote": "Add Note",
+    "practiceNow": "Practice Now",
+    "backToDashboard": "Back to Dashboard",
+    "noWordToday": "No word available for today",
+    "category": "Category",
+    "difficultyLevel": "Difficulty Level",
+    "pronunciation": "Pronunciation",
+    "viewDetails": "View Details",
+    "completed": "Completed",
+    "notCompleted": "Not completed yet"
   }
 }
