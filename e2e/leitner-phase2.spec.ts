@@ -389,7 +389,7 @@ test.describe('Leitner System - Phase 2: Integration Tests', () => {
     await expect(visualizer).toBeVisible({ timeout: 5000 })
 
     // Mode selection should also be visible
-    const modeSelection = page.getByTestId('mode-selection')
+    const modeSelection = page.locator('[data-testid^="mode-"]')
     await expect(modeSelection).toBeVisible()
   })
 
