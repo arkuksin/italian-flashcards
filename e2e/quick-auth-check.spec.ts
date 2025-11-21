@@ -71,12 +71,9 @@ test.describe('Quick Auth Check @smoke', () => {
     }
 
     // The main assertion
-    await expect(page.locator('[data-testid="auth-form-subtitle"]')).toContainText(
-      'Sign in to continue',
-      { timeout: 10000 }
-    );
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 10000 });
 
-    console.log('✅ SUCCESS: Auth form found with correct text!');
+    console.log('✅ SUCCESS: Auth form subtitle visible!');
 
     // Verify other auth elements are present
     await expect(page.locator('[data-testid="email-input"]')).toBeVisible();

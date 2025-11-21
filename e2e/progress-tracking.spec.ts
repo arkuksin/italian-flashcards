@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { ensureAuthenticated } from './helpers/auth'
 
 // Test configuration
 const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test-e2e@example.com'
@@ -9,13 +10,11 @@ const hasRealAuthConfig = TEST_USER_EMAIL && TEST_USER_PASSWORD
 
 test.describe('Progress Tracking - Hook Integration', () => {
   test.skip(!hasRealAuthConfig, 'Skipping progress tests - missing credentials')
+  test.use({ storageState: 'playwright-auth-state.json' })
 
-  // Simplified beforeEach - authentication is already handled by global setup
+  // Ensure we always have an authenticated session before each test
   test.beforeEach(async ({ page }) => {
-    // Just navigate to homepage - we're already authenticated via storageState
-    await page.goto('/', { timeout: 20000 })
-    // Wait for app to be ready
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('@smoke should successfully authenticate and load the application', async ({ page }) => {
@@ -288,9 +287,28 @@ test.describe('Progress Tracking - Hook Integration', () => {
       await page.getByTestId('answer-submit-button').click()
       // Wait for feedback
       await expect(page.locator('[data-testid="answer-feedback"]')).toBeVisible({ timeout: 12000 })
+      // Pick a difficulty option to unlock the Next button
+      const difficultyButtons = [
+        'difficulty-again',
+        'difficulty-hard',
+        'difficulty-good',
+        'difficulty-easy',
+      ]
+      for (const testId of difficultyButtons) {
+        const option = page.getByTestId(testId)
+        try {
+          if (await option.isVisible()) {
+            await option.click()
+            break
+          }
+        } catch {
+          // Option not available, try next
+        }
+      }
 
       const nextButton = page.locator('[data-testid="next-button"]')
       if (await nextButton.isVisible()) {
+        await expect(nextButton).toBeEnabled({ timeout: 5000 })
         await nextButton.click()
         // Wait for next question
         await expect(page.getByText(/Translate to Italian:/i)).toBeVisible({ timeout: 5000 })

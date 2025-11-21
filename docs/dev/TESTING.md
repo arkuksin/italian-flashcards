@@ -33,9 +33,6 @@ npx playwright test e2e/real-auth.spec.ts
 # Create a test user (safely in test database)
 npm run test:create-user
 
-# Reset test user's gamification data (fixes accumulated data issues)
-npm run test:reset-gamification
-
 # Clean up test users
 npm run test:cleanup-users
 ```
@@ -336,9 +333,6 @@ npm run test:setup
 ```bash
 # List all users in test database
 npm run test:list-users
-
-# Reset gamification data for test user (recommended before test runs)
-npm run test:reset-gamification
 
 # Clean up test users (dry run - preview only)
 npm run test:cleanup-users

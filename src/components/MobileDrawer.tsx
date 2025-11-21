@@ -4,10 +4,7 @@ import { X, Moon, Sun, Shuffle, RotateCcw, ArrowLeftRight, Check, X as XIcon } f
 import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { ImageSettings } from './settings/ImageSettings';
 import { VERTICAL_SPACING, GAP, MARGIN_BOTTOM } from '../constants/spacing';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { ANIMATION_DURATIONS } from '../constants/animations';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -37,7 +34,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
   onRestart,
 }) => {
   const { t } = useTranslation('common');
-  const prefersReducedMotion = useReducedMotion();
   const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
   const accentLabel = accentSensitive ? t('labels.accentCheckOn') : t('labels.accentCheckOff');
 
@@ -89,20 +85,19 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
         <>
           {/* Backdrop */}
           <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1 }}
-            exit={prefersReducedMotion ? {} : { opacity: 0 }}
-            transition={{ duration: ANIMATION_DURATIONS.normal / 1000 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-black/50 z-[60] md:hidden"
           />
 
           {/* Drawer */}
           <motion.div
-            initial={prefersReducedMotion ? {} : { x: '100%' }}
-            animate={prefersReducedMotion ? {} : { x: 0 }}
-            exit={prefersReducedMotion ? {} : { x: '100%' }}
-            transition={prefersReducedMotion ? {} : { duration: ANIMATION_DURATIONS.slow / 1000, ease: 'easeOut' }}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl z-[70] overflow-y-auto md:hidden"
           >
             {/* Header */}
@@ -160,11 +155,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   {t('labels.language')}
                 </div>
                 <LanguageSwitcher />
-              </div>
-
-              {/* Image Settings */}
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <ImageSettings />
               </div>
             </div>
           </motion.div>

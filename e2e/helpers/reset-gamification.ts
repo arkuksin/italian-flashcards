@@ -120,8 +120,8 @@ export async function resetGamificationData(): Promise<void> {
       console.log(`📊 Verified reset - Level: ${verifyData.level}, XP: ${verifyData.total_xp}, Streak: ${verifyData.current_streak}`)
     }
 
-    // Sign out
-    await supabase.auth.signOut()
+    // Sign out only this helper's session to avoid revoking global sessions used by Playwright
+    await supabase.auth.signOut({ scope: 'local' })
 
     console.log('✨ Gamification data reset complete')
   } catch (error) {

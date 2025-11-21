@@ -104,5 +104,17 @@
     "cardsCompleted": "Carte completate",
     "correctAnswers": "Risposte corrette",
     "timeSpent": "Tempo trascorso"
+  },
+  "languagePairs": {
+    "subtitle": "Scegli la tua direzione di apprendimento",
+    "recommendation": "Raccomandazione",
+    "lowestAccuracy": "ha la precisione più bassa",
+    "new": "Nuovo",
+    "wordsLearned": "{{count}} parole imparate",
+    "wordsLearned_one": "{{count}} parola imparata",
+    "wordsLearned_other": "{{count}} parole imparate",
+    "level": "Livello {{level}}",
+    "ready": "Pronto per iniziare l'apprendimento",
+    "noPairs": "Nessuna coppia di lingue disponibile"
   }
 }

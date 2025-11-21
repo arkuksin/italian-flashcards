@@ -31,8 +31,8 @@ async function globalSetup() {
     await page.goto(baseURL, { timeout: 15000 });
 
     console.log('🔍 Waiting for login form...');
-    // Wait for login form with shorter timeout
-    await page.locator('text=Sign in to continue').waitFor({ timeout: 5000 });
+    // Wait for login form subtitle (supports localized text)
+    await page.getByTestId('auth-form-subtitle').waitFor({ timeout: 5000 });
 
     console.log('🔍 Filling login form...');
     // Perform login

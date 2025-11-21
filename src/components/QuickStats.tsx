@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useProgress } from '../hooks/useProgress'
 import { useGamification } from '../hooks/useGamification'
 import { Card } from './ui/Card'
-import { AriaLabel } from './ui/AriaLabel'
 import { GAP, MARGIN_BOTTOM } from '../constants/spacing'
 
 /**
@@ -47,7 +46,7 @@ export const QuickStats: React.FC = () => {
           {t('quickStats.streak')}
         </div>
         <div className="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">
-          {dailyGoals?.current_streak ?? 0} <AriaLabel label="fire">🔥</AriaLabel>
+          {dailyGoals?.current_streak ?? 0} 🔥
         </div>
       </Card>
 
