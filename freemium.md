@@ -1223,6 +1223,265 @@ export const UpgradeModal = ({ isOpen, onClose, reason }: UpgradeModalProps) => 
 
 ## Phase 6: Stripe Integration (Woche 4)
 
+### Step 6.0: Stripe Account Setup & Dashboard Configuration
+
+**Wichtig**: Für EU-basierte Anwendungen ist Stripe die beste Wahl aufgrund vollständiger SCA (Strong Customer Authentication) Compliance und automatischer Umsatzsteuer-Behandlung.
+
+#### A) Stripe Account erstellen
+
+1. **Registrierung**: https://dashboard.stripe.com/register
+   - Email-Adresse bestätigen
+   - Business-Typ auswählen: "Individual" oder "Company"
+   - Land: Deutschland (oder Ihr Land)
+
+2. **Account aktivieren**:
+   - Dashboard: https://dashboard.stripe.com
+   - Zunächst im **Test Mode** arbeiten (Toggle oben rechts)
+   - Account Details vervollständigen (später für Live Mode erforderlich)
+
+3. **Business Details** (für Live Mode):
+   - Firmenname / Geschäftsname
+   - Steuernummer / USt-IdNr. (für EU)
+   - Geschäftsadresse
+   - Bank-Verbindung für Auszahlungen
+   - Verifizierung kann 1-3 Tage dauern
+
+#### B) Produkte & Preise erstellen
+
+**Im Stripe Dashboard** → **Products** → **Add product**
+
+##### Premium Tier:
+
+**Product 1: Italian Flashcards Premium**
+- Name: `Italian Flashcards Premium`
+- Description: `Unlimited learning with advanced features`
+- Pricing Model: `Recurring`
+
+**Monatlicher Preis:**
+- Price ID: `price_premium_monthly_eur` (wird automatisch generiert)
+- Amount: `€4.99`
+- Billing Period: `Monthly`
+- Currency: `EUR`
+
+**Jährlicher Preis:**
+- Price ID: `price_premium_yearly_eur`
+- Amount: `€49.99`
+- Billing Period: `Yearly`
+- Currency: `EUR`
+
+**Zusätzliche Währungen erstellen:**
+- USD: $5.99/Monat, $59.99/Jahr
+- RUB: ₽399/Monat, ₽3,999/Jahr (falls Russland unterstützt wird)
+
+##### Ultimate Tier:
+
+**Product 2: Italian Flashcards Ultimate**
+- Name: `Italian Flashcards Ultimate`
+- Description: `Premium + AI features, custom decks, priority support`
+
+**Monatlich:** €9.99
+**Jährlich:** €99.99
+
+##### Wichtige Produkt-Einstellungen:
+
+- ✅ **Tax Behavior**: `Exclusive` (Preis + MwSt)
+- ✅ **Trial Period**: 7 Tage (bei Premium)
+- ✅ **Metered Billing**: Nein
+- ✅ **Usage Type**: `Licensed`
+
+#### C) API Keys kopieren
+
+**Test Mode** (für Entwicklung):
+
+Dashboard → **Developers** → **API Keys**
+
+```bash
+Publishable key: pk_test_51...
+Secret key: sk_test_51...
+```
+
+**Live Mode** (nach Launch):
+- Toggle auf "Live" umschalten
+- Neue Keys werden generiert
+- NIE Test- und Live-Keys vermischen!
+
+#### D) Webhook Endpoints einrichten
+
+**Dashboard** → **Developers** → **Webhooks** → **Add endpoint**
+
+**Test Mode Webhook:**
+```
+URL: https://[your-supabase-project].supabase.co/functions/v1/stripe-webhook
+Description: Handle subscription events (Test)
+```
+
+**Events to listen for:**
+```
+✅ checkout.session.completed
+✅ customer.subscription.created
+✅ customer.subscription.updated
+✅ customer.subscription.deleted
+✅ invoice.payment_succeeded
+✅ invoice.payment_failed
+✅ customer.created
+✅ customer.updated
+```
+
+**Webhook Signing Secret:**
+- Nach Erstellung wird `whsec_...` angezeigt
+- Kopieren für Environment Variables
+
+**Live Mode Webhook:**
+- Gleiche Schritte für Live Mode wiederholen
+- Separates `whsec_...` Secret für Production
+
+#### E) Customer Portal konfigurieren
+
+**Dashboard** → **Settings** → **Customer Portal**
+
+**Aktivierte Features:**
+- ✅ **Update payment method**
+- ✅ **Cancel subscription**
+- ✅ **Update subscription** (Upgrade/Downgrade)
+- ✅ **View invoice history**
+
+**Cancellation Settings:**
+- Retention offers: Optional (z.B. "Pause for 3 months" anbieten)
+- Cancellation reasons: Aktivieren (für Feedback)
+- Effective date: "At period end" (kein sofortiger Zugriffsverlust)
+
+**Branding:**
+- Logo hochladen
+- Akzentfarbe: #F59E0B (Orange, passend zur App)
+- Privacy Policy URL: `https://yourdomain.com/privacy`
+- Terms of Service URL: `https://yourdomain.com/terms`
+
+#### F) Tax & VAT Einstellungen (EU-spezifisch)
+
+**Dashboard** → **Settings** → **Tax Settings**
+
+**Stripe Tax aktivieren:**
+- ✅ Automatische Steuerberechnung
+- ✅ EU VAT-Compliance (MOSS)
+- ✅ Reverse Charge für B2B
+- Kostet: 0.5% der Transaktion + Stripe Fees
+
+**Alternative: Manuelle Tax Rates:**
+```
+Deutschland: 19% MwSt
+Österreich: 20% MwSt
+Schweiz: 7.7% MwSt
+EU (allgemein): 19-27% je nach Land
+```
+
+#### G) Email Settings
+
+**Dashboard** → **Settings** → **Emails**
+
+**Aktivierte Emails:**
+- ✅ Successful payment
+- ✅ Failed payment
+- ✅ Upcoming invoice (3 Tage vorher)
+- ✅ Subscription cancelled
+- ✅ Trial ending (2 Tage vorher)
+
+**Email Branding:**
+- App Name: "Italian Flashcards"
+- Support Email: `support@yourdomain.com`
+- From Name: "Italian Flashcards Team"
+
+#### H) Payment Methods
+
+**Dashboard** → **Settings** → **Payment Methods**
+
+**Aktivierte Zahlungsmethoden:**
+- ✅ **Cards** (Visa, Mastercard, Amex)
+- ✅ **SEPA Direct Debit** (für EU)
+- ✅ **Google Pay** / **Apple Pay**
+- Optional: **Klarna**, **PayPal** (höhere Fees)
+
+#### I) Stripe CLI installieren (für lokale Tests)
+
+**macOS / Linux:**
+```bash
+# Homebrew
+brew install stripe/stripe-cli/stripe
+
+# Login
+stripe login
+
+# Test webhook lokal
+stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook
+```
+
+**Windows:**
+```bash
+# Scoop
+scoop bucket add stripe https://github.com/stripe/scoop-stripe-cli.git
+scoop install stripe
+```
+
+#### J) Test Cards für Development
+
+**Test Mode Karten:**
+```
+Successful Payment:
+  Card: 4242 4242 4242 4242
+  CVC: Any 3 digits
+  Date: Any future date
+  ZIP: Any 5 digits
+
+3D Secure (SCA Test):
+  Card: 4000 0027 6000 3184
+
+Declined Payment:
+  Card: 4000 0000 0000 0002
+
+Insufficient Funds:
+  Card: 4000 0000 0000 9995
+```
+
+Mehr Test-Karten: https://stripe.com/docs/testing
+
+#### K) Stripe Price IDs notieren
+
+Nach Produkt-Erstellung, notieren Sie die Price IDs:
+
+**Test Mode:**
+```bash
+# Premium
+PRICE_PREMIUM_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_PREMIUM_YEARLY_EUR=price_xxxxxxxxxxxxx
+
+# Ultimate
+PRICE_ULTIMATE_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_ULTIMATE_YEARLY_EUR=price_xxxxxxxxxxxxx
+```
+
+Diese IDs werden in Step 6.4 verwendet.
+
+#### L) Wichtige Stripe Dashboard Bereiche
+
+**Übersicht nach Setup:**
+- **Home**: Umsatz-Dashboard, Recent Events
+- **Payments**: Alle Zahlungen, Refunds
+- **Subscriptions**: Aktive Abonnements, Churn
+- **Customers**: Kundendatenbank
+- **Invoices**: Alle Rechnungen
+- **Billing**: Überfällige Zahlungen
+- **Reports**: Revenue Reports, MRR, ARR
+- **Logs**: Webhook Logs, API Logs
+
+#### M) Stripe Apps (Optional Erweiterungen)
+
+**Nützliche Apps im Stripe App Marketplace:**
+- **Klaviyo**: Email Marketing Integration
+- **ChartMogul**: Advanced Analytics & MRR Tracking
+- **Baremetrics**: Subscription Analytics
+- **ProfitWell**: Revenue Recognition
+
+---
+
 ### Step 6.1: Install Stripe
 
 ```bash
@@ -1472,6 +1731,444 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
     })
     .eq('stripe_customer_id', invoice.customer as string)
 }
+```
+
+### Step 6.6: Customer Portal Edge Function
+
+**Datei:** `supabase/functions/create-portal-session/index.ts`
+
+```typescript
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import Stripe from 'https://esm.sh/stripe@11.1.0?target=deno'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+  apiVersion: '2023-10-16',
+})
+
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+serve(async (req) => {
+  try {
+    const { userId } = await req.json()
+
+    // Get user's subscription to find Stripe customer ID
+    const { data: subscription, error } = await supabase
+      .from('user_subscriptions')
+      .select('stripe_customer_id')
+      .eq('user_id', userId)
+      .single()
+
+    if (error || !subscription?.stripe_customer_id) {
+      throw new Error('No active subscription found')
+    }
+
+    // Create portal session
+    const session = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripe_customer_id,
+      return_url: `${req.headers.get('origin')}/settings`,
+    })
+
+    return new Response(JSON.stringify({ url: session.url }), {
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+})
+```
+
+### Step 6.7: Lokales Testing mit Stripe CLI
+
+#### A) Webhook Testing lokal
+
+**Terminal 1 - Supabase Functions:**
+```bash
+supabase functions serve stripe-webhook --env-file .env.local
+```
+
+**Terminal 2 - Stripe CLI:**
+```bash
+# Forward Stripe events zu lokalem Endpoint
+stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook
+
+# Output zeigt Webhook Signing Secret:
+# > Ready! Your webhook signing secret is whsec_xxx (^C to quit)
+```
+
+**Terminal 3 - Event Trigger:**
+```bash
+# Test checkout.session.completed
+stripe trigger checkout.session.completed
+
+# Test subscription.updated
+stripe trigger customer.subscription.updated
+
+# Test payment_failed
+stripe trigger invoice.payment_failed
+```
+
+#### B) Checkout Flow testen
+
+1. **Frontend starten:**
+```bash
+npm run dev
+```
+
+2. **Upgrade-Flow durchlaufen:**
+   - Auf "Upgrade to Premium" klicken
+   - Stripe Checkout öffnet sich
+   - Test-Karte eingeben: `4242 4242 4242 4242`
+   - Zahlung abschließen
+   - Redirect zu Success-Seite
+   - Webhook wird getriggert
+   - Subscription in DB wird erstellt
+
+3. **Logs prüfen:**
+```bash
+# Stripe Dashboard
+https://dashboard.stripe.com/test/logs
+
+# Supabase Logs
+https://app.supabase.com/project/[project-id]/logs/edge-functions
+
+# Stripe CLI Output
+# Zeigt alle Events in Real-time
+```
+
+#### C) SCA (Strong Customer Authentication) testen
+
+**3D Secure Test-Karte:**
+```bash
+Card: 4000 0027 6000 3184
+```
+
+**Flow:**
+1. Checkout mit dieser Karte
+2. Stripe zeigt 3D Secure Modal
+3. Klick auf "Authenticate"
+4. Zahlung wird authorisiert
+5. Webhook wird getriggert
+
+**Alternative: SCA Required (manuell)**
+```bash
+Card: 4000 0025 0000 3155
+# Erfordert zusätzliche Authentifizierung
+```
+
+#### D) Subscription Lifecycle testen
+
+**1. Subscription erstellen:**
+```bash
+stripe trigger checkout.session.completed
+```
+
+**2. Subscription upgraden (Premium → Ultimate):**
+```typescript
+// In UpgradeModal.tsx beim Upgrade-Button
+const handleUpgrade = async () => {
+  // Stripe Checkout mit neuem Tier
+  const sessionId = await stripeService.createCheckoutSession(
+    user.id,
+    'ultimate',
+    'monthly'
+  )
+  await stripeService.redirectToCheckout(sessionId)
+}
+```
+
+**3. Subscription canceln:**
+```bash
+# Via Customer Portal (automatisch)
+# Oder manuell in Stripe Dashboard → Customers → [Customer] → Cancel
+
+# Oder via API:
+stripe subscriptions cancel sub_xxxxxx
+```
+
+**4. Fehlgeschlagene Zahlung simulieren:**
+```bash
+stripe trigger invoice.payment_failed
+
+# Oder Test-Karte mit Decline:
+# Card: 4000 0000 0000 0002
+```
+
+#### E) Webhook Retry Testing
+
+**Webhook Failure simulieren:**
+```bash
+# In stripe-webhook Edge Function einen Error werfen:
+throw new Error('Simulated webhook failure')
+
+# Stripe retried automatisch:
+# - Immediately
+# - After 1 hour
+# - After 6 hours
+# - After 24 hours
+# - After 3 days
+```
+
+**Retry in Stripe Dashboard prüfen:**
+```
+Dashboard → Developers → Webhooks → [Endpoint] → Recent Events
+→ Click auf Event → "Reattempt" Button
+```
+
+#### F) Tax Calculation Testing (mit Stripe Tax)
+
+**EU Customer testen:**
+```typescript
+// In create-checkout-session Edge Function:
+const session = await stripe.checkout.sessions.create({
+  // ... existing config
+  automatic_tax: {
+    enabled: true,
+  },
+  customer_details: {
+    tax_exempt: 'none',
+  },
+  // Stripe berechnet automatisch VAT basierend auf Kunden-Location
+})
+```
+
+**Test-Szenarien:**
+- DE Customer: 19% MwSt
+- AT Customer: 20% MwSt
+- US Customer: 0% (no VAT)
+- CH Customer: 7.7% MwSt (außerhalb EU)
+
+#### G) Refund Testing
+
+**Stripe Dashboard:**
+```
+Payments → [Payment] → Refund
+```
+
+**Oder via CLI:**
+```bash
+stripe refunds create --charge=ch_xxxxx --amount=499
+```
+
+**Webhook Event:**
+```
+charge.refunded
+```
+
+### Step 6.8: Environment Variables Setup
+
+#### Lokale Development (.env.local)
+
+```bash
+# Stripe Test Mode
+VITE_STRIPE_PUBLIC_KEY=pk_test_51xxxxxxxxxxxxx
+STRIPE_SECRET_KEY=sk_test_51xxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
+
+# Price IDs (aus Stripe Dashboard kopiert)
+PRICE_PREMIUM_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_PREMIUM_YEARLY_EUR=price_xxxxxxxxxxxxx
+PRICE_ULTIMATE_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_ULTIMATE_YEARLY_EUR=price_xxxxxxxxxxxxx
+```
+
+#### Vercel Environment Variables (Production)
+
+**Vercel Dashboard** → **Settings** → **Environment Variables**
+
+**Production Secrets:**
+```bash
+# Stripe Live Mode
+VITE_STRIPE_PUBLIC_KEY=pk_live_51xxxxxxxxxxxxx  # Visible to frontend
+STRIPE_SECRET_KEY=sk_live_51xxxxxxxxxxxxx       # Secret, server-only
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx       # Secret, server-only
+
+# Live Price IDs
+PRICE_PREMIUM_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_PREMIUM_YEARLY_EUR=price_xxxxxxxxxxxxx
+PRICE_ULTIMATE_MONTHLY_EUR=price_xxxxxxxxxxxxx
+PRICE_ULTIMATE_YEARLY_EUR=price_xxxxxxxxxxxxx
+```
+
+**Preview Environment (optional):**
+- Separate Test Mode Keys für Preview Deployments
+- Nützlich für PR Testing
+
+#### Supabase Environment Variables
+
+**Supabase Dashboard** → **Edge Functions** → **Settings**
+
+**Secrets hinzufügen:**
+```bash
+# Via Supabase CLI
+supabase secrets set STRIPE_SECRET_KEY=sk_live_xxx
+supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# Price IDs
+supabase secrets set PRICE_PREMIUM_MONTHLY_EUR=price_xxx
+supabase secrets set PRICE_PREMIUM_YEARLY_EUR=price_xxx
+supabase secrets set PRICE_ULTIMATE_MONTHLY_EUR=price_xxx
+supabase secrets set PRICE_ULTIMATE_YEARLY_EUR=price_xxx
+```
+
+**Secrets in Edge Function verwenden:**
+```typescript
+const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
+const priceId = Deno.env.get('PRICE_PREMIUM_MONTHLY_EUR')
+```
+
+### Step 6.9: Stripe Webhook Security Best Practices
+
+#### A) Webhook Signature Verification
+
+**Bereits implementiert in Step 6.5:**
+```typescript
+const signature = req.headers.get('stripe-signature')
+const event = stripe.webhooks.constructEvent(body, signature!, webhookSecret)
+```
+
+**Warum wichtig:**
+- Verifiziert dass Event wirklich von Stripe kommt
+- Verhindert Replay-Attacken
+- Schützt vor gefälschten Webhooks
+
+#### B) Idempotency
+
+**Events können mehrfach gesendet werden:**
+```typescript
+async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  // Upsert statt Insert → Idempotent
+  await supabase.from('user_subscriptions').upsert({
+    user_id: userId,
+    // ... data
+  })
+}
+```
+
+**Event ID tracking (optional):**
+```typescript
+// Events table zum Tracking
+CREATE TABLE stripe_events (
+  event_id TEXT PRIMARY KEY,
+  processed_at TIMESTAMPTZ DEFAULT NOW()
+)
+
+// Check vor Verarbeitung
+const { data } = await supabase
+  .from('stripe_events')
+  .select()
+  .eq('event_id', event.id)
+  .single()
+
+if (data) {
+  // Event bereits verarbeitet, skip
+  return
+}
+```
+
+#### C) Webhook Response Time
+
+**Best Practice: <15 Sekunden**
+```typescript
+serve(async (req) => {
+  try {
+    const event = stripe.webhooks.constructEvent(...)
+
+    // Schnelle Antwort zurück
+    const response = new Response(JSON.stringify({ received: true }))
+
+    // Async processing (nicht auf Ergebnis warten)
+    processEventAsync(event)
+
+    return response
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 400,
+    })
+  }
+})
+```
+
+#### D) Error Handling & Monitoring
+
+**Sentry Integration (optional):**
+```typescript
+import * as Sentry from 'https://esm.sh/@sentry/deno'
+
+Sentry.init({
+  dsn: Deno.env.get('SENTRY_DSN'),
+})
+
+try {
+  await handleCheckoutCompleted(session)
+} catch (error) {
+  Sentry.captureException(error)
+  throw error
+}
+```
+
+### Step 6.10: Stripe Compliance & Legal (EU/Deutschland)
+
+#### A) Pflichtangaben im Checkout
+
+**Bereits in Customer Portal konfiguriert:**
+- ✅ Impressum Link
+- ✅ Datenschutzerklärung Link
+- ✅ AGB Link
+- ✅ Widerrufsbelehrung (14 Tage für digitale Güter)
+
+#### B) Rechnungsstellung
+
+**Stripe generiert automatisch Invoices:**
+- PDF Download verfügbar
+- Enthält MwSt-Ausweis
+- Fortlaufende Rechnungsnummer
+- Firmenname/Adresse des Merchants
+
+**Anpassung:**
+```
+Dashboard → Settings → Business Settings
+→ Business Information
+  - Legal Business Name
+  - Address
+  - Tax ID (USt-IdNr)
+```
+
+#### C) DSGVO Compliance
+
+**Kundendaten in Stripe:**
+- Name, Email, Zahlungsinformationen
+- Speicherung in EU (Stripe EU)
+- DPA (Data Processing Agreement) verfügbar
+
+**In Privacy Policy erwähnen:**
+```
+"Wir nutzen Stripe für Zahlungsabwicklung.
+Stripe verarbeitet Ihre Zahlungsdaten gemäß
+EU-DSGVO. Weitere Infos: https://stripe.com/privacy"
+```
+
+**Data Retention:**
+- Stripe speichert Daten für 7 Jahre (gesetzliche Aufbewahrungspflicht)
+- Customer deletion möglich nach Retention Period
+
+#### D) SCA Compliance
+
+**Strong Customer Authentication (PSD2):**
+- Stripe handhabt automatisch
+- 3D Secure für EU-Karten
+- Exemptions für kleine Beträge (<30€)
+- Saved cards mit CVC-Re-entry
+
+**Bereits implementiert via:**
+```typescript
+payment_method_types: ['card']
+// Stripe fügt automatisch 3D Secure hinzu wenn benötigt
 ```
 
 ---
