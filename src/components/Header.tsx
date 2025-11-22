@@ -9,6 +9,7 @@ import { MobileDrawer } from './MobileDrawer';
 import { GAP, SPACING_PATTERNS } from '../constants/spacing';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ANIMATION_DURATIONS } from '../constants/animations';
+import { getDirectionFlags } from '../constants/languages';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -37,6 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
   const prefersReducedMotion = useReducedMotion();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
+  const directionFlags = getDirectionFlags(learningDirection);
   const accentLabel = accentSensitive ? t('labels.accentCheckOn') : t('labels.accentCheckOff');
 
   return (
@@ -58,7 +60,11 @@ export const Header: React.FC<HeaderProps> = ({
             className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-xs md:text-sm font-medium"
           >
             <ArrowLeftRight className="w-3 h-3 md:w-4 md:h-4" />
-            <span>{directionText}</span>
+            <span className="flex items-center gap-1">
+              <span>{directionFlags.source}</span>
+              <span>{directionText}</span>
+              <span>{directionFlags.target}</span>
+            </span>
           </div>
         </div>
 
