@@ -13,6 +13,30 @@ import type { LanguagePair, LanguagePairStats, LearningDirection } from '../type
 import { Card } from './ui/Card';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
 
+const LOAD_TIMEOUT_MS = 8000;
+const DEFAULT_PAIRS: LanguagePair[] = [
+  {
+    id: 1,
+    source_lang: 'ru',
+    target_lang: 'it',
+    is_active: true,
+    display_name_source: 'Русский',
+    display_name_target: 'Italiano',
+    flag_emoji_source: '🇷🇺',
+    flag_emoji_target: '🇮🇹'
+  },
+  {
+    id: 2,
+    source_lang: 'it',
+    target_lang: 'ru',
+    is_active: true,
+    display_name_source: 'Italiano',
+    display_name_target: 'Русский',
+    flag_emoji_source: '🇮🇹',
+    flag_emoji_target: '🇷🇺'
+  }
+];
+
 interface LanguagePairSelectorProps {
   onSelect: (pairId: number, direction: LearningDirection) => void;
 }
@@ -23,38 +47,37 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
   const { t } = useTranslation('dashboard');
 
   // Initialize with fallback data to ensure component always renders
-  const [pairs, setPairs] = useState<LanguagePair[]>([
-    {
-      id: 1,
-      source_lang: 'ru',
-      target_lang: 'it',
-      is_active: true,
-      display_name_source: 'Русский',
-      display_name_target: 'Italiano',
-      flag_emoji_source: '🇷🇺',
-      flag_emoji_target: '🇮🇹'
-    },
-    {
-      id: 2,
-      source_lang: 'it',
-      target_lang: 'ru',
-      is_active: true,
-      display_name_source: 'Italiano',
-      display_name_target: 'Русский',
-      flag_emoji_source: '🇮🇹',
-      flag_emoji_target: '🇷🇺'
-    }
-  ]);
+  const [pairs, setPairs] = useState<LanguagePair[]>(DEFAULT_PAIRS);
   const [stats, setStats] = useState<LanguagePairStats[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadLanguagePairs();
+    let isMounted = true;
+    const timeoutId = window.setTimeout(() => {
+      // Ensure UI renders even if Supabase hangs; fall back to default pairs in CI.
+      if (isMounted) {
+        console.warn('LanguagePairSelector: load timed out, showing fallback pairs');
+        setLoading(false);
+      }
+    }, LOAD_TIMEOUT_MS);
+
+    loadLanguagePairs().finally(() => {
+      if (isMounted) {
+        clearTimeout(timeoutId);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const loadLanguagePairs = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        setLoading(false);
         return;
       }
 
@@ -63,9 +86,24 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
         languageService.getLanguagePairStats(user.id)
       ]);
 
-      // Only update if we got valid data from the database
+      // Only update if we got valid data from the database; always ensure fallback pairs exist
       if (pairsData && pairsData.length > 0) {
-        setPairs(pairsData);
+        const pairsByDirection = new Map<string, LanguagePair>();
+        pairsData.forEach(pair => {
+          const key = `${pair.source_lang}-${pair.target_lang}`;
+          pairsByDirection.set(key, pair);
+        });
+        DEFAULT_PAIRS.forEach(pair => {
+          const key = `${pair.source_lang}-${pair.target_lang}`;
+          if (!pairsByDirection.has(key)) {
+            pairsByDirection.set(key, pair);
+          }
+        });
+
+        setPairs(Array.from(pairsByDirection.values()));
+      } else {
+        // Keep default pairs when Supabase returns nothing
+        setPairs(DEFAULT_PAIRS);
       }
       // Always update stats (can be empty array)
       if (statsData) {
@@ -75,6 +113,8 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
       console.error('Error loading language pairs:', error);
       // Keep using the default fallback data already in state
       console.log('Using fallback language pairs (ru-it, it-ru)');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,6 +135,19 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
     const direction = `${pair.source_lang}-${pair.target_lang}` as LearningDirection;
     onSelect(pair.id, direction);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 md:p-8 border-2 border-blue-200 dark:border-blue-800 shadow-lg" data-testid="mode-selection">
+        <div className="text-center py-8">
+          <Globe className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3 animate-pulse" />
+          <p className="text-gray-600 dark:text-gray-300">
+            {t('modeSelection.loading', 'Loading language pairs...')}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const suggestion = getSuggestion();
 
