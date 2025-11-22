@@ -11,6 +11,7 @@ import {
 } from '../components/landing/LandingSections'
 import { CheckCircle2, Compass, Sparkles } from 'lucide-react'
 import { Container } from '../components/layout'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 
 const heroChecklistKeys = [
   'hero.checklist.ai',
@@ -81,6 +82,9 @@ export const Login: React.FC = () => {
 
       <main id="main-content" className="relative z-10 space-y-20 pb-16">
         <Container width="analytics" className="pt-12 lg:pt-20">
+          <div className="flex items-center justify-end mb-8">
+            <LanguageSwitcher compact />
+          </div>
           <section className="flex flex-col gap-12 lg:gap-16 lg:flex-row items-stretch">
           <div className="flex-1 flex flex-col justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/60 dark:border-blue-500/40 bg-white/70 dark:bg-gray-900/70 px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 w-fit">
