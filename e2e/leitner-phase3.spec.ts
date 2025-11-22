@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test'
+import { ensureAuthenticated } from './helpers/auth'
 
 /**
  * E2E Tests for Leitner System - Phase 3
@@ -39,9 +40,8 @@ test.describe('Leitner System - Phase 3: Difficulty Rating', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 3 tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to homepage - authentication is handled by global setup
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    // Refresh session per test to avoid stale auth state mid-suite
+    await ensureAuthenticated(page)
   })
 
   test('should display difficulty rating buttons after answering', async ({ page, browserName }) => {
@@ -209,8 +209,7 @@ test.describe('Leitner System - Phase 3: Response Time Tracking', () => {
   test.skip(!hasRealAuthConfig, 'Skipping response time tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('should track response time for answers', async ({ page, browserName }) => {
@@ -246,8 +245,7 @@ test.describe('Leitner System - Phase 3: Complete Workflow', () => {
   test.skip(!hasRealAuthConfig, 'Skipping workflow tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('should complete full Phase 3 workflow: answer -> rate difficulty -> next word', async ({ page, browserName }) => {
@@ -322,8 +320,7 @@ test.describe('Leitner System - Phase 3: Integration with Database', () => {
   test.skip(!hasRealAuthConfig, 'Skipping database tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    await ensureAuthenticated(page)
   })
 
   test('should persist difficulty ratings across page refresh', async ({ page, browserName }) => {
