@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Container } from '../components/layout';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export const PrivacyPolicy: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ export const PrivacyPolicy: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-        <div className="mb-8">
+        <div className="mb-8 flex items-center justify-between gap-4">
           <Link
             to="/"
             className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
@@ -22,6 +23,7 @@ export const PrivacyPolicy: React.FC = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Zurück zur Anwendung
           </Link>
+          <LanguageSwitcher compact />
         </div>
 
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">

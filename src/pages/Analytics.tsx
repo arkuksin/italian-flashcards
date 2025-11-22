@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, BarChart3, TrendingUp, Brain } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { UserProfile } from '../components/auth/UserProfile'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 import { LearningVelocityChart } from '../components/LearningVelocityChart'
 import { RetentionAnalysis } from '../components/RetentionAnalysis'
 import { ReviewHeatmap } from '../components/ReviewHeatmap'
@@ -85,7 +86,7 @@ export const Analytics: React.FC = () => {
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow">
         <Container width="analytics" className="py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/')}
@@ -101,7 +102,10 @@ export const Analytics: React.FC = () => {
                 </h1>
               </div>
             </div>
-            <UserProfile />
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher compact />
+              <UserProfile />
+            </div>
           </div>
         </Container>
       </div>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Star, Volume2, Check, BookOpen, Sparkles } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { UserProfile } from '../components/auth/UserProfile'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 import { Container } from '../components/layout'
 import { Card } from '../components/ui/Card'
 import { wordOfTheDayService } from '../services/wordOfTheDayService'
@@ -111,7 +112,7 @@ export const WordOfTheDayDetail: React.FC = () => {
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow">
         <Container width="main" className="py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/')}
@@ -127,7 +128,10 @@ export const WordOfTheDayDetail: React.FC = () => {
                 </h1>
               </div>
             </div>
-            <UserProfile />
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher compact />
+              <UserProfile />
+            </div>
           </div>
         </Container>
       </div>

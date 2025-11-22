@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
 import { Container } from '../components/layout'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 
 interface DemoCardContent {
   term: string
@@ -56,14 +57,17 @@ export const DemoDeck: React.FC = () => {
 
       <main className="relative z-10 py-12 sm:py-16">
         <Container width="dashboard">
-          <button
-            type="button"
-            onClick={handleBackToLanding}
-            className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-300 hover:text-blue-500 transition"
-          >
-            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-            {t('demo.backLink')}
-          </button>
+          <div className="flex items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={handleBackToLanding}
+              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-300 hover:text-blue-500 transition"
+            >
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              {t('demo.backLink')}
+            </button>
+            <LanguageSwitcher compact />
+          </div>
 
           <div className="mt-6">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/60 dark:border-blue-500/40 bg-white/70 dark:bg-gray-900/70 px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 w-fit">
