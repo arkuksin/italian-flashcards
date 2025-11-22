@@ -40,11 +40,7 @@ export const PrivacyPolicy: React.FC = () => {
               Verantwortlicher für die Datenverarbeitung auf dieser Webseite ist:
             </p>
             <p>
-              [Dein Name/Firmenname]
-              <br />
-              [Deine Adresse]
-              <br />
-              [Deine E-Mail-Adresse]
+              arthur.kuksin@gmail.com
             </p>
             <p>
               (Bitte ersetzen Sie diese Platzhalter durch Ihre eigenen Daten.)
