@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { ensureModeSelectionVisible, selectLearningMode } from './helpers/mode-selection'
+import { ensureAuthenticated } from './helpers/auth'
 
 const LEITNER_DATA_MESSAGE = 'Skipping test because Leitner data is unavailable for the test user.'
 
@@ -31,9 +32,8 @@ test.describe('Leitner System - Phase 2: Visual Feedback', () => {
   test.skip(!hasRealAuthConfig, 'Skipping Leitner Phase 2 tests - missing credentials')
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to homepage - authentication is handled by global setup
-    await page.goto('/', { timeout: 20000 })
-    await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 8000 })
+    // Refresh session per test so we don't rely on stale shared auth state
+    await ensureAuthenticated(page)
     await ensureModeSelectionVisible(page)
   })
 

@@ -16,6 +16,7 @@ import { DailyStreakWidget } from '../components/DailyStreakWidget'
 import { XPProgressBar } from '../components/XPProgressBar'
 import { AchievementBadges } from '../components/AchievementBadges'
 import { DailyGoalProgress } from '../components/DailyGoalProgress'
+import { WordOfTheDayWidget } from '../components/WordOfTheDayWidget'
 import { DueWordsWidget } from '../components/DueWordsWidget'
 import { ReminderSettings } from '../components/ReminderSettings'
 import { Container } from '../components/layout'
@@ -779,6 +780,16 @@ export const Dashboard: React.FC = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+            </motion.div>
+
+            {/* Word of the Day Widget */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="mb-6"
+            >
+              <WordOfTheDayWidget />
             </motion.div>
 
             {/* Gamification Section */}

@@ -63,6 +63,9 @@ export async function ensureAuthenticated(page: Page): Promise<void> {
   }
 
   console.log('🔐 ensureAuthenticated: signing in through UI')
+  // Clear any stale auth artifacts before retrying
+  await page.context().clearCookies()
+  await page.evaluate(() => localStorage.clear())
   await applyVercelBypass(page)
   await page.goto('/login', { waitUntil: 'networkidle', timeout: 30000 })
   await loginThroughUi(page)
