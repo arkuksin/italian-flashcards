@@ -12,6 +12,7 @@ import { ProgressBar } from '../components/ProgressBar'
 import { Statistics } from '../components/Statistics'
 import { LeitnerBoxVisualizer } from '../components/LeitnerBoxVisualizer'
 import { UserProfile } from '../components/auth/UserProfile'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 import { DailyStreakWidget } from '../components/DailyStreakWidget'
 import { XPProgressBar } from '../components/XPProgressBar'
 import { AchievementBadges } from '../components/AchievementBadges'
@@ -635,7 +636,7 @@ export const Dashboard: React.FC = () => {
       {!hasSelectedMode ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
           {/* Dashboard Header with UserProfile */}
-          <div className="flex justify-between items-center p-6">
+          <div className="flex justify-between items-center p-6 gap-4">
             <button
               onClick={() => navigate('/analytics')}
               className="flex items-center gap-2 px-3 py-2 bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 rounded-lg shadow-sm transition-all text-sm"
@@ -644,7 +645,10 @@ export const Dashboard: React.FC = () => {
               <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span className="font-medium text-gray-700 dark:text-gray-200">Analytics</span>
             </button>
-            <UserProfile />
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher compact />
+              <UserProfile />
+            </div>
           </div>
 
           <Container width="dashboard" className="py-2" id="main-content">
