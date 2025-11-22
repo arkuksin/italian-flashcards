@@ -13,6 +13,8 @@ import type { LanguagePair, LanguagePairStats, LearningDirection } from '../type
 import { Card } from './ui/Card';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
 
+const LOAD_TIMEOUT_MS = 8000;
+
 interface LanguagePairSelectorProps {
   onSelect: (pairId: number, direction: LearningDirection) => void;
 }
@@ -49,7 +51,25 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadLanguagePairs();
+    let isMounted = true;
+    const timeoutId = window.setTimeout(() => {
+      // Ensure UI renders even if Supabase hangs; fall back to default pairs in CI.
+      if (isMounted) {
+        console.warn('LanguagePairSelector: load timed out, showing fallback pairs');
+        setLoading(false);
+      }
+    }, LOAD_TIMEOUT_MS);
+
+    loadLanguagePairs().finally(() => {
+      if (isMounted) {
+        clearTimeout(timeoutId);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const loadLanguagePairs = async () => {
