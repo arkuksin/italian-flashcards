@@ -50,7 +50,7 @@ const getFlashcardStats = async (page: Page) => {
 
 const login = async (page: Page) => {
   await page.goto('/', { timeout: 30_000 })
-  await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15_000 })
 
   await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)
   await page.fill('[data-testid="password-input"]', TEST_USER_PASSWORD)
@@ -150,7 +150,7 @@ test.describe('Statistics Consistency', () => {
     await signOutButton.click({ force: true })
     await Promise.all([waitForEmailField, waitForLogoutUrl])
 
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 10_000 })
     console.log('✅ Logged out')
 
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL)

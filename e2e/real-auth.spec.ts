@@ -36,7 +36,7 @@ test.describe('Real Authentication Flow', () => {
 
   test('should successfully sign in with test user credentials', async ({ page }) => {
     // Should initially show login form
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 15000 });
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 15000 });
 
     // Fill in test user credentials
     await page.fill('[data-testid="email-input"]', TEST_USER_EMAIL);
@@ -68,7 +68,7 @@ test.describe('Real Authentication Flow', () => {
 
     // Should still be authenticated (no login form should appear)
     await expect(page.locator('[data-testid="protected-content"]')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=Sign in to continue')).not.toBeVisible();
+    await expect(page.getByTestId('auth-form-subtitle')).not.toBeVisible();
   });
 
   test('should successfully access flashcard functionality after real authentication', async ({ page }) => {
@@ -119,7 +119,7 @@ test.describe('Real Authentication Flow', () => {
     await logoutButton.click();
 
     // Should return to login screen
-    await expect(page.locator('text=Sign in to continue')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('[data-testid="protected-content"]')).not.toBeVisible();
   });
 
@@ -133,7 +133,7 @@ test.describe('Real Authentication Flow', () => {
     await expect(page.locator('[data-testid="error-message"]')).toBeVisible({ timeout: 5000 });
 
     // Should still be on login page
-    await expect(page.locator('text=Sign in to continue')).toBeVisible();
+    await expect(page.getByTestId('auth-form-subtitle')).toBeVisible();
     await expect(page.locator('[data-testid="protected-content"]')).not.toBeVisible();
   });
 
@@ -185,7 +185,7 @@ test.describe('Real Authentication - Error Scenarios', () => {
 
     // Verify we're in either authenticated or login state
     const isAuthenticated = await page.locator('[data-testid="protected-content"]').isVisible();
-    const isLoginPage = await page.locator('text=Sign in to continue').isVisible();
+    const isLoginPage = await page.getByTestId('auth-form-subtitle').isVisible();
 
     if (!isAuthenticated && !isLoginPage) {
       throw new Error('Page did not resolve to either authenticated or login state');
