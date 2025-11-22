@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { LearningDirection } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { VERTICAL_SPACING, GAP, MARGIN_BOTTOM } from '../constants/spacing';
+import { getDirectionFlags } from '../constants/languages';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
 }) => {
   const { t } = useTranslation('common');
   const directionText = learningDirection === 'ru-it' ? t('direction.ruToIt') : t('direction.itToRu');
+  const directionFlags = getDirectionFlags(learningDirection);
   const accentLabel = accentSensitive ? t('labels.accentCheckOn') : t('labels.accentCheckOff');
 
   const menuItems = [
@@ -42,7 +44,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
       id: 'direction',
       icon: ArrowLeftRight,
       label: t('tooltips.toggleDirection'),
-      sublabel: directionText,
+      sublabel: `${directionFlags.source} ${directionText} ${directionFlags.target}`,
       onClick: onToggleDirection,
       isActive: false,
     },
