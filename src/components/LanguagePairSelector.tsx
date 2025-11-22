@@ -14,6 +14,28 @@ import { Card } from './ui/Card';
 import { MARGIN_BOTTOM, VERTICAL_SPACING } from '../constants/spacing';
 
 const LOAD_TIMEOUT_MS = 8000;
+const DEFAULT_PAIRS: LanguagePair[] = [
+  {
+    id: 1,
+    source_lang: 'ru',
+    target_lang: 'it',
+    is_active: true,
+    display_name_source: 'Русский',
+    display_name_target: 'Italiano',
+    flag_emoji_source: '🇷🇺',
+    flag_emoji_target: '🇮🇹'
+  },
+  {
+    id: 2,
+    source_lang: 'it',
+    target_lang: 'ru',
+    is_active: true,
+    display_name_source: 'Italiano',
+    display_name_target: 'Русский',
+    flag_emoji_source: '🇮🇹',
+    flag_emoji_target: '🇷🇺'
+  }
+];
 
 interface LanguagePairSelectorProps {
   onSelect: (pairId: number, direction: LearningDirection) => void;
@@ -25,28 +47,7 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
   const { t } = useTranslation('dashboard');
 
   // Initialize with fallback data to ensure component always renders
-  const [pairs, setPairs] = useState<LanguagePair[]>([
-    {
-      id: 1,
-      source_lang: 'ru',
-      target_lang: 'it',
-      is_active: true,
-      display_name_source: 'Русский',
-      display_name_target: 'Italiano',
-      flag_emoji_source: '🇷🇺',
-      flag_emoji_target: '🇮🇹'
-    },
-    {
-      id: 2,
-      source_lang: 'it',
-      target_lang: 'ru',
-      is_active: true,
-      display_name_source: 'Italiano',
-      display_name_target: 'Русский',
-      flag_emoji_source: '🇮🇹',
-      flag_emoji_target: '🇷🇺'
-    }
-  ]);
+  const [pairs, setPairs] = useState<LanguagePair[]>(DEFAULT_PAIRS);
   const [stats, setStats] = useState<LanguagePairStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,9 +86,24 @@ export const LanguagePairSelector: React.FC<LanguagePairSelectorProps> = ({
         languageService.getLanguagePairStats(user.id)
       ]);
 
-      // Only update if we got valid data from the database
+      // Only update if we got valid data from the database; always ensure fallback pairs exist
       if (pairsData && pairsData.length > 0) {
-        setPairs(pairsData);
+        const pairsByDirection = new Map<string, LanguagePair>();
+        pairsData.forEach(pair => {
+          const key = `${pair.source_lang}-${pair.target_lang}`;
+          pairsByDirection.set(key, pair);
+        });
+        DEFAULT_PAIRS.forEach(pair => {
+          const key = `${pair.source_lang}-${pair.target_lang}`;
+          if (!pairsByDirection.has(key)) {
+            pairsByDirection.set(key, pair);
+          }
+        });
+
+        setPairs(Array.from(pairsByDirection.values()));
+      } else {
+        // Keep default pairs when Supabase returns nothing
+        setPairs(DEFAULT_PAIRS);
       }
       // Always update stats (can be empty array)
       if (statsData) {
