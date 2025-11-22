@@ -66,18 +66,31 @@ jobs:
         run: |
           # Deploy to Vercel with test database credentials
           # Environment variables are set via the env: block above
-          DEPLOYMENT_URL=$(vercel deploy \
+          DEPLOYMENT_JSON=$(vercel deploy \
             --token="${{ secrets.VERCEL_TOKEN }}" \
+            --meta githubCommitSha="${{ github.sha }}" \
+            --meta pullRequest="${{ github.event.pull_request.number }}" \
             --build-env VITE_SUPABASE_URL="${VITE_SUPABASE_URL}" \
             --build-env VITE_SUPABASE_ANON_KEY="${VITE_SUPABASE_ANON_KEY}" \
-            --yes | tail -1)
+            --yes \
+            --json)
 
-          # Wait for deployment to be ready
+          DEPLOYMENT_URL=$(echo "$DEPLOYMENT_JSON" | jq -r '.url')
+          DEPLOYMENT_ID=$(echo "$DEPLOYMENT_JSON" | jq -r '.deploymentId // .id // .uid // empty')
+
+          if [ -z "$DEPLOYMENT_URL" ] || [ "$DEPLOYMENT_URL" = "null" ]; then
+            echo "❌ vercel deploy did not return a deployment URL"
+            echo "$DEPLOYMENT_JSON"
+            exit 1
+          fi
+
           echo "Waiting for deployment to be ready..."
           vercel inspect "$DEPLOYMENT_URL" --token="${{ secrets.VERCEL_TOKEN }}" --wait
 
-          # Get deployment ID for cleanup later
-          DEPLOYMENT_ID=$(vercel ls --token="${{ secrets.VERCEL_TOKEN }}" --meta githubCommitSha="${{ github.sha }}" | grep "${{ github.sha }}" | awk '{print $1}' | head -1)
+          if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" = "null" ]; then
+            echo "🔎 Falling back to vercel ls to resolve deployment id"
+            DEPLOYMENT_ID=$(vercel ls --token="${{ secrets.VERCEL_TOKEN }}" --meta githubCommitSha="${{ github.sha }}" --limit 1 --json | jq -r '.[0].uid // .[0].id // empty')
+          fi
 
           echo "preview-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
@@ -256,15 +269,28 @@ jobs:
     name: Cleanup Preview Environment
     runs-on: ubuntu-latest
     needs: [deploy-preview, e2e-tests]
-    if: always() && needs.deploy-preview.outputs.deployment-id
+    if: always()
     steps:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
       - name: Remove preview deployment
+        env:
+          DEPLOYMENT_ID: ${{ needs.deploy-preview.outputs.deployment-id }}
+          DEPLOYMENT_URL: ${{ needs.deploy-preview.outputs.preview-url }}
         run: |
-          echo "Cleaning up preview deployment: ${{ needs.deploy-preview.outputs.deployment-id }}"
-          vercel rm "${{ needs.deploy-preview.outputs.deployment-id }}" --token="${{ secrets.VERCEL_TOKEN }}" --yes || echo "Deployment already cleaned up"
+          TARGET="$DEPLOYMENT_ID"
+          if [ -z "$TARGET" ] || [ "$TARGET" = "null" ]; then
+            TARGET="$DEPLOYMENT_URL"
+          fi
+
+          if [ -z "$TARGET" ] || [ "$TARGET" = "null" ]; then
+            echo "No deployment target available for cleanup."
+            exit 0
+          fi
+
+          echo "Cleaning up preview deployment: $TARGET"
+          vercel rm "$TARGET" --token="${{ secrets.VERCEL_TOKEN }}" --yes || echo "Deployment already cleaned up or not found"
 
   status-check:
     name: E2E Status Check
